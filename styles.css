@@ -256,15 +256,11 @@ a:hover {
 
 @media (max-width: 767px) {
   .nav {
-    /* Mobiele terminal-look: wit vlak met oranje accenten */
-    --nav-mobile-term-bg: #ffffff;
-    --nav-mobile-term-bg-elevated: #f8f8f8;
-    --nav-mobile-term-titlebar: linear-gradient(180deg, #f6f6f6 0%, #ececec 100%);
-    --nav-mobile-term-fg: #1d1d1f;
-    --nav-mobile-term-dim: #6e6e73;
-    --nav-mobile-term-dim2: #8e8e93;
-    --nav-mobile-term-blue: #c2410c;
-    --nav-mobile-term-selection: rgba(234, 88, 0, 0.14);
+    --nav-mobile-surface: rgba(255, 255, 255, 0.86);
+    --nav-mobile-text: #1d1d1f;
+    --nav-mobile-text-dim: #6e6e73;
+    --nav-mobile-active-bg: rgba(29, 29, 31, 0.05);
+    --nav-mobile-divider: rgba(29, 29, 31, 0.1);
     z-index: 200;
   }
 
@@ -278,7 +274,7 @@ a:hover {
   .nav__logo,
   .nav__menu {
     position: relative;
-    z-index: 140;
+    z-index: 280;
   }
 
   .nav__cta {
@@ -295,37 +291,14 @@ a:hover {
     flex-shrink: 0;
   }
 
-  /* Volledig scherm — macOS Terminal-achtig venster + shell */
-  @keyframes nav-mobile-prompt-in {
-    from {
-      opacity: 0;
-      transform: translate3d(-8px, 0, 0);
-    }
-    to {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
-    }
-  }
-
   @keyframes nav-mobile-link-in {
     from {
       opacity: 0;
-      transform: translate3d(-12px, 8px, 0);
+      transform: translate3d(0, 10px, 0);
     }
     to {
       opacity: 1;
       transform: translate3d(0, 0, 0);
-    }
-  }
-
-  @keyframes nav-mobile-caret-pulse {
-    0%,
-    40% {
-      opacity: 1;
-    }
-    50%,
-    100% {
-      opacity: 0;
     }
   }
 
@@ -333,37 +306,32 @@ a:hover {
     display: flex;
     position: fixed;
     inset: 0;
-    z-index: 260;
+    z-index: 240;
     flex-direction: column;
     align-items: stretch;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0;
     margin: 0;
-    padding: calc(58px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px));
+    padding: calc(84px + env(safe-area-inset-top, 0px)) calc(22px + env(safe-area-inset-right, 0px))
+      calc(24px + env(safe-area-inset-bottom, 0px)) calc(22px + env(safe-area-inset-left, 0px));
     min-height: 100dvh;
     max-height: 100dvh;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    box-sizing: border-box;
-    font-family: SFMono-Regular, ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
-    font-size: clamp(16px, 4vw, 18px);
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    color: var(--nav-mobile-term-fg);
-    background-color: var(--nav-mobile-term-bg);
-    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.015) 0%, transparent 30%);
-    border: none;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    font-size: clamp(26px, 8vw, 34px);
+    font-weight: 500;
+    letter-spacing: -0.028em;
+    color: var(--nav-mobile-text);
+    background: var(--nav-mobile-surface);
+    backdrop-filter: saturate(160%) blur(24px);
+    -webkit-backdrop-filter: saturate(160%) blur(24px);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translate3d(0, 0, 0);
-    clip-path: inset(0 0 100% 0);
+    transform: translate3d(0, -6px, 0);
     transition:
-      opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-      visibility 0.38s,
-      clip-path 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 0.28s ease,
+      visibility 0.28s,
+      transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
   }
@@ -381,64 +349,37 @@ a:hover {
     background: transparent;
   }
 
-  /* Titelbalk zoals Terminal.app: verkeerslichten + gecentreerde titel */
   .nav__links::before {
-    content: "bash — Sophie";
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 44px;
-    padding: 0 16px;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    color: rgba(0, 0, 0, 0.48);
-    pointer-events: none;
-    background:
-      radial-gradient(circle at 22px 50%, #ff5f57 5.5px, transparent 6px),
-      radial-gradient(circle at 42px 50%, #ffbd2e 5.5px, transparent 6px),
-      radial-gradient(circle at 62px 50%, #27c93f 5.5px, transparent 6px),
-      var(--nav-mobile-term-titlebar);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    border-radius: 0;
-    z-index: 2;
+    content: "";
+    position: fixed;
+    left: calc(22px + env(safe-area-inset-left, 0px));
+    right: calc(22px + env(safe-area-inset-right, 0px));
+    top: calc(68px + env(safe-area-inset-top, 0px));
+    height: 1px;
+    background: var(--nav-mobile-divider);
+    z-index: 1;
   }
 
-  /* Bash-achtige promptregels */
   .nav__links::after {
-    content: "Last login: zojuist op console\a guest@sophie.be ~ % open navigatie";
-    order: -1;
-    white-space: pre-wrap;
-    position: relative;
-    z-index: 1;
+    content: "Menu";
     display: block;
-    margin-bottom: 24px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    font-size: 12.5px;
-    line-height: 1.55;
-    font-weight: 400;
-    color: var(--nav-mobile-term-dim);
-    opacity: 0;
-    max-width: 36rem;
+    position: absolute;
+    top: calc(42px + env(safe-area-inset-top, 0px));
+    left: calc(22px + env(safe-area-inset-left, 0px));
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--nav-mobile-text-dim);
+    pointer-events: none;
+    z-index: 2;
   }
 
   .nav--menu-open .nav__links {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    clip-path: inset(0 0 0 0);
-  }
-
-  .nav--menu-open .nav__links::after {
-    animation: nav-mobile-prompt-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.12s forwards;
+    transform: translate3d(0, 0, 0);
   }
 
   .nav__links .nav__pill {
@@ -449,35 +390,28 @@ a:hover {
     position: relative;
     z-index: 1;
     margin: 0;
-    padding: 14px 14px 14px 20px;
-    border-radius: 6px;
+    padding: 14px 0;
+    border-radius: 14px;
     justify-content: flex-start;
     opacity: 0;
-    background: var(--nav-mobile-term-bg-elevated);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    background: transparent;
+    border: none;
+    box-shadow: none;
     -webkit-tap-highlight-color: transparent;
-    color: var(--nav-mobile-term-fg);
+    color: var(--nav-mobile-text);
+    font-size: inherit;
+    line-height: 1.15;
     transition:
       background 0.18s ease,
-      border-color 0.18s ease,
       color 0.18s ease;
   }
 
   .nav__links .nav-item + .nav-item {
-    margin-top: 8px;
+    border-top: 1px solid var(--nav-mobile-divider);
   }
 
   .nav__links .nav-item::before {
-    content: "—";
-    position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--nav-mobile-term-dim);
-    font-weight: 400;
-    opacity: 0.65;
-    font-size: 0.85em;
+    content: none;
   }
 
   .nav--menu-open .nav__links .nav-item {
@@ -500,30 +434,33 @@ a:hover {
     animation-delay: 0.5s;
   }
 
-  .nav__links .nav-item:active {
-    background: rgba(234, 88, 0, 0.1);
-    border-color: rgba(234, 88, 0, 0.28);
+  .nav__links .nav-item:hover,
+  .nav__links .nav-item:active,
+  .nav__links .nav-item:focus-visible {
+    background: var(--nav-mobile-active-bg);
+    color: #000;
+    opacity: 1;
+  }
+
+  .nav__links .nav-item:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(234, 88, 0, 0.3);
   }
 
   .nav__links .nav-item.nav-item--active {
-    color: var(--nav-mobile-term-blue);
-    font-weight: 500;
-    background: var(--nav-mobile-term-selection);
-    border-color: rgba(234, 88, 0, 0.35);
+    color: #000;
+    font-weight: 600;
+    background: var(--nav-mobile-active-bg);
   }
 
-  /* Oranje plat sprietje dat flikkert */
   .nav__links .nav-item.nav-item--active::after {
-    content: "";
+    content: "●";
     display: inline-block;
-    width: 0.62em;
-    min-width: 10px;
-    height: 3px;
-    margin-left: 10px;
+    margin-left: 0.55em;
     vertical-align: middle;
-    background: var(--accent);
-    border-radius: 2px;
-    animation: nav-mobile-caret-pulse 1.06s steps(1, end) infinite;
+    color: var(--accent);
+    font-size: 0.44em;
+    line-height: 1;
   }
 }
 
@@ -545,28 +482,13 @@ a:hover {
 
   @media (max-width: 767px) {
     .nav__links {
-      clip-path: none !important;
-    }
-
-    .nav__links::before {
-      animation: none !important;
-    }
-
-    .nav--menu-open .nav__links::after {
-      animation: none !important;
-      opacity: 1;
-      transform: none;
+      transform: none !important;
     }
 
     .nav--menu-open .nav__links .nav-item {
       animation: none !important;
       opacity: 1;
       transform: none;
-    }
-
-    .nav__links .nav-item.nav-item--active::after {
-      animation: none !important;
-      opacity: 1;
     }
   }
 }
