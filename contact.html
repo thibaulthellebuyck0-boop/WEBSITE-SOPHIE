@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="nl" data-form-demo>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="Contact Sophie — demo aanvragen of je vraag stellen." />
+  <title>Contact Sophie</title>
+  <link rel="stylesheet" href="styles.css?v=20260412-menu-orange" />
+</head>
+<body>
+  <header class="nav" id="top">
+    <div class="nav__inner">
+      <a class="nav__logo" href="index.html" aria-label="Sophie home">Sophie</a>
+      <button
+        class="nav__menu"
+        type="button"
+        id="nav-menu-toggle"
+        aria-expanded="false"
+        aria-controls="nav-primary"
+        aria-label="Menu openen"
+      >
+        <span class="nav__menu-bar" aria-hidden="true"></span>
+        <span class="nav__menu-bar" aria-hidden="true"></span>
+        <span class="nav__menu-bar" aria-hidden="true"></span>
+      </button>
+      <nav class="nav__links" id="nav-primary" aria-label="Hoofdnavigatie">
+        <span class="nav__pill" aria-hidden="true"></span>
+        <a class="nav-item nav-pill-target" href="index.html">Home</a>
+        <a class="nav-item nav-pill-target" href="over-ons.html">Over ons</a>
+        <a class="nav-item nav-pill-target" href="sophie.html">Sophie</a>
+        <a class="nav-item nav-pill-target" href="fixit.html">FixIt</a>
+        <a class="nav-item nav-pill-target" href="contact.html">Contact</a>
+      </nav>
+      <a class="nav__cta" href="aan-de-slag.html">Aan de slag</a>
+    </div>
+  </header>
+
+  <main class="page page--contact">
+    <div class="about-shell">
+      <header class="page-hero page-hero--contact">
+        <p class="eyebrow">Contact</p>
+        <h1 class="page-hero__title page-hero__title--typewriter">
+          <span class="typewriter" aria-hidden="true">
+            <span class="typewriter__row">Contact, laat <span class="hero__gradient">van je horen</span></span>
+            <span class="typewriter__row">in een paar korte vragen<span class="typewriter__caret" aria-hidden="true"></span></span>
+          </span>
+          <span class="visually-hidden">Contact, laat van je horen in een paar korte vragen</span>
+        </h1>
+      </header>
+
+      <div class="contact-layout">
+        <div class="contact-flow" id="contact-flow" role="region" aria-label="Contact — stap voor stap">
+          <div class="contact-flow__history" id="contact-flow-history" aria-live="polite"></div>
+
+          <div
+            class="contact-globe-wrap"
+            id="contact-gemeente-map-wrap"
+            hidden
+            aria-live="polite"
+          >
+            <p class="contact-globe__label" id="contact-globe-label"></p>
+            <div
+              id="contact-gemeente-map"
+              class="contact-globe"
+              role="presentation"
+              aria-hidden="true"
+            ></div>
+          </div>
+
+          <form class="contact-flow__active" id="contact-flow-active" autocomplete="on" novalidate>
+            <p class="contact-flow__question" id="contact-flow-question"></p>
+            <p class="contact-flow__hint" id="contact-flow-hint" hidden></p>
+            <div class="contact-flow__answer-row" id="contact-flow-input-row">
+              <div class="contact-flow__single" id="contact-flow-single">
+                <div class="contact-flow__field-wrap">
+                  <span class="contact-flow__mirror" id="contact-flow-mirror"></span><span
+                    class="typewriter__caret contact-flow__caret"
+                    id="contact-flow-caret"
+                    aria-hidden="true"
+                  ></span>
+                  <input
+                    class="contact-flow__field"
+                    id="contact-flow-field"
+                    type="text"
+                    name="answer"
+                    autocomplete="on"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    aria-label="Je antwoord — druk op Enter om te bevestigen"
+                    aria-autocomplete="list"
+                    aria-controls="contact-flow-suggestions"
+                    aria-expanded="false"
+                  />
+                </div>
+                <div class="contact-flow__suggestions-wrap" id="contact-flow-suggestions-wrap" hidden>
+                  <ul
+                    class="contact-flow__suggestions"
+                    id="contact-flow-suggestions"
+                    role="listbox"
+                    aria-label="Gemeenten in Vlaanderen"
+                  ></ul>
+                </div>
+              </div>
+              <div class="contact-flow__multiline" id="contact-flow-multiline" hidden>
+                <label class="visually-hidden" for="contact-flow-textarea">Je bericht</label>
+                <textarea
+                  class="contact-flow__textarea"
+                  id="contact-flow-textarea"
+                  name="message"
+                  rows="6"
+                  autocomplete="on"
+                  spellcheck="true"
+                  aria-label="Je bericht — Shift+Enter voor een nieuwe regel, Enter om door te gaan"
+                ></textarea>
+              </div>
+            </div>
+            <p class="contact-flow__err" id="contact-flow-err" hidden role="alert"></p>
+          </form>
+
+          <div class="contact-flow__sent" id="contact-flow-sent" hidden>
+            <div class="contact-flow__sent-window">
+              <p class="contact-flow__sent-banner" aria-hidden="true">sophie@contact:~$</p>
+              <div class="contact-flow__sent-out" id="contact-flow-sent-out" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <a class="footer__logo" href="index.html">Sophie</a>
+          <p class="footer__mission">
+            AI-assistent voor gemeenten en steden — duidelijke antwoorden, slimme doorverwijzing, altijd bereikbaar.
+          </p>
+          <div class="footer__cta-row">
+            <a class="footer__btn footer__btn--primary" href="contact.html">Pilootgemeente worden?</a>
+            <a class="footer__btn footer__btn--secondary" href="mee-bouwen.html">Wil je meebouwen?</a>
+          </div>
+        </div>
+        <nav class="footer__nav" aria-labelledby="footer-nav-heading">
+          <h2 id="footer-nav-heading" class="footer__heading">Pagina&rsquo;s</h2>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="over-ons.html">Over ons</a></li>
+            <li><a href="sophie.html">Sophie</a></li>
+            <li><a href="fixit.html">FixIt</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="aan-de-slag.html">Aan de slag</a></li>
+          </ul>
+        </nav>
+        <div class="footer__contact-block">
+          <h2 id="footer-contact-heading" class="footer__heading">Contactpersonen</h2>
+          <ul class="footer__people" aria-labelledby="footer-contact-heading">
+            <li class="footer__person">
+              <span class="footer__person-name">Thibault Hellebuyck</span>
+              <span class="footer__person-role">Founder &amp; CEO</span>
+              <div class="footer__person-contact">
+                <a
+                  class="footer__social"
+                  href="https://www.linkedin.com/in/thibault-hellebuyck-95821b1a1/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                    <path
+                      d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                    />
+                  </svg>
+                  LinkedIn
+                </a>
+              </div>
+            </li>
+            <li class="footer__person">
+              <span class="footer__person-name">Nathan Debauschere</span>
+              <span class="footer__person-role">Head of Sales</span>
+              <div class="footer__person-contact">
+                <a
+                  class="footer__social"
+                  href="https://www.linkedin.com/in/nathan-debauschere"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                    <path
+                      d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                    />
+                  </svg>
+                  LinkedIn
+                </a>
+                <a class="footer__social" href="mailto:nathan.debauschere@ugent.be">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                    <path
+                      d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a1.5 1.5 0 01-1.572 0L1.5 8.67z"
+                    />
+                    <path
+                      d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"
+                    />
+                  </svg>
+                  E-mail
+                </a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__legal">&copy; <span id="year"></span> Sophie. Alle rechten voorbehouden.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js?v=20260413-contact-autofill-v3"></script>
+</body>
+</html>

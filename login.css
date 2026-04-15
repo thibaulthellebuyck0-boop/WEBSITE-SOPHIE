@@ -1,0 +1,350 @@
+/* Standalone login — split layout (Sophie portaal) */
+
+:root {
+  --text: #1d1d1f;
+  --text-muted: #6e6e73;
+  --login-line: #d2d2d7;
+  --login-focus: #ea5800;
+  --split-cream: #fef9e1;
+  --split-peach: #f8c48c;
+  --split-blue: #0066d6;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body.login-standalone {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.022em;
+  color: var(--text);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+.login-split {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  width: 100%;
+}
+
+.login-split__brand {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 32px 40px;
+  background: var(--split-cream);
+  min-width: 0;
+}
+
+.login-split__hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  padding: 12px 0;
+  text-align: left;
+}
+
+/* Zelfde terminal-typewriter als home / Over ons, links uitgelijnd */
+.login-split__hero-title {
+  width: 100%;
+  margin: 0;
+  font-size: clamp(21px, 2.5vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.038em;
+  line-height: 1.06;
+  color: var(--text);
+}
+
+.login-split__brand .page-hero__title--typewriter {
+  min-height: clamp(7rem, 28vw, 12rem);
+}
+
+.login-split__brand .hero-terminal__stage {
+  align-items: flex-start;
+  text-align: left;
+  justify-content: center;
+  min-height: clamp(7rem, 28vw, 12rem);
+  width: 100%;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1.06;
+  letter-spacing: -0.038em;
+}
+
+.login-split__brand .hero-terminal__line {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  row-gap: 0.06em;
+}
+
+.login-split__panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #fff;
+  min-height: 0;
+}
+
+.login-split__center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 28px 24px;
+}
+
+.login-split__title {
+  margin: 0 0 28px;
+  font-size: clamp(1.5rem, 3vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.login-split__demo-hint {
+  margin: -18px 0 22px;
+  max-width: 380px;
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.login-split__demo-hint strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.login-split__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.login-split__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 22px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  letter-spacing: -0.02em;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.login-split__btn:hover {
+  background: var(--accent-hover);
+}
+
+.login-split__btn:active {
+  transform: scale(0.99);
+}
+
+.login-split__try {
+  margin-top: 22px;
+  font-size: 15px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.login-split__try:hover {
+  text-decoration: underline;
+}
+
+.login-split__form-wrap {
+  width: 100%;
+  max-width: 380px;
+  margin-top: 28px;
+}
+
+.login-split__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.login-split__field {
+  text-align: left;
+}
+
+.login-split__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--text-muted);
+}
+
+.login-split__input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  font-size: 17px;
+  font-family: inherit;
+  letter-spacing: -0.02em;
+  border-radius: 12px;
+  border: 1px solid var(--login-line);
+  background: #fff;
+  color: var(--text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.login-split__input::placeholder {
+  color: #aeaeb2;
+}
+
+.login-split__input:hover {
+  border-color: #b0b0b5;
+}
+
+.login-split__input:focus {
+  outline: none;
+  border-color: var(--login-focus);
+  box-shadow: 0 0 0 4px rgba(234, 88, 0, 0.22);
+}
+
+.login-split__submit {
+  margin-top: 4px;
+  width: 100%;
+  min-height: 46px;
+  padding: 0 20px;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-family: inherit;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.login-split__submit:hover {
+  background: var(--accent-hover);
+}
+
+.login-split__submit:active {
+  transform: scale(0.99);
+}
+
+.login-split__feedback {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--text-muted);
+  background: #f5f5f7;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.login-split__feedback--error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: rgba(185, 28, 28, 0.2);
+}
+
+.login-split__back {
+  margin-top: 18px;
+  text-align: center;
+}
+
+.login-split__back a {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.login-split__back a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.login-split__foot {
+  flex-shrink: 0;
+  padding: 16px 24px 36px;
+  text-align: center;
+}
+
+.login-split__legal {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: #86868b;
+}
+
+.login-split__legal a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.login-split__legal a:hover {
+  text-decoration: underline;
+}
+
+.login-split__sep {
+  margin: 0 0.35em;
+  opacity: 0.65;
+}
+
+@media (max-width: 720px) {
+  .login-split {
+    flex-direction: column;
+  }
+
+  .login-split__brand {
+    min-height: 38vh;
+    padding: 22px 22px 28px;
+  }
+
+  .login-split__hero {
+    padding: 8px 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-split__btn,
+  .login-split__submit {
+    transition: none;
+  }
+
+  .login-split__btn:active,
+  .login-split__submit:active {
+    transform: none;
+  }
+}

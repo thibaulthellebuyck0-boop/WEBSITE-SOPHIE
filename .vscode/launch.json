@@ -1,0 +1,29 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "pwa-chrome",
+            "request": "launch",
+            "name": "Dashboard direct (zonder server)",
+            "url": "file://${workspaceFolder}/dashboard/index.html?sophie_demo_auth=1",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "pwa-chrome",
+            "request": "launch",
+            "name": "Dashboard direct (met server 127.0.0.1:8765)",
+            "url": "http://127.0.0.1:8765/dashboard/index.html?sophie_demo_auth=1",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "pwa-chrome",
+            "request": "launch",
+            "name": "Site home (met server 127.0.0.1:8765)",
+            "url": "http://127.0.0.1:8765/index.html",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}

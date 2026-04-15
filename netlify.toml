@@ -1,0 +1,5 @@
+# Statische site (zonder Node-API). Publish-map = projectroot.
+# Formulieren via /api/submissions werken op Netlify niet zonder aparte Functions;
+# gebruik Vercel voor volledige site + API, of zet env op Vercel (zie vercel.json).
+[build]
+  publish = "."

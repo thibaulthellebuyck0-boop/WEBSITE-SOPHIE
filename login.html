@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Inloggen op het Sophie-demo portaal." />
+  <title>Inloggen — Sophie portaal</title>
+  <link rel="stylesheet" href="styles.css?v=20260412-menu-orange" />
+  <link rel="stylesheet" href="login.css" />
+  <script src="auth.js?v=2"></script>
+</head>
+<body class="login-standalone">
+  <main class="login-split">
+    <aside class="login-split__brand" aria-label="Sophie">
+      <div class="login-split__hero">
+        <h1 class="page-hero__title page-hero__title--typewriter login-split__hero-title">
+          <span id="login-hero-stage" class="hero-terminal__stage" aria-hidden="true"></span>
+          <span id="login-hero-live" class="visually-hidden" aria-live="polite"></span>
+        </h1>
+      </div>
+    </aside>
+
+    <section class="login-split__panel" aria-label="Inloggen">
+      <div class="login-split__center">
+        <h1 class="login-split__title">Inloggen</h1>
+        <p class="login-split__demo-hint" id="login-demo-hint">
+          Demo: <strong>Sophie@demo.be</strong> · wachtwoord <strong>Sophie123</strong>
+        </p>
+        <div class="login-split__form-wrap" id="login-form-wrap">
+          <form class="login-split__form" id="login-form" action="#" method="post" novalidate>
+            <div class="login-split__field">
+              <label class="login-split__label" for="login-email">E-mailadres</label>
+              <input
+                class="login-split__input"
+                id="login-email"
+                name="email"
+                type="email"
+                autocomplete="username"
+                inputmode="email"
+                placeholder="Sophie@demo.be"
+                required
+              />
+            </div>
+            <div class="login-split__field">
+              <label class="login-split__label" for="login-password">Wachtwoord</label>
+              <input
+                class="login-split__input"
+                id="login-password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            <p class="login-split__feedback login-split__feedback--error" id="login-feedback" hidden role="alert"></p>
+            <button class="login-split__submit" type="submit">Inloggen</button>
+          </form>
+          <p class="login-split__back">
+            <a href="aan-de-slag.html">← Aan de slag</a>
+            <span class="login-split__sep" aria-hidden="true"> · </span>
+            <a href="index.html">Website</a>
+          </p>
+        </div>
+      </div>
+
+      <footer class="login-split__foot">
+        <p class="login-split__legal">
+          <a href="contact.html">Gebruiksvoorwaarden</a><span class="login-split__sep" aria-hidden="true">|</span>
+          <a href="contact.html">Privacybeleid</a>
+        </p>
+      </footer>
+    </section>
+  </main>
+
+  <script src="main.js?v=20260412-login-slogans-v2"></script>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var next = params.get("next");
+      if (window.SophieAuth && window.SophieAuth.isLoggedIn()) {
+        window.location.replace(window.SophieAuth.safeNext(next));
+        return;
+      }
+      var form = document.getElementById("login-form");
+      var feedback = document.getElementById("login-feedback");
+      if (!form || !feedback || !window.SophieAuth) return;
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var email = document.getElementById("login-email");
+        var password = document.getElementById("login-password");
+        var ok = window.SophieAuth.tryLogin(email && email.value, password && password.value);
+        if (ok) {
+          feedback.hidden = true;
+          window.location.replace(window.SophieAuth.loginRedirectUrl(next));
+          return;
+        }
+        feedback.hidden = false;
+        feedback.textContent = "Onjuist e-mailadres of wachtwoord. Gebruik de demogegevens hierboven.";
+      });
+    })();
+  </script>
+</body>
+</html>

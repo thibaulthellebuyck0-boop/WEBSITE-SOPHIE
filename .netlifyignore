@@ -1,0 +1,10 @@
+.cursor/
+*.log
+debug_localhost_check.py
+.git/
+.gitignore
+node_modules/
+api/
+package.json
+package-lock.json
+migrations/

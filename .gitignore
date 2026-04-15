@@ -1,0 +1,6 @@
+node_modules/
+.DS_Store
+.cursor/
+*.log
+debug_localhost_check.py
+node_modules/
