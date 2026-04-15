@@ -22,7 +22,7 @@
   --nav-pill-bg: rgba(0, 0, 0, 0.06);
   --surface-pill-solid: #f0f0f0;
   --max: 980px;
-  --page-copy-max: 820px;
+  --page-copy-max: 760px;
   /* Zelfde als .page-body met 22px horizontale padding: leesbare kolombreedte */
   --page-text-column: calc(var(--page-copy-max) - 44px);
   --footer-font-size: 0.8125rem; /* 13px — één vaste maat voor alle voettekst */
@@ -307,35 +307,49 @@ a:hover {
     flex-shrink: 0;
     width: 40px;
     height: 40px;
-    background: #ffffff;
-    border-color: rgba(29, 29, 31, 0.14);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: none;
+    background: transparent;
+    box-shadow: none;
     gap: 0;
+    position: relative;
   }
 
-  .nav__menu-bar:nth-child(1) {
-    transform: translateY(4px);
+  .nav__menu:hover {
+    background: transparent;
+    border-color: transparent;
   }
 
-  .nav__menu-bar:nth-child(2) {
+  .nav__menu:focus-visible {
+    box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3);
+    border-radius: 10px;
+  }
+
+  .nav__menu::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 26px;
+    height: 18px;
+    border: 2px solid #0f0f10;
+    border-radius: 9px;
+    transform: translate(-50%, -50%);
+  }
+
+  .nav__menu::after {
+    content: "";
+    position: absolute;
+    left: calc(50% - 6px);
+    top: 50%;
+    width: 2px;
+    height: 14px;
+    background: #0f0f10;
+    border-radius: 999px;
+    transform: translateY(-50%);
+  }
+
+  .nav__menu-bar {
     display: none;
-  }
-
-  .nav__menu-bar:nth-child(3) {
-    transform: translateY(-4px);
-  }
-
-  .nav--menu-open .nav__menu-bar:nth-child(1) {
-    transform: translateY(0) rotate(45deg);
-  }
-
-  .nav--menu-open .nav__menu-bar:nth-child(2) {
-    opacity: 0;
-    transform: scaleX(0);
-  }
-
-  .nav--menu-open .nav__menu-bar:nth-child(3) {
-    transform: translateY(0) rotate(-45deg);
   }
 
   @keyframes nav-mobile-link-in {
