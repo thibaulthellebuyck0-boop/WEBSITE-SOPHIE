@@ -134,6 +134,7 @@
     }
 
     var MAPBOX_TOKEN = window.MAPBOX_PUBLIC_TOKEN || "";
+    var mapboxTokenPromise = null;
     var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var answers = {};
     var setupStarted = false;
@@ -365,10 +366,37 @@
       return mapboxAssetsPromise;
     }
 
+    async function getMapboxToken() {
+      if (MAPBOX_TOKEN) return MAPBOX_TOKEN;
+      var fromWindow = String(window.MAPBOX_PUBLIC_TOKEN || "").trim();
+      if (fromWindow) return fromWindow;
+      var metaEl = document.querySelector('meta[name="mapbox-public-token"]');
+      var fromMeta = String((metaEl && metaEl.content) || "").trim();
+      if (fromMeta) return fromMeta;
+      if (!mapboxTokenPromise) {
+        mapboxTokenPromise = fetch("/api/mapbox-token", {
+          method: "GET",
+          headers: { Accept: "application/json" }
+        })
+          .then(function (res) {
+            return res.ok ? res.json() : null;
+          })
+          .then(function (json) {
+            return String((json && json.token) || "").trim();
+          })
+          .catch(function () {
+            return "";
+          });
+      }
+      return mapboxTokenPromise;
+    }
+
     async function ensureMap() {
       await loadMapboxAssets();
       if (!window.mapboxgl) return;
-      mapboxgl.accessToken = MAPBOX_TOKEN;
+      var token = await getMapboxToken();
+      if (!token) throw new Error("Mapbox token ontbreekt");
+      mapboxgl.accessToken = token;
       if (!globeMap) {
         globeMap = new mapboxgl.Map({
           container: mapCanvas,
@@ -399,12 +427,14 @@
     }
 
     async function geocodeMunicipality(name) {
+      var token = await getMapboxToken();
+      if (!token) return null;
       var path = encodeURIComponent(name + ", Vlaams Gewest, België");
       var url =
         "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
         path +
         ".json?access_token=" +
-        MAPBOX_TOKEN +
+        token +
         "&limit=1&country=be&proximity=4.4699,50.5039";
       var res = await fetch(url);
       if (!res.ok) return null;
@@ -627,4 +657,3 @@
     void boot();
   })();
 })();
- @()

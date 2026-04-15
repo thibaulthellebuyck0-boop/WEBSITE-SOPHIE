@@ -4,3 +4,4 @@ node_modules/
 *.log
 debug_localhost_check.py
 node_modules/
+.vercel

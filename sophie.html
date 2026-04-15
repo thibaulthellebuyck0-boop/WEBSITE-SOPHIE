@@ -271,55 +271,6 @@
     </div>
   </footer>
 
-  <section class="sophie-chat" id="sophie-chat" aria-label="Sophie chat demo">
-    <div class="sophie-chat__tooltip" id="sophie-chat-tooltip" hidden>
-      <button type="button" class="sophie-chat__tooltip-close" id="sophie-chat-tooltip-close" aria-label="Sluit melding">×</button>
-      <p class="sophie-chat__tooltip-text">Sophie is online. Stel je vraag over jouw gemeente.</p>
-      <span class="sophie-chat__tooltip-arrow" aria-hidden="true"></span>
-    </div>
-
-    <button
-      type="button"
-      class="sophie-chat__launcher"
-      id="sophie-chat-launcher"
-      aria-expanded="false"
-      aria-controls="sophie-chat-panel"
-      aria-label="Open chat met Sophie"
-    >
-      <span class="sophie-chat__launcher-icon sophie-chat__launcher-icon--chat" id="sophie-chat-icon-chat" aria-hidden="true">
-        <svg viewBox="0 0 28 32" fill="none">
-          <path d="M28 16c0 8.837-6.268 16-14 16-2.588 0-5.027-.7-7.107-1.925L0 32l2.24-6.72C.832 22.84 0 19.517 0 16 0 7.163 6.268 0 14 0s14 7.163 14 16z" fill="currentColor" />
-        </svg>
-      </span>
-      <span class="sophie-chat__launcher-icon sophie-chat__launcher-icon--close" id="sophie-chat-icon-close" aria-hidden="true">
-        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <line x1="1" y1="1" x2="13" y2="13"></line>
-          <line x1="13" y1="1" x2="1" y2="13"></line>
-        </svg>
-      </span>
-      <span class="sophie-chat__badge" id="sophie-chat-badge" hidden>1</span>
-    </button>
-
-    <div class="sophie-chat__panel" id="sophie-chat-panel" hidden>
-      <header class="sophie-chat__frame-header">
-        <span class="sophie-chat__frame-title">Sophie Messenger</span>
-        <div class="sophie-chat__frame-actions">
-          <button type="button" class="sophie-chat__header-btn" id="sophie-chat-expand" aria-label="Vergroot chatvenster">⤢</button>
-          <button type="button" class="sophie-chat__header-btn" id="sophie-chat-minimize" aria-label="Minimaliseer chatvenster">—</button>
-          <button type="button" class="sophie-chat__header-btn" id="sophie-chat-close" aria-label="Sluit chat">✕</button>
-        </div>
-      </header>
-      <iframe
-        id="sophie-chat-iframe"
-        class="sophie-chat__iframe"
-        title="Sophie chat"
-        src="sophie-widget-demo.html"
-        loading="lazy"
-        referrerpolicy="no-referrer"
-      ></iframe>
-    </div>
-  </section>
-
   <script src="main.js?v=20260413-sophie-modules-orbit"></script>
 </body>
 </html>

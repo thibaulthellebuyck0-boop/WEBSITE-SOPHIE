@@ -4,6 +4,7 @@
  */
 (function () {
   const MAPBOX_TOKEN = window.MAPBOX_PUBLIC_TOKEN || "";
+  let mapboxTokenPromise = null;
 
   /** Startweergave: volledige wereldbol (zelfde idee als contact-globe). [lng, lat] */
   const GLOBE_START = {
@@ -55,6 +56,25 @@
     });
   }
 
+  async function getMapboxToken() {
+    if (MAPBOX_TOKEN) return MAPBOX_TOKEN;
+    const fromWindow = String(window.MAPBOX_PUBLIC_TOKEN || "").trim();
+    if (fromWindow) return fromWindow;
+    const metaEl = document.querySelector('meta[name="mapbox-public-token"]');
+    const fromMeta = String(metaEl?.content || "").trim();
+    if (fromMeta) return fromMeta;
+    if (!mapboxTokenPromise) {
+      mapboxTokenPromise = fetch("/api/mapbox-token", {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((json) => String(json?.token || "").trim())
+        .catch(() => "");
+    }
+    return mapboxTokenPromise;
+  }
+
   function disableMapInteractions(map) {
     try {
       map.scrollZoom.disable();
@@ -100,7 +120,13 @@
       return;
     }
 
-    mapboxgl.accessToken = MAPBOX_TOKEN;
+    const token = await getMapboxToken();
+    if (!token) {
+      root.innerHTML =
+        '<p class="fixit-map-fallback" role="status">De kaart kan niet geladen worden. Mapbox token ontbreekt op de server.</p>';
+      return;
+    }
+    mapboxgl.accessToken = token;
 
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 

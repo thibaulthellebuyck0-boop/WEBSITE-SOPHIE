@@ -907,8 +907,9 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   let gemeenteFiltered = [];
   let gemeenteActiveIndex = 0;
 
-  /** Verwacht een publiek token via window.MAPBOX_PUBLIC_TOKEN. */
+  /** Publieke token kan inline staan of via API geladen worden. */
   const MAPBOX_TOKEN = window.MAPBOX_PUBLIC_TOKEN || "";
+  let mapboxTokenPromise = null;
 
   let globeMap = null;
   let mapboxAssetsPromise = null;
@@ -938,9 +939,30 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     return mapboxAssetsPromise;
   }
 
+  async function getMapboxToken() {
+    if (MAPBOX_TOKEN) return MAPBOX_TOKEN;
+    const fromWindow = String(window.MAPBOX_PUBLIC_TOKEN || "").trim();
+    if (fromWindow) return fromWindow;
+    const metaEl = document.querySelector('meta[name="mapbox-public-token"]');
+    const fromMeta = String(metaEl?.content || "").trim();
+    if (fromMeta) return fromMeta;
+    if (!mapboxTokenPromise) {
+      mapboxTokenPromise = fetch("/api/mapbox-token", {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((json) => String(json?.token || "").trim())
+        .catch(() => "");
+    }
+    return mapboxTokenPromise;
+  }
+
   async function geocodeMunicipality(name) {
+    const token = await getMapboxToken();
+    if (!token) return null;
     const path = encodeURIComponent(`${name}, Vlaams Gewest, België`);
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${path}.json?access_token=${MAPBOX_TOKEN}&limit=1&country=be&proximity=4.4699,50.5039`;
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${path}.json?access_token=${token}&limit=1&country=be&proximity=4.4699,50.5039`;
     const res = await fetch(url);
     if (!res.ok) return null;
     const json = await res.json();
@@ -957,7 +979,9 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
 
     try {
       await loadMapboxAssets();
-      mapboxgl.accessToken = MAPBOX_TOKEN;
+      const token = await getMapboxToken();
+      if (!token) throw new Error("Mapbox token ontbreekt");
+      mapboxgl.accessToken = token;
 
       await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
