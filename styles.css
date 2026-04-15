@@ -239,8 +239,6 @@ a:hover {
 
 .nav__links .nav-item.nav-item--active {
   opacity: 1;
-  color: var(--accent);
-  font-weight: 600;
 }
 
 .nav__links .nav-item:focus-visible {
@@ -2054,14 +2052,20 @@ html.js .reveal.reveal--visible {
 }
 
 .contact-flow__choice:hover {
-  border-color: rgba(234, 88, 0, 0.55);
-  color: var(--accent);
+  border-color: rgba(0, 0, 0, 0.2);
+  background: #f8f8f8;
 }
 
 .contact-flow__choice:focus-visible {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 4px rgba(234, 88, 0, 0.2);
+}
+
+.contact-flow__choice--selected {
+  border-color: rgba(234, 88, 0, 0.55);
+  color: var(--accent);
+  background: rgba(234, 88, 0, 0.08);
 }
 
 .contact-flow__answer-row {

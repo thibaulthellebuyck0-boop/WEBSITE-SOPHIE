@@ -1186,11 +1186,19 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     const visible = Boolean(on);
     roleChoicesEl.hidden = !visible;
     inputRowEl.hidden = visible;
+    roleChoiceButtons.forEach((btn) => btn.classList.remove("contact-flow__choice--selected"));
     if (!visible) return;
     hideGemeenteSuggestions();
     resetContactFieldAria();
     field.value = "";
     syncMirror();
+  }
+
+  function setRoleChoiceSelected(choice) {
+    roleChoiceButtons.forEach((btn) => {
+      const val = String(btn.getAttribute("data-role-choice") || "").trim();
+      btn.classList.toggle("contact-flow__choice--selected", val === choice);
+    });
   }
 
   activeEl.addEventListener("submit", (e) => {
@@ -1458,9 +1466,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   };
 
   function getSteps() {
-    const order = ["role"];
-    if (data.role === "gemeente") order.push("municipality");
-    order.push("firstName", "lastName", "email", "message", "sendConfirm");
+    const order = ["role", "firstName", "lastName", "email", "message", "sendConfirm"];
     return order.map((k) => stepDefs[k]);
   }
 
@@ -1504,9 +1510,6 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     clearErr();
     appendHistory(step.prompt, result.label);
     if (step.key) data[step.key] = result.value;
-    if (step.key === "municipality") {
-      void showGlobeForMunicipality(result.value);
-    }
     clearInputValue();
     hideGemeenteSuggestions();
 
@@ -1534,10 +1537,14 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
 
   roleChoiceButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      field.value = String(btn.getAttribute("data-role-choice") || "").trim();
+      const selected = String(btn.getAttribute("data-role-choice") || "").trim();
+      setRoleChoiceSelected(selected);
+      field.value = selected;
       syncMirror();
       clearErr();
-      submitLine();
+      window.setTimeout(() => {
+        submitLine();
+      }, 90);
     });
   });
 
