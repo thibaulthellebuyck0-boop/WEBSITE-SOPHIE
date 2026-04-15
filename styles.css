@@ -307,25 +307,22 @@ a:hover {
     flex-shrink: 0;
     width: 40px;
     height: 40px;
-    background: #f5f5f7;
-    border-color: rgba(29, 29, 31, 0.12);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.92),
-      0 2px 8px rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+    border-color: rgba(29, 29, 31, 0.14);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     gap: 0;
   }
 
   .nav__menu-bar:nth-child(1) {
-    transform: translateY(3px);
+    transform: translateY(4px);
   }
 
   .nav__menu-bar:nth-child(2) {
-    opacity: 0;
-    transform: scaleX(0);
+    display: none;
   }
 
   .nav__menu-bar:nth-child(3) {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
   }
 
   .nav--menu-open .nav__menu-bar:nth-child(1) {
@@ -400,29 +397,11 @@ a:hover {
   }
 
   .nav__links::before {
-    content: "";
-    position: fixed;
-    left: calc(22px + env(safe-area-inset-left, 0px));
-    right: calc(22px + env(safe-area-inset-right, 0px));
-    top: calc(68px + env(safe-area-inset-top, 0px));
-    height: 1px;
-    background: var(--nav-mobile-divider);
-    z-index: 1;
+    content: none;
   }
 
   .nav__links::after {
-    content: "Menu";
-    display: block;
-    position: absolute;
-    top: calc(42px + env(safe-area-inset-top, 0px));
-    left: calc(22px + env(safe-area-inset-left, 0px));
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--nav-mobile-text-dim);
-    pointer-events: none;
-    z-index: 2;
+    content: none;
   }
 
   .nav--menu-open .nav__links {
@@ -457,7 +436,7 @@ a:hover {
   }
 
   .nav__links .nav-item + .nav-item {
-    border-top: 1px solid var(--nav-mobile-divider);
+    border-top: none;
   }
 
   .nav__links .nav-item::before {
@@ -1766,11 +1745,15 @@ body.login-standalone .footer {
   color: var(--text);
 }
 
+.page--over-ons .about-zegje__quote {
+  color: var(--accent);
+}
+
 .page--over-ons .about-zegje__by {
   font-style: italic;
   font-weight: inherit;
   font-size: inherit;
-  color: var(--text);
+  color: inherit;
   white-space: nowrap;
 }
 

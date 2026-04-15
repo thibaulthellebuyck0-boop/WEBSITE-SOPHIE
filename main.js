@@ -478,7 +478,12 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         });
         const isLast = r === rows.length - 1;
         line.append(...spans);
-        if (isLast) line.appendChild(makeCaret());
+        if (isLast) {
+          const tail = spans[spans.length - 1];
+          const caret = makeCaret();
+          if (tail) tail.appendChild(caret);
+          else line.appendChild(caret);
+        }
         stage.appendChild(line);
       });
       return;
@@ -490,7 +495,10 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
       line.className = "hero-terminal__line";
       const spans = rowSegments.map(segmentSpan);
       const caret = makeCaret();
-      line.append(...spans, caret);
+      const tail = spans[spans.length - 1];
+      line.append(...spans);
+      if (tail) tail.appendChild(caret);
+      else line.appendChild(caret);
       stage.appendChild(line);
       for (let i = 0; i < rowSegments.length; i++) {
         await typeInto(spans[i], rowSegments[i].text);
@@ -836,40 +844,10 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     .then((r) => r.json())
     .then((list) => {
       gemeentenLijst = Array.isArray(list) ? list : [];
-      // #region agent log
-      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c808ed" },
-        body: JSON.stringify({
-          sessionId: "c808ed",
-          runId: "contact-gemeente-autofill-before-fix",
-          hypothesisId: "H1",
-          location: "main.js:initContactFlow:gemeentenPromiseResolved",
-          message: "Gemeentenlijst geladen",
-          data: { count: gemeentenLijst.length },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
       return gemeentenLijst;
     })
     .catch(() => {
       gemeentenLijst = getFallbackGemeenten();
-      // #region agent log
-      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c808ed" },
-        body: JSON.stringify({
-          sessionId: "c808ed",
-          runId: "contact-gemeente-autofill-post-fix",
-          hypothesisId: "H1",
-          location: "main.js:initContactFlow:gemeentenPromiseFailed",
-          message: "Gemeentenlijst laden mislukt, fallback gebruikt",
-          data: { count: gemeentenLijst.length },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
       return gemeentenLijst;
     });
 
@@ -1088,21 +1066,6 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     suggestionsList.replaceChildren();
     if (!gemeenteFiltered.length) {
       suggestionsWrap.hidden = true;
-      // #region agent log
-      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c808ed" },
-        body: JSON.stringify({
-          sessionId: "c808ed",
-          runId: "contact-gemeente-autofill-before-fix",
-          hypothesisId: "H4",
-          location: "main.js:renderGemeenteSuggestions:empty",
-          message: "Geen suggesties om te renderen",
-          data: { filteredCount: 0, hidden: suggestionsWrap.hidden },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
       return;
     }
     suggestionsWrap.hidden = false;
@@ -1126,21 +1089,6 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
       suggestionsList.appendChild(li);
     });
     applyGemeenteFieldAria();
-    // #region agent log
-    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c808ed" },
-      body: JSON.stringify({
-        sessionId: "c808ed",
-        runId: "contact-gemeente-autofill-before-fix",
-        hypothesisId: "H4",
-        location: "main.js:renderGemeenteSuggestions:filled",
-        message: "Suggesties gerenderd",
-        data: { filteredCount: gemeenteFiltered.length, hidden: suggestionsWrap.hidden },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
   }
 
   function filterGemeenteSuggestions() {
@@ -1163,21 +1111,6 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
       })
       .slice(0, 12);
     gemeenteActiveIndex = 0;
-    // #region agent log
-    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c808ed" },
-      body: JSON.stringify({
-        sessionId: "c808ed",
-        runId: "contact-gemeente-autofill-before-fix",
-        hypothesisId: "H3",
-        location: "main.js:filterGemeenteSuggestions:afterFilter",
-        message: "Gemeentesuggesties gefilterd",
-        data: { queryLength: q.length, totalMunicipalities: gemeentenLijst.length, filteredCount: gemeenteFiltered.length },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
     renderGemeenteSuggestions();
   }
 
@@ -1300,7 +1233,8 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     const caret = document.createElement("span");
     caret.className = "typewriter__caret contact-flow__sent-caret";
     caret.setAttribute("aria-hidden", "true");
-    line.append(prefix, typed, caret);
+    typed.appendChild(caret);
+    line.append(prefix, typed);
     sentOut.appendChild(line);
 
     const msg = getContactSuccessMessage();
@@ -1372,21 +1306,6 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         syncMirror();
         hideGemeenteSuggestions();
         applyGemeenteFieldAria();
-        // #region agent log
-        fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c808ed" },
-          body: JSON.stringify({
-            sessionId: "c808ed",
-            runId: "contact-gemeente-autofill-before-fix",
-            hypothesisId: "H2",
-            location: "main.js:municipality:ask",
-            message: "Municipality-stap actief",
-            data: { suggestionsHidden: suggestionsWrap.hidden, currentInputLength: field.value.length },
-            timestamp: Date.now(),
-          }),
-        }).catch(() => {});
-        // #endregion
         gemeentenPromise.then(() => {
           if (getSteps()[stepIndex]?.key === "municipality") filterGemeenteSuggestions();
         });
@@ -1593,21 +1512,6 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
       if (e.key === "Enter") {
         e.preventDefault();
         const pick = gemeenteFiltered[gemeenteActiveIndex] ?? gemeenteFiltered[0];
-        // #region agent log
-        fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "c808ed" },
-          body: JSON.stringify({
-            sessionId: "c808ed",
-            runId: "contact-gemeente-autofill-before-fix",
-            hypothesisId: "H5",
-            location: "main.js:fieldKeydown:municipalityEnter",
-            message: "Enter op municipality met suggesties",
-            data: { filteredCount: gemeenteFiltered.length, hasPick: Boolean(pick), activeIndex: gemeenteActiveIndex },
-            timestamp: Date.now(),
-          }),
-        }).catch(() => {});
-        // #endregion
         if (pick) {
           field.value = pick;
           syncMirror();
@@ -1935,7 +1839,8 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         line.appendChild(span);
       } else {
         const caret = makeCaret();
-        line.append(span, caret);
+        span.appendChild(caret);
+        line.append(span);
         await typeInto(span, msg);
         caret.remove();
       }
@@ -2037,7 +1942,8 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
           intro.appendChild(introSpan);
         } else {
           const c = makeCaret();
-          intro.append(introSpan, c);
+          introSpan.appendChild(c);
+          intro.append(introSpan);
           await typeInto(introSpan, introText);
           if (aborted) return;
           c.remove();
@@ -2056,7 +1962,8 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         qLine.appendChild(qSpan);
       } else {
         const caret = makeCaret();
-        qLine.append(qSpan, caret);
+        qSpan.appendChild(caret);
+        qLine.append(qSpan);
         await typeInto(qSpan, step.prompt);
         if (aborted) return;
         caret.remove();
@@ -2190,7 +2097,8 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
       const textSpan = document.createElement("span");
       textSpan.className = "dev-terminal__text";
       const caret = makeCaret();
-      line.append(textSpan, caret);
+      textSpan.appendChild(caret);
+      line.append(textSpan);
       stage.appendChild(line);
       stage.scrollTop = stage.scrollHeight;
       await typeInto(textSpan, text);
@@ -2268,7 +2176,8 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
       const textSpan = document.createElement("span");
       textSpan.className = "dev-terminal__text";
       const caret = makeCaret();
-      line.append(textSpan, caret);
+      textSpan.appendChild(caret);
+      line.append(textSpan);
       stage.appendChild(line);
       stage.scrollTop = stage.scrollHeight;
 

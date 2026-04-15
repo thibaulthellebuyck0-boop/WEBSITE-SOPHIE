@@ -15,11 +15,12 @@ module.exports = async function handler(req, res) {
 
   res.setHeader("Access-Control-Allow-Origin", "*");
 
-  const token =
+  const token = String(
     process.env.MAPBOX_PUBLIC_TOKEN ||
     process.env.NEXT_PUBLIC_MAPBOX_TOKEN ||
     process.env.MAPBOX_TOKEN ||
-    "";
+    ""
+  ).trim();
 
   if (!token) {
     return res.status(503).json({ error: "Mapbox token ontbreekt in serverconfiguratie." });
