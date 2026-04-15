@@ -1318,7 +1318,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   const stepDefs = {
     role: {
       key: "role",
-      prompt: "Ben je ontwikkelaar of gemeente?",
+      prompt: "Ben je een gemeente of Developper?",
       hint: "Kies een van de twee knoppen.",
       ask() {
         questionEl.textContent = this.prompt;
@@ -1466,7 +1466,9 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   };
 
   function getSteps() {
-    const order = ["role", "firstName", "lastName", "email", "message", "sendConfirm"];
+    const order = ["role"];
+    if (data.role === "gemeente") order.push("municipality");
+    order.push("firstName", "lastName", "email", "message", "sendConfirm");
     return order.map((k) => stepDefs[k]);
   }
 
@@ -1510,6 +1512,9 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     clearErr();
     appendHistory(step.prompt, result.label);
     if (step.key) data[step.key] = result.value;
+    if (step.key === "municipality") {
+      void showGlobeForMunicipality(result.value);
+    }
     clearInputValue();
     hideGemeenteSuggestions();
 

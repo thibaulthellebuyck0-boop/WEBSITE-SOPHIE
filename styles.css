@@ -2058,8 +2058,8 @@ html.js .reveal.reveal--visible {
 
 .contact-flow__choice:focus-visible {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(234, 88, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.28);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
 }
 
 .contact-flow__choice--selected {
