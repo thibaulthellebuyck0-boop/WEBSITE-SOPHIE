@@ -1,4 +1,19 @@
 document.documentElement.classList.add("js");
+// #region agent log
+fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+  method: "POST",
+  headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+  body: JSON.stringify({
+    sessionId: "0c9bba",
+    runId: "pre-fix-2",
+    hypothesisId: "H6",
+    location: "main.js:top-level",
+    message: "Main script loaded",
+    data: { href: window.location.href, protocol: window.location.protocol },
+    timestamp: Date.now(),
+  }),
+}).catch(() => {});
+// #endregion
 
 /**
  * Basis-URL voor `/api/submissions` (leeg = zelfde origin).
@@ -68,19 +83,23 @@ async function submitToCms(form, payload) {
   const navItems = document.querySelectorAll(".nav__links .nav-item");
   if (!navItems.length) return;
 
-  function currentFile() {
-    let name = window.location.pathname.split("/").pop() || "";
-    name = name.split("?")[0].split("#")[0];
-    if (!name || name === "/") return "index.html";
-    return name;
+  function normalizeNavPath(raw) {
+    if (!raw) return "index";
+    let value = String(raw).trim();
+    value = value.split("#")[0].split("?")[0];
+    if (!value) return "index";
+    value = value.replace(/\/+$/, "");
+    const last = value.split("/").pop() || "";
+    const clean = (last || "index").replace(/\.html?$/i, "");
+    return clean.toLowerCase();
   }
 
-  const file = currentFile();
+  const current = normalizeNavPath(window.location.pathname);
 
   navItems.forEach((link) => {
     const href = link.getAttribute("href") || "";
-    const target = href.split("#")[0].split("/").pop();
-    const active = target === file;
+    const target = normalizeNavPath(href);
+    const active = target === current;
     link.classList.toggle("nav-item--active", active);
     if (active) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
@@ -447,7 +466,9 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
 
   async function typeInto(el, text) {
     for (let i = 0; i < text.length; i++) {
-      el.textContent += text[i];
+      const caret = el.querySelector(".typewriter__caret");
+      if (caret) caret.insertAdjacentText("beforebegin", text[i]);
+      else el.append(text[i]);
       await sleep(delayMs());
     }
   }
@@ -943,12 +964,49 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   }
 
   async function getMapboxToken() {
+    let source = "api";
     if (MAPBOX_TOKEN) return MAPBOX_TOKEN;
     const fromWindow = String(window.MAPBOX_PUBLIC_TOKEN || "").trim();
-    if (fromWindow) return fromWindow;
+    if (fromWindow) {
+      source = "window";
+      // #region agent log
+      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+        body: JSON.stringify({
+          sessionId: "0c9bba",
+          runId: "pre-fix-1",
+          hypothesisId: "H2",
+          location: "main.js:getMapboxToken:window",
+          message: "Contact token resolved",
+          data: { source, tokenLength: fromWindow.length },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
+      return fromWindow;
+    }
     const metaEl = document.querySelector('meta[name="mapbox-public-token"]');
     const fromMeta = String(metaEl?.content || "").trim();
-    if (fromMeta) return fromMeta;
+    if (fromMeta) {
+      source = "meta";
+      // #region agent log
+      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+        body: JSON.stringify({
+          sessionId: "0c9bba",
+          runId: "pre-fix-1",
+          hypothesisId: "H2",
+          location: "main.js:getMapboxToken:meta",
+          message: "Contact token resolved",
+          data: { source, tokenLength: fromMeta.length },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
+      return fromMeta;
+    }
     if (!mapboxTokenPromise) {
       mapboxTokenPromise = fetch("/api/mapbox-token", {
         method: "GET",
@@ -958,7 +1016,23 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         .then((json) => String(json?.token || "").trim())
         .catch(() => "");
     }
-    return mapboxTokenPromise;
+    const token = await mapboxTokenPromise;
+    // #region agent log
+    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+      body: JSON.stringify({
+        sessionId: "0c9bba",
+        runId: "pre-fix-1",
+        hypothesisId: "H2",
+        location: "main.js:getMapboxToken:api",
+        message: "Contact token resolved",
+        data: { source, tokenLength: token.length },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+    return token;
   }
 
   async function geocodeMunicipality(name) {
@@ -977,6 +1051,21 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     if (!globeWrap || !globeMapEl || !globeLabel) return;
     globeLabel.innerHTML = `Gemeente: <strong>${escapeHtml(name)}</strong>`;
     globeWrap.hidden = false;
+    // #region agent log
+    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+      body: JSON.stringify({
+        sessionId: "0c9bba",
+        runId: "pre-fix-1",
+        hypothesisId: "H3",
+        location: "main.js:showGlobeForMunicipality:entry",
+        message: "Contact map flow entered",
+        data: { municipality: name, hadExistingMap: Boolean(globeMap) },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
 
     const dest = (await geocodeMunicipality(name)) || [4.4699, 50.5039];
 
@@ -1031,8 +1120,38 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
       });
 
       globeWrap.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
+      // #region agent log
+      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+        body: JSON.stringify({
+          sessionId: "0c9bba",
+          runId: "pre-fix-1",
+          hypothesisId: "H4",
+          location: "main.js:showGlobeForMunicipality:success",
+          message: "Contact map flyTo triggered",
+          data: { municipality: name, center: dest },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
     } catch (e) {
       globeWrap.hidden = true;
+      // #region agent log
+      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+        body: JSON.stringify({
+          sessionId: "0c9bba",
+          runId: "pre-fix-1",
+          hypothesisId: "H3",
+          location: "main.js:showGlobeForMunicipality:catch",
+          message: "Contact map failed",
+          data: { municipality: name, error: e instanceof Error ? e.message : String(e) },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
     }
   }
 
@@ -1477,6 +1596,21 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   async function submitLine() {
     const steps = getSteps();
     const step = steps[stepIndex];
+    // #region agent log
+    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+      body: JSON.stringify({
+        sessionId: "0c9bba",
+        runId: "pre-fix-1",
+        hypothesisId: "H1",
+        location: "main.js:submitLine:start",
+        message: "Contact step submission",
+        data: { stepKey: step?.key || null, role: data.role || null },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
     if (step.key === "municipality") {
       await gemeentenPromise;
     }
@@ -1812,7 +1946,15 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
 
   async function typeInto(el, text) {
     function flushInstant() {
-      el.textContent = text;
+      const caret = el.querySelector(".typewriter__caret");
+      if (caret) {
+        const existing = el.textContent?.replace(/\u2588?$/, "") || "";
+        // Schrijf in één keer vóór de caret zodat die zichtbaar blijft tot de caller hem verwijdert.
+        el.textContent = "";
+        el.append(existing + text, caret);
+      } else {
+        el.textContent = text;
+      }
       instantTypeRequested = false;
       stage.scrollTop = stage.scrollHeight;
     }
@@ -1828,7 +1970,9 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         flushInstant();
         return;
       }
-      el.textContent += text[i];
+      const caret = el.querySelector(".typewriter__caret");
+      if (caret) caret.insertAdjacentText("beforebegin", text[i]);
+      else el.append(text[i]);
       if (i % 5 === 0 || i === text.length - 1) {
         stage.scrollTop = stage.scrollHeight;
       }

@@ -3,6 +3,22 @@
  * Zelfde publieke token als main.js (contact / geocoding).
  */
 (function () {
+  // #region agent log
+  fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+    body: JSON.stringify({
+      sessionId: "0c9bba",
+      runId: "pre-fix-2",
+      hypothesisId: "H6",
+      location: "fixit.js:top-level",
+      message: "FixIt script loaded",
+      data: { href: window.location.href, protocol: window.location.protocol },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
+
   const MAPBOX_TOKEN = window.MAPBOX_PUBLIC_TOKEN || "";
   let mapboxTokenPromise = null;
 
@@ -108,6 +124,21 @@
 
   async function init() {
     const root = document.getElementById("fixit-globe-root");
+    // #region agent log
+    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+      body: JSON.stringify({
+        sessionId: "0c9bba",
+        runId: "pre-fix-1",
+        hypothesisId: "H5",
+        location: "fixit.js:init:entry",
+        message: "FixIt init started",
+        data: { hasRoot: Boolean(root) },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
     if (!root) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -115,12 +146,42 @@
     try {
       await loadMapboxAssets();
     } catch (e) {
+      // #region agent log
+      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+        body: JSON.stringify({
+          sessionId: "0c9bba",
+          runId: "pre-fix-1",
+          hypothesisId: "H5",
+          location: "fixit.js:init:asset-load-failed",
+          message: "FixIt mapbox assets failed",
+          data: { error: e instanceof Error ? e.message : String(e) },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
       root.innerHTML =
         '<p class="fixit-map-fallback" role="status">De kaart kan niet geladen worden. Controleer je netwerkverbinding.</p>';
       return;
     }
 
     const token = await getMapboxToken();
+    // #region agent log
+    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+      body: JSON.stringify({
+        sessionId: "0c9bba",
+        runId: "pre-fix-1",
+        hypothesisId: "H5",
+        location: "fixit.js:init:token-resolved",
+        message: "FixIt token resolved",
+        data: { tokenLength: token ? token.length : 0 },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
     if (!token) {
       root.innerHTML =
         '<p class="fixit-map-fallback" role="status">De kaart kan niet geladen worden. Mapbox token ontbreekt op de server.</p>';
@@ -182,6 +243,21 @@
       if (map.loaded()) resolve();
       else map.once("load", resolve);
     });
+    // #region agent log
+    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
+      body: JSON.stringify({
+        sessionId: "0c9bba",
+        runId: "pre-fix-1",
+        hypothesisId: "H5",
+        location: "fixit.js:init:map-loaded",
+        message: "FixIt map load completed",
+        data: { style: "satellite-streets-v12" },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
 
     map.resize();
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
