@@ -699,6 +699,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   const sentOut = document.getElementById("contact-flow-sent-out");
   const questionEl = document.getElementById("contact-flow-question");
   const hintEl = document.getElementById("contact-flow-hint");
+  const roleChoicesEl = document.getElementById("contact-flow-role-choices");
   const errEl = document.getElementById("contact-flow-err");
   const singleEl = document.getElementById("contact-flow-single");
   const multilineEl = document.getElementById("contact-flow-multiline");
@@ -711,6 +712,9 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   const globeWrap = document.getElementById("contact-gemeente-map-wrap");
   const globeMapEl = document.getElementById("contact-gemeente-map");
   const globeLabel = document.getElementById("contact-globe-label");
+  const roleChoiceButtons = Array.from(
+    document.querySelectorAll("#contact-flow-role-choices [data-role-choice]")
+  );
 
   if (
     !flowRoot ||
@@ -720,6 +724,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     !sentOut ||
     !questionEl ||
     !hintEl ||
+    !roleChoicesEl ||
     !errEl ||
     !singleEl ||
     !multilineEl ||
@@ -728,7 +733,8 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     !mirror ||
     !inputRowEl ||
     !suggestionsWrap ||
-    !suggestionsList
+    !suggestionsList ||
+    !roleChoiceButtons.length
   )
     return;
 
@@ -891,11 +897,30 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
 
   let globeMap = null;
   let mapboxAssetsPromise = null;
+  let contactMapViewportBound = false;
 
   function escapeHtml(str) {
     const d = document.createElement("div");
     d.textContent = str;
     return d.innerHTML;
+  }
+
+  function bindContactMapViewportResize() {
+    if (contactMapViewportBound) return;
+    contactMapViewportBound = true;
+    const onResize = () => {
+      if (!globeMap) return;
+      try {
+        globeMap.resize();
+      } catch (e) {
+        /* ignore */
+      }
+    };
+    window.addEventListener("resize", onResize, { passive: true });
+    window.addEventListener("orientationchange", onResize, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", onResize, { passive: true });
+    }
   }
 
   function loadMapboxAssets() {
@@ -975,6 +1000,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
           antialias: true,
         });
         globeMap.addControl(new mapboxgl.NavigationControl({ visualizePitch: false }), "top-right");
+        bindContactMapViewportResize();
       } else {
         globeMap.resize();
       }
@@ -1156,6 +1182,17 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     }
   }
 
+  function setRoleChoicesVisible(on) {
+    const visible = Boolean(on);
+    roleChoicesEl.hidden = !visible;
+    inputRowEl.hidden = visible;
+    if (!visible) return;
+    hideGemeenteSuggestions();
+    resetContactFieldAria();
+    field.value = "";
+    syncMirror();
+  }
+
   activeEl.addEventListener("submit", (e) => {
     e.preventDefault();
   });
@@ -1273,16 +1310,18 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   const stepDefs = {
     role: {
       key: "role",
-      prompt: "Ben je een gemeente of een ontwikkelaar?",
-      hint: "Typ 1 voor gemeente, 2 voor ontwikkelaar — druk daarna op Enter.",
+      prompt: "Ben je ontwikkelaar of gemeente?",
+      hint: "Kies een van de twee knoppen.",
       ask() {
         questionEl.textContent = this.prompt;
         hintEl.textContent = this.hint;
         hintEl.hidden = false;
         configureSingleFieldForStep(this.key);
+        setRoleChoicesVisible(true);
         setMultilineMode(false);
-        hideGemeenteSuggestions();
-        resetContactFieldAria();
+        requestAnimationFrame(() => {
+          roleChoiceButtons[0]?.focus();
+        });
       },
       validate(raw) {
         const v = raw.trim().toLowerCase();
@@ -1301,6 +1340,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         hintEl.textContent = this.hint;
         hintEl.hidden = false;
         configureSingleFieldForStep(this.key);
+        setRoleChoicesVisible(false);
         setMultilineMode(false);
         field.value = "";
         syncMirror();
@@ -1330,6 +1370,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         questionEl.textContent = this.prompt;
         hintEl.hidden = true;
         configureSingleFieldForStep(this.key);
+        setRoleChoicesVisible(false);
         setMultilineMode(false);
         hideGemeenteSuggestions();
         resetContactFieldAria();
@@ -1347,6 +1388,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         questionEl.textContent = this.prompt;
         hintEl.hidden = true;
         configureSingleFieldForStep(this.key);
+        setRoleChoicesVisible(false);
         setMultilineMode(false);
       },
       validate(raw) {
@@ -1362,6 +1404,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         questionEl.textContent = this.prompt;
         hintEl.hidden = true;
         configureSingleFieldForStep(this.key);
+        setRoleChoicesVisible(false);
         setMultilineMode(false);
       },
       validate(raw) {
@@ -1380,6 +1423,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         hintEl.textContent = this.hint;
         hintEl.hidden = false;
         configureSingleFieldForStep(this.key);
+        setRoleChoicesVisible(false);
         setMultilineMode(true);
         hideGemeenteSuggestions();
         resetContactFieldAria();
@@ -1400,6 +1444,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         hintEl.textContent = this.hint;
         hintEl.hidden = false;
         configureSingleFieldForStep(this.key);
+        setRoleChoicesVisible(false);
         setMultilineMode(false);
         hideGemeenteSuggestions();
         resetContactFieldAria();
@@ -1485,6 +1530,15 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     if (steps[stepIndex]?.key === "municipality") {
       filterGemeenteSuggestions();
     }
+  });
+
+  roleChoiceButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      field.value = String(btn.getAttribute("data-role-choice") || "").trim();
+      syncMirror();
+      clearErr();
+      submitLine();
+    });
   });
 
   textarea.addEventListener("input", () => {

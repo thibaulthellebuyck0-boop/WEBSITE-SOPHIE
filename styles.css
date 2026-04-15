@@ -239,6 +239,8 @@ a:hover {
 
 .nav__links .nav-item.nav-item--active {
   opacity: 1;
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .nav__links .nav-item:focus-visible {
@@ -491,19 +493,13 @@ a:hover {
   }
 
   .nav__links .nav-item.nav-item--active {
-    color: #000;
+    color: var(--accent);
     font-weight: 600;
     background: var(--nav-mobile-active-bg);
   }
 
   .nav__links .nav-item.nav-item--active::after {
-    content: "●";
-    display: inline-block;
-    margin-left: 0.55em;
-    vertical-align: middle;
-    color: var(--accent);
-    font-size: 0.44em;
-    line-height: 1;
+    content: none;
   }
 }
 
@@ -2032,6 +2028,42 @@ html.js .reveal.reveal--visible {
   color: var(--text-secondary);
 }
 
+.contact-flow__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.contact-flow__choice {
+  appearance: none;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.contact-flow__choice:hover {
+  border-color: rgba(234, 88, 0, 0.55);
+  color: var(--accent);
+}
+
+.contact-flow__choice:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(234, 88, 0, 0.2);
+}
+
 .contact-flow__answer-row {
   margin: 0 0 12px;
   min-height: 2rem;
@@ -2187,6 +2219,33 @@ html.js .reveal.reveal--visible {
 .contact-globe .mapboxgl-ctrl-bottom-right {
   bottom: 8px;
   right: 8px;
+}
+
+@media (max-width: 767px) {
+  .contact-globe-wrap {
+    margin-bottom: 20px;
+    border-radius: 14px;
+  }
+
+  .contact-globe__label {
+    padding: 12px 14px 8px;
+    font-size: 14px;
+  }
+
+  .contact-globe {
+    height: clamp(220px, 44svh, 320px);
+    min-height: 220px;
+  }
+
+  .contact-globe .mapboxgl-ctrl-top-right {
+    top: 8px;
+    right: 8px;
+  }
+
+  .contact-globe .mapboxgl-ctrl-group {
+    transform: scale(0.92);
+    transform-origin: top right;
+  }
 }
 
 .contact-flow__err {
@@ -3157,10 +3216,15 @@ html.js .reveal.reveal--visible {
 
 @media (max-width: 767px) {
   .fixit-hero {
-    grid-template-rows: minmax(100dvh, auto);
+    grid-template-rows: minmax(100svh, auto);
+    min-height: 100svh;
   }
 
   .fixit-globe {
-    min-height: 100dvh;
+    min-height: 100svh;
+  }
+
+  .fixit-hero__overlay {
+    padding: calc(88px + env(safe-area-inset-top, 0px)) 16px calc(36px + env(safe-area-inset-bottom, 0px));
   }
 }

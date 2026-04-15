@@ -154,6 +154,8 @@
       }
     }
 
+    const onViewportResize = () => triggerResize();
+
     const heroEl = root.closest(".fixit-hero");
     if (typeof ResizeObserver !== "undefined") {
       const ro = new ResizeObserver(() => triggerResize());
@@ -162,6 +164,11 @@
     }
 
     window.addEventListener("load", () => triggerResize(), { once: true });
+    window.addEventListener("resize", onViewportResize, { passive: true });
+    window.addEventListener("orientationchange", onViewportResize, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", onViewportResize, { passive: true });
+    }
     window.setTimeout(triggerResize, 100);
     window.setTimeout(triggerResize, 400);
 
