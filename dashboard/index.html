@@ -7,17 +7,9 @@
   <meta name="description" content="Sophie beheer — dashboard." />
   <title>Sophie — Beheer</title>
   <link rel="stylesheet" href="minimal.css?v=1" />
-  <script src="../auth.js?v=2"></script>
   <script>
     (function () {
-      if (!window.SophieAuth) {
-        window.location.replace("../login.html?next=" + encodeURIComponent("dashboard/index.html"));
-        return;
-      }
-      window.SophieAuth.consumeDemoAuthFromUrl();
-      if (!window.SophieAuth.isLoggedIn()) {
-        window.location.replace("../login.html?next=" + encodeURIComponent("dashboard/index.html"));
-      }
+      if (window.top !== window.self) return;
     })();
   </script>
 </head>

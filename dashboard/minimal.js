@@ -45,10 +45,9 @@
   }
 
   var logoutBtn = document.getElementById("dash-logout");
-  if (logoutBtn && window.SophieAuth) {
+  if (logoutBtn) {
     logoutBtn.addEventListener("click", function () {
-      window.SophieAuth.logout();
-      window.location.href = "../login.html";
+      window.location.href = "https://chat-widget-demo-six.vercel.app/admin.html";
     });
   }
 
