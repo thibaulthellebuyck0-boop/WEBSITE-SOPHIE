@@ -7,6 +7,31 @@
   <title>Sophie — AI voor gemeenten</title>
   <link rel="stylesheet" href="styles.css?v=20260413-sophie-modules-orbit" />
   <link rel="stylesheet" href="https://chat-widget-demo-six.vercel.app/assets/chat-widget.css?v=4" />
+  <style>
+    @keyframes sophie-ccw-launcher-fly-in {
+      from {
+        opacity: 0;
+        transform: translateY(calc(100% + 32px));
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Eén keer bij binnenkomst; uit tijdens open paneel (eigen transform) en na afloop intro (geen herhaling bij sluiten). */
+    #corner-chat-widget.ccw:not(.is-open):not(.ccw-intro-done) .ccw__launcher {
+      animation: sophie-ccw-launcher-fly-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #corner-chat-widget.ccw:not(.is-open):not(.ccw-intro-done) .ccw__launcher {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="nav" id="top">
@@ -281,5 +306,36 @@
     aria-label="Chat ondersteuning"
   ></div>
   <script src="https://chat-widget-demo-six.vercel.app/assets/chat-widget.js?v=20260504-sources-agenda" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var root = document.getElementById("corner-chat-widget");
+      if (!root) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        root.classList.add("ccw-intro-done");
+        return;
+      }
+      function finishIntro() {
+        root.classList.add("ccw-intro-done");
+      }
+      function attach(launcher) {
+        launcher.addEventListener("animationend", function (e) {
+          if (e.animationName === "sophie-ccw-launcher-fly-in") finishIntro();
+        });
+      }
+      var existing = root.querySelector(".ccw__launcher");
+      if (existing) {
+        attach(existing);
+        return;
+      }
+      var obs = new MutationObserver(function () {
+        var el = root.querySelector(".ccw__launcher");
+        if (el) {
+          obs.disconnect();
+          attach(el);
+        }
+      });
+      obs.observe(root, { childList: true, subtree: true });
+    });
+  </script>
 </body>
 </html>
