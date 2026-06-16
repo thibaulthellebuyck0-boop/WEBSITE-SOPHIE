@@ -4887,6 +4887,29 @@
           return sharedStart + linkHint + sharedEnd;
         }
 
+        /* ── Cookie-geheugen: Sophie onthoudt naam + e-mail over sessies heen ── */
+        var SOPHIE_COOKIE_NAME = "sophie_user_v1";
+        var SOPHIE_COOKIE_DAYS = 365;
+
+        function setSophieUserCookie(naam, email) {
+          try {
+            var val = JSON.stringify({ naam: String(naam || "").trim(), email: String(email || "").trim() });
+            var exp = new Date(Date.now() + SOPHIE_COOKIE_DAYS * 864e5).toUTCString();
+            document.cookie = SOPHIE_COOKIE_NAME + "=" + encodeURIComponent(val) + "; expires=" + exp + "; path=/; SameSite=Lax";
+          } catch (e) {}
+        }
+
+        function getSophieUserCookie() {
+          try {
+            var match = document.cookie.split("; ").find(function (c) { return c.indexOf(SOPHIE_COOKIE_NAME + "=") === 0; });
+            if (!match) return null;
+            var parsed = JSON.parse(decodeURIComponent(match.split("=").slice(1).join("=")));
+            if (parsed && parsed.naam) return parsed;
+          } catch (e) {}
+          return null;
+        }
+        /* ────────────────────────────────────────────────────────────────────── */
+
         var aiChatHistory = [];
         var emailFlowSessionActive = false;
         var SOPHIE_SYSTEM = buildSophieCoreBody();
@@ -7579,6 +7602,10 @@
 
         function sophieSystemForRequest() {
           var base = SOPHIE_SYSTEM + (emailFlowSessionActive ? SOPHIE_EMAIL_BUILD : "");
+          var knownUser = getSophieUserCookie();
+          if (knownUser && knownUser.naam) {
+            base += "\n\n## Gekende bezoeker\nJe hebt eerder al met deze persoon gesproken. Verwelkom hen bij naam (bijv. 'Welkom terug, " + knownUser.naam.split(" ")[0] + "!') als dit de eerste beurt is in dit gesprek, of gebruik hun naam natuurlijk doorheen het gesprek.\n- Naam: " + knownUser.naam + (knownUser.email ? "\n- E-mail: " + knownUser.email : "");
+          }
           var last = aiChatHistory.length ? aiChatHistory[aiChatHistory.length - 1] : null;
           var lastStr =
             last && last.role === "user" && typeof last.content === "string"
@@ -8890,6 +8917,10 @@
               /* Tekst in de bubble, card DIRECT eronder als broerelement */
               var sbIntro = (sophieBookingParse.before || "").trim();
               setBotBubbleMarkdown(bubble, sbIntro || "Perfecte keuze — ik boek dat meteen in voor je. 👇");
+              /* Sla naam + e-mail op in cookie zodat Sophie de bezoeker herkent */
+              if (sophieBookingParse.widget.naam && sophieBookingParse.widget.email) {
+                setSophieUserCookie(sophieBookingParse.widget.naam, sophieBookingParse.widget.email);
+              }
               opts.__sophieBookingCard = createSophieBookingCard(
                 sophieBookingParse.widget,
                 typeof CHAT_API_BASE !== "undefined" ? CHAT_API_BASE : ""
