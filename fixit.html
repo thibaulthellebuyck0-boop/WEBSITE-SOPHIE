@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="description" content="FixIt — binnenkort. Doorlopende verbinding tussen gemeenten." />
-  <title>FixIt — Coming Soon — Sophie</title>
-  <link rel="stylesheet" href="styles.css?v=20260412-menu-orange" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="FixIt — binnenkort beschikbaar. Doorlopende verbinding tussen gemeenten." />
+  <title>FixIt — Binnenkort beschikbaar — Sophie</title>
+  <link rel="stylesheet" href="styles.css?v=20260616-nav-active" />
 </head>
 <body>
   <header class="nav" id="top">
@@ -19,19 +20,55 @@
         aria-controls="nav-primary"
         aria-label="Menu openen"
       >
-        <span class="nav__menu-bar" aria-hidden="true"></span>
-        <span class="nav__menu-bar" aria-hidden="true"></span>
-        <span class="nav__menu-bar" aria-hidden="true"></span>
+        <svg class="nav__menu-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+          <rect class="nav__menu-icon-frame" x="3.5" y="3.5" width="17" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <path class="nav__menu-icon-rail" d="M9 5.5v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path class="nav__menu-icon-close" d="M7 7l10 10M17 7 7 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
       </button>
       <nav class="nav__links" id="nav-primary" aria-label="Hoofdnavigatie">
         <span class="nav__pill" aria-hidden="true"></span>
         <a class="nav-item nav-pill-target" href="index.html">Home</a>
-        <a class="nav-item nav-pill-target" href="over-ons.html">Over ons</a>
         <a class="nav-item nav-pill-target" href="sophie.html">Sophie</a>
-        <a class="nav-item nav-pill-target" href="fixit.html">FixIt</a>
-        <a class="nav-item nav-pill-target" href="contact.html">Contact</a>
+        <a class="nav-item nav-pill-target" href="maatwerk.html">Maatwerk</a>
+        <a class="nav-item nav-pill-target" href="over-ons.html">Over ons</a>
+        <div class="nav-more nav-pill-target">
+          <button
+            type="button"
+            class="nav-item nav-more__toggle"
+            id="nav-more-toggle"
+            aria-expanded="false"
+            aria-controls="nav-more-panel"
+            aria-haspopup="true"
+          >
+            Verder
+          </button>
+          <div class="nav-more__panel nav-mega" id="nav-more-panel" role="menu" hidden>
+            <button type="button" class="nav-mobile-sub__back" id="nav-mobile-sub-back" hidden>
+              <span class="nav-mobile-sub__back-icon" aria-hidden="true">‹</span>
+              Terug
+            </button>
+            <div class="nav-mega__grid">
+              <a class="nav-mega__card nav-more__link" href="blog/" role="menuitem">
+                <span class="nav-mega__card-title">Blog</span>
+                <span class="nav-mega__card-desc">Kennis over AI voor lokale besturen.</span>
+              </a>
+              <a class="nav-mega__card nav-more__link" href="contact.html" role="menuitem">
+                <span class="nav-mega__card-title">Contact</span>
+                <span class="nav-mega__card-desc">Plan een gesprek of stel uw vraag.</span>
+              </a>
+              <a class="nav-mega__card nav-more__link" href="fixit.html" role="menuitem">
+                <span class="nav-mega__card-title">FixIt</span>
+                <span class="nav-mega__card-desc">Meldingen en onderhoud slim op de kaart.</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="nav__actions">
+          <a class="nav__cta nav__cta--ghost" href="login.html">Log in</a>
+          <a class="nav__cta nav__cta--primary" href="contact.html">Begin vandaag</a>
+        </div>
       </nav>
-      <a class="nav__cta" href="aan-de-slag.html">Aan de slag</a>
     </div>
   </header>
 
@@ -39,11 +76,7 @@
     <div class="fixit-hero">
       <div id="fixit-globe-root" class="fixit-globe" aria-hidden="true" role="presentation"></div>
       <div class="fixit-hero__overlay">
-        <p class="eyebrow fixit-eyebrow">Sophie</p>
-        <h1 class="fixit-title page-hero__title page-hero__title--typewriter">
-          <span id="fixit-hero-stage" class="hero-terminal__stage" aria-hidden="true"></span>
-          <span class="visually-hidden">FixIt — Coming soon</span>
-        </h1>
+        <h1 class="fixit-caption">FixIt — Binnenkort beschikbaar</h1>
       </div>
     </div>
   </main>
@@ -67,9 +100,11 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="over-ons.html">Over ons</a></li>
             <li><a href="sophie.html">Sophie</a></li>
+            <li><a href="maatwerk.html">Maatwerk</a></li>
             <li><a href="fixit.html">FixIt</a></li>
             <li><a href="contact.html">Contact</a></li>
-            <li><a href="aan-de-slag.html">Aan de slag</a></li>
+            <li><a href="login.html">Log in</a></li>
+            <li><a href="studio.html">Sophie Studio</a></li>
           </ul>
         </nav>
         <div class="footer__contact-block">
@@ -134,6 +169,6 @@
   </footer>
 
   <script src="fixit.js?v=20260415-mobile-map-fix" defer></script>
-  <script src="main.js?v=20260415-mobile-map-fix" defer></script>
+  <script src="main.js?v=20260616-nav-active" defer></script>
 </body>
 </html>

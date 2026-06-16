@@ -3,9 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="description" content="Sophie Technologies: studententeam dat AI voor gemeenten bouwt. Pilootgemeenten gezocht." />
-  <title>Over ons — Sophie</title>
-  <link rel="stylesheet" href="styles.css?v=20260412-menu-orange" />
+  <meta name="description" content="Het team achter Sophie: de AI-agent voor lokale besturen, gemeenten en steden in Vlaanderen en België." />
+  <title>Over Sophie Technologies — AI-agent voor gemeenten en steden</title>
+  <link rel="canonical" href="https://www.sophietechnologies.be/over-ons" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="nl_BE" />
+  <meta property="og:site_name" content="Sophie Technologies" />
+  <meta property="og:title" content="Over Sophie Technologies — AI-agent voor gemeenten en steden" />
+  <meta property="og:description" content="Het team achter Sophie: de AI-agent voor lokale besturen in België." />
+  <meta property="og:url" content="https://www.sophietechnologies.be/over-ons" />
+  <meta property="og:image" content="https://www.sophietechnologies.be/assets/og-sophie.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Over Sophie Technologies" />
+  <meta name="twitter:description" content="Het team achter de AI-agent voor gemeenten en steden in België." />
+  <meta name="twitter:image" content="https://www.sophietechnologies.be/assets/og-sophie.jpg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.sophietechnologies.be/#organization",
+        "name": "Sophie Technologies",
+        "url": "https://www.sophietechnologies.be",
+        "logo": "https://www.sophietechnologies.be/assets/og-sophie.jpg"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.sophietechnologies.be/" },
+          { "@type": "ListItem", "position": 2, "name": "Over ons", "item": "https://www.sophietechnologies.be/over-ons" }
+        ]
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="styles.css?v=20260616-nav-active" />
 </head>
 <body>
   <header class="nav" id="top">
@@ -19,101 +53,187 @@
         aria-controls="nav-primary"
         aria-label="Menu openen"
       >
-        <span class="nav__menu-bar" aria-hidden="true"></span>
-        <span class="nav__menu-bar" aria-hidden="true"></span>
-        <span class="nav__menu-bar" aria-hidden="true"></span>
+        <svg class="nav__menu-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+          <rect class="nav__menu-icon-frame" x="3.5" y="3.5" width="17" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <path class="nav__menu-icon-rail" d="M9 5.5v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path class="nav__menu-icon-close" d="M7 7l10 10M17 7 7 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
       </button>
       <nav class="nav__links" id="nav-primary" aria-label="Hoofdnavigatie">
         <span class="nav__pill" aria-hidden="true"></span>
         <a class="nav-item nav-pill-target" href="index.html">Home</a>
-        <a class="nav-item nav-pill-target" href="over-ons.html">Over ons</a>
         <a class="nav-item nav-pill-target" href="sophie.html">Sophie</a>
-        <a class="nav-item nav-pill-target" href="fixit.html">FixIt</a>
-        <a class="nav-item nav-pill-target" href="contact.html">Contact</a>
+        <a class="nav-item nav-pill-target" href="maatwerk.html">Maatwerk</a>
+        <a class="nav-item nav-pill-target" href="over-ons.html">Over ons</a>
+        <div class="nav-more nav-pill-target">
+          <button
+            type="button"
+            class="nav-item nav-more__toggle"
+            id="nav-more-toggle"
+            aria-expanded="false"
+            aria-controls="nav-more-panel"
+            aria-haspopup="true"
+          >
+            Verder
+          </button>
+          <div class="nav-more__panel nav-mega" id="nav-more-panel" role="menu" hidden>
+            <button type="button" class="nav-mobile-sub__back" id="nav-mobile-sub-back" hidden>
+              <span class="nav-mobile-sub__back-icon" aria-hidden="true">‹</span>
+              Terug
+            </button>
+            <div class="nav-mega__grid">
+              <a class="nav-mega__card nav-more__link" href="blog/" role="menuitem">
+                <span class="nav-mega__card-title">Blog</span>
+                <span class="nav-mega__card-desc">Kennis over AI voor lokale besturen.</span>
+              </a>
+              <a class="nav-mega__card nav-more__link" href="contact.html" role="menuitem">
+                <span class="nav-mega__card-title">Contact</span>
+                <span class="nav-mega__card-desc">Plan een gesprek of stel uw vraag.</span>
+              </a>
+              <a class="nav-mega__card nav-more__link" href="fixit.html" role="menuitem">
+                <span class="nav-mega__card-title">FixIt</span>
+                <span class="nav-mega__card-desc">Meldingen en onderhoud slim op de kaart.</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="nav__actions">
+          <a class="nav__cta nav__cta--ghost" href="login.html">Log in</a>
+          <a class="nav__cta nav__cta--primary" href="contact.html">Begin vandaag</a>
+        </div>
       </nav>
-      <a class="nav__cta" href="aan-de-slag.html">Aan de slag</a>
     </div>
   </header>
 
-  <main class="page page--over-ons">
-    <div class="about-shell">
-      <header class="page-hero page-hero--about">
-        <p class="eyebrow">Over ons</p>
-        <h1 class="page-hero__title page-hero__title--typewriter">
-          <span id="over-ons-hero-stage" class="hero-terminal__stage" aria-hidden="true"></span>
-          <span class="visually-hidden">Hoe artificiële intelligentie uw gemeente digitaal zal transformeren</span>
+  <main class="page page--over-ons page--about-xai">
+    <section class="about-xai-hero" aria-labelledby="about-xai-heading">
+      <video class="about-xai-hero__video" src="videos/over-ons-hero.mp4" autoplay muted loop playsinline aria-hidden="true"></video>
+      <div class="about-xai-hero__overlay" aria-hidden="true"></div>
+      <div class="about-xai-hero__inner">
+        <p class="about-xai-kicker reveal">Sophie Technologies</p>
+        <h1 class="about-xai-hero__title reveal reveal--d1" id="about-xai-heading">
+          Over ons.
         </h1>
-      </header>
-      <div class="page-body page-body--about">
-        <div class="reveal">
-          <p>
-            Samen met een team studenten ontwikkelen wij innovatieve AI-toepassingen voor lokale besturen. Sophie is de
-            eerste AI-chatbot/agent gespecialiseerd voor gemeenten en steden. Sophie is voor de burger bereikbaar via een
-            chatbox (iframe) op de gemeentelijke website en op WhatsApp. We werken hard om Sophie af te werken tegen eind
-            augustus. Ons doel nu is eenvoudig:
-            <strong>het vinden van 20 innovatieve pilootgemeenten om samen met ons Sophie gedurende een proefperiode uit te proberen.</strong>
-          </p>
-          <blockquote class="about-zegje reveal" cite="Thibault Hellebuyck">
-            <p>
-              <span class="about-zegje__quote">&quot;Het verbeteren van de &apos;user-experience&apos; voor de burger enerzijds en het verminderen van de
-              werkdruk voor de gemeente anderzijds vormen dus onze centrale doelstelling.&quot;&nbsp;<cite class="about-zegje__by">—&nbsp;Thibault</cite></span>
-            </p>
-          </blockquote>
+        <p class="about-xai-hero__lead reveal reveal--d2">
+          Wij zijn een jong team dat artificiële intelligentie begrijpelijk, bruikbaar en veilig wil maken voor
+          lokale besturen.
+        </p>
+        <div class="about-xai-hero__actions reveal reveal--d3">
+          <a class="btn btn--primary" href="contact.html">Pilootgemeente worden</a>
+          <a class="btn btn--ghost" href="#about-team-heading">Ontmoet het team</a>
         </div>
-        <section class="about-section reveal" aria-labelledby="about-mission-heading">
-          <h2 id="about-mission-heading">Samen bouwen aan de gemeente van morgen</h2>
-          <p>
-            Als ambitieus team studenten dragen we
-            <strong>één missie: Vlaanderen en België uitbouwen tot koploper in artificiële intelligentie voor lokale besturen.</strong>
-            Stap voor stap maken we Sophie slimmer, met nieuwe modules die telkens
-            verder gaan dan het vorige. We zoeken nu 20 innovatieve pilootgemeenten die mee aan het stuur willen zitten —
-            en mee de standaard willen zetten voor de rest van Vlaanderen en de rest van Europa.
-          </p>
-          <p>
-            Is uw gemeente erbij? Stuur Nathan gerust een
-            <a href="mailto:nathan.debauschere@ugent.be">berichtje</a>, hopelijk tot snel!
-          </p>
-        </section>
-
-        <section class="about-section about-team reveal" aria-labelledby="about-team-heading">
-          <h2 id="about-team-heading">Ons team</h2>
-          <ul class="about-team__list">
-            <li class="about-team__card">
-              <img
-                class="about-team__photo"
-                src="images/thibault-hellebuyck.png"
-                alt="Portret van Thibault Hellebuyck"
-                width="480"
-                height="640"
-                loading="lazy"
-                decoding="async"
-              />
-              <a class="about-team__name" href="mailto:thibault.hellebuyck@icloud.com">Thibault Hellebuyck</a>
-              <p class="about-team__role">Founder en CEO</p>
-              <p class="about-team__email">
-                <a href="mailto:thibault.hellebuyck@icloud.com">thibault.hellebuyck@icloud.com</a>
-              </p>
-            </li>
-            <li class="about-team__card">
-              <img
-                class="about-team__photo"
-                src="images/nathan-debauschere.png"
-                alt="Portret van Nathan Debauschere"
-                width="480"
-                height="640"
-                loading="lazy"
-                decoding="async"
-              />
-              <a class="about-team__name" href="mailto:nathan.debauschere@ugent.be">Nathan Debauschere</a>
-              <p class="about-team__role">Head of Sales</p>
-              <p class="about-team__email">
-                <a href="mailto:nathan.debauschere@ugent.be">nathan.debauschere@ugent.be</a>
-              </p>
-            </li>
-          </ul>
-        </section>
       </div>
-    </div>
+    </section>
+
+    <section class="about-xai-showcase" aria-label="Onze focus">
+      <article class="about-xai-panel about-xai-panel--mission reveal">
+        <span class="about-xai-panel__label">Wie we zijn</span>
+        <h2>Gebouwd met gemeenten, voor burgers en loketten.</h2>
+        <p>
+          We ontwikkelen software vanuit gesprekken met gemeenten, IT-verantwoordelijken en mensen aan het loket. Niet
+          vanuit hype, maar vanuit dagelijkse problemen die beter kunnen.
+        </p>
+      </article>
+      <article class="about-xai-panel about-xai-panel--quote reveal reveal--d1">
+        <blockquote>
+          “Betere user experience voor de burger én minder werkdruk voor de gemeente. Dat is de kern.”
+        </blockquote>
+        <p>Thibault Hellebuyck</p>
+      </article>
+    </section>
+
+    <section class="about-xai-section" aria-labelledby="about-mission-heading">
+      <div class="about-xai-section__copy reveal">
+        <p class="about-xai-kicker">Waarom we bestaan</p>
+        <h2 id="about-mission-heading">AI moet lokale besturen sterker maken, niet complexer.</h2>
+        <p>
+          Onze missie is ambitieus: Vlaanderen en België uitbouwen tot koploper in artificiële intelligentie voor lokale
+          besturen. Niet met generieke software, maar met producten die vertrekken vanuit de dagelijkse realiteit van
+          onthaal, loketten, meldingen, procedures en burgers.
+        </p>
+        <p>
+          Daarom zoeken we innovatieve pilootgemeenten die mee willen testen, feedback geven en de standaard willen
+          zetten voor de rest van Vlaanderen en Europa.
+        </p>
+      </div>
+      <div class="about-xai-metrics reveal reveal--d1" aria-label="Sophie in cijfers">
+        <div>
+          <strong>Gent, België 🇧🇪</strong>
+          <span>waar we bouwen en testen</span>
+        </div>
+        <div>
+          <strong>2026</strong>
+          <span>opgericht, gericht op impact</span>
+        </div>
+        <div>
+          <strong>25+</strong>
+          <span>pilootgemeenten gezocht</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-xai-roadmap" aria-labelledby="about-roadmap-heading">
+      <div class="about-xai-roadmap__head reveal">
+        <p class="about-xai-kicker">Werkwijze</p>
+        <h2 id="about-roadmap-heading">Hoe we samenwerken.</h2>
+      </div>
+      <div class="about-xai-roadmap__grid">
+        <article class="about-xai-step reveal reveal--d1">
+          <span>01</span>
+          <h3>Luisteren</h3>
+          <p>We starten bij concrete noden van gemeenten: loketdruk, repetitieve vragen, meldingen en dienstverlening.</p>
+        </article>
+        <article class="about-xai-step reveal reveal--d2">
+          <span>02</span>
+          <h3>Bouwen</h3>
+          <p>We vertalen die noden naar eenvoudige software die beheersbaar blijft voor bestuur en IT.</p>
+        </article>
+        <article class="about-xai-step reveal reveal--d3">
+          <span>03</span>
+          <h3>Leren</h3>
+          <p>We testen met pilootgemeenten, verwerken feedback en verbeteren op basis van echte praktijk.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="about-xai-team" aria-labelledby="about-team-heading">
+      <div class="about-xai-section__copy reveal">
+        <p class="about-xai-kicker">Team</p>
+        <h2 id="about-team-heading">Gedreven, technisch en dicht bij lokale besturen.</h2>
+      </div>
+      <ul class="about-xai-team__list">
+        <li class="about-xai-team__card reveal reveal--d1">
+          <div class="about-xai-team__portrait about-xai-team__portrait--warm">
+            <span class="about-xai-team__initials" aria-hidden="true">TM</span>
+          </div>
+          <span class="about-xai-team__name">Thomas Manders</span>
+          <p class="about-xai-team__role">Founder</p>
+        </li>
+        <li class="about-xai-team__card reveal reveal--d2">
+          <div class="about-xai-team__portrait">
+            <img src="images/thibault-hellebuyck.png" alt="Thibault Hellebuyck, Founder &amp; CTO bij Sophie Technologies" />
+          </div>
+          <a class="about-xai-team__name" href="mailto:thibault.hellebuyck@icloud.com">Thibault Hellebuyck</a>
+          <p class="about-xai-team__role">Founder &amp; CTO</p>
+          <a class="about-xai-team__email" href="mailto:thibault.hellebuyck@icloud.com">thibault.hellebuyck@icloud.com</a>
+        </li>
+        <li class="about-xai-team__card reveal reveal--d3">
+          <div class="about-xai-team__portrait about-xai-team__portrait--warm">
+            <img src="images/nathan-debauschere.png" alt="Nathan Debauschere, Founder &amp; Sales bij Sophie Technologies" />
+          </div>
+          <a class="about-xai-team__name" href="mailto:nathan.debauschere@ugent.be">Nathan Debauschere</a>
+          <p class="about-xai-team__role">Founder &amp; Sales</p>
+          <a class="about-xai-team__email" href="mailto:nathan.debauschere@ugent.be">nathan.debauschere@ugent.be</a>
+        </li>
+        <li class="about-xai-team__card reveal reveal--d4">
+          <div class="about-xai-team__portrait">
+            <span class="about-xai-team__initials" aria-hidden="true">S</span>
+          </div>
+          <span class="about-xai-team__name">Simon</span>
+          <p class="about-xai-team__role">Dev</p>
+        </li>
+      </ul>
+    </section>
   </main>
 
   <footer class="footer">
@@ -135,9 +255,11 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="over-ons.html">Over ons</a></li>
             <li><a href="sophie.html">Sophie</a></li>
+            <li><a href="maatwerk.html">Maatwerk</a></li>
             <li><a href="fixit.html">FixIt</a></li>
             <li><a href="contact.html">Contact</a></li>
-            <li><a href="aan-de-slag.html">Aan de slag</a></li>
+            <li><a href="login.html">Log in</a></li>
+            <li><a href="studio.html">Sophie Studio</a></li>
           </ul>
         </nav>
         <div class="footer__contact-block">
@@ -145,7 +267,7 @@
           <ul class="footer__people" aria-labelledby="footer-contact-heading">
             <li class="footer__person">
               <span class="footer__person-name">Thibault Hellebuyck</span>
-              <span class="footer__person-role">Founder &amp; CEO</span>
+              <span class="footer__person-role">Founder &amp; CTO</span>
               <div class="footer__person-contact">
                 <a
                   class="footer__social"
@@ -164,7 +286,7 @@
             </li>
             <li class="footer__person">
               <span class="footer__person-name">Nathan Debauschere</span>
-              <span class="footer__person-role">Head of Sales</span>
+              <span class="footer__person-role">Founder &amp; Sales</span>
               <div class="footer__person-contact">
                 <a
                   class="footer__social"
@@ -201,6 +323,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=20260412-mapbox-token"></script>
+  <script src="main.js?v=20260616-nav-active"></script>
 </body>
 </html>

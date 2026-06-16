@@ -1,6 +1,10 @@
 {
   "private": true,
+  "scripts": {
+    "sitemap": "node scripts/generate-sitemap.js"
+  },
   "dependencies": {
-    "@supabase/supabase-js": "^2.49.1"
+    "@supabase/supabase-js": "^2.49.1",
+    "nodemailer": "^9.0.0"
   }
 }

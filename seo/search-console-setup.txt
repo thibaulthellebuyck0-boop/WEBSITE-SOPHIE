@@ -1,0 +1,16 @@
+Google Search Console — setup checklist
+=========================================
+
+1. Go to https://search.google.com/search-console
+2. Add property: Domain → sophietechnologies.be (or URL prefix https://www.sophietechnologies.be)
+3. Verify via DNS TXT record at Combell, or HTML file upload via Vercel
+4. Submit sitemap: https://www.sophietechnologies.be/sitemap.xml
+5. Request indexing for:
+   - https://www.sophietechnologies.be/
+   - https://www.sophietechnologies.be/sophie
+   - https://www.sophietechnologies.be/maatwerk
+6. Monitor Coverage and Core Web Vitals weekly
+
+Prerequisite: fix www DNS at Combell (see seo/combell-dns.txt).
+
+Optional: add Google Analytics 4 or privacy-friendly analytics for conversion tracking.

@@ -6,10 +6,32 @@
       "has": [
         {
           "type": "host",
+          "value": "website-sophie.vercel.app"
+        }
+      ],
+      "destination": "https://www.sophietechnologies.be/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
           "value": "website-sophie-liart.vercel.app"
         }
       ],
-      "destination": "https://website-sophie.vercel.app/sophie",
+      "destination": "https://www.sophietechnologies.be/sophie",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "sophietechnologies.be"
+        }
+      ],
+      "destination": "https://www.sophietechnologies.be/$1",
       "permanent": true
     }
   ],

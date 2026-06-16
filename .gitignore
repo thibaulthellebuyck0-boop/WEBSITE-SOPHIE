@@ -1,6 +1,9 @@
 node_modules/
 .DS_Store
+.env.local
+.env
 .cursor/
+.superpowers/
 *.log
 debug_localhost_check.py
 node_modules/

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Afspraken — Sophie Technologies</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+      -webkit-font-smoothing: antialiased;
+    }
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .login-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .login-card h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 1.5rem; }
+    .login-card label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .login-card input {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .login-card input:focus { border-color: #111827; }
+    .login-card button {
+      width: 100%;
+      margin-top: 1rem;
+      background: #111827;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 11px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .login-card button:hover { background: #374151; }
+    .login-err { color: #dc2626; font-size: 13px; margin-top: 10px; display: none; }
+
+    #admin-screen { display: none; }
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 { font-size: 1.125rem; font-weight: 700; margin: 0; }
+    header span { font-size: 13px; color: #6b7280; }
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .stats { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      min-width: 140px;
+    }
+    .stat-card__value { font-size: 2rem; font-weight: 700; line-height: 1; }
+    .stat-card__label { font-size: 13px; color: #6b7280; margin-top: 4px; }
+    .afspraken-table-wrap {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .afspraken-table-wrap h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f9fafb; }
+    .badge {
+      display: inline-block;
+      background: #f3f4f6;
+      color: #374151;
+      border-radius: 9999px;
+      padding: 2px 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .empty { padding: 3rem; text-align: center; color: #9ca3af; font-size: 15px; }
+    .refresh-btn {
+      background: transparent;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #374151;
+      transition: background 0.15s;
+    }
+    .refresh-btn:hover { background: #f3f4f6; }
+    @media (max-width: 640px) {
+      .hide-mobile { display: none; }
+      td, th { padding: 10px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <h1>🔐 Admin — Sophie Technologies</h1>
+    <label for="pw">Wachtwoord</label>
+    <input type="password" id="pw" placeholder="Sophie2026!" autocomplete="current-password" />
+    <button id="login-btn">Aanmelden</button>
+    <div class="login-err" id="login-err">Ongeldig wachtwoord.</div>
+  </div>
+</div>
+
+<div id="admin-screen">
+  <header>
+    <h1>📅 Afspraken</h1>
+    <span id="last-refresh"></span>
+  </header>
+  <div class="container">
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-card__value" id="stat-total">—</div>
+        <div class="stat-card__label">Totaal afspraken</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value" id="stat-today">—</div>
+        <div class="stat-card__label">Vandaag</div>
+      </div>
+      <button class="refresh-btn" id="refresh-btn" style="align-self:center">↺ Vernieuwen</button>
+    </div>
+    <div class="afspraken-table-wrap">
+      <h2>Geplande gesprekken</h2>
+      <div id="table-container">
+        <div class="empty">Laden…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var TOKEN = "Sophie2026!";
+  var storedToken = null;
+
+  var loginScreen = document.getElementById("login-screen");
+  var adminScreen = document.getElementById("admin-screen");
+  var loginBtn = document.getElementById("login-btn");
+  var pwInput = document.getElementById("pw");
+  var loginErr = document.getElementById("login-err");
+  var tableContainer = document.getElementById("table-container");
+  var statTotal = document.getElementById("stat-total");
+  var statToday = document.getElementById("stat-today");
+  var lastRefreshEl = document.getElementById("last-refresh");
+  var refreshBtn = document.getElementById("refresh-btn");
+
+  function showAdmin(token) {
+    storedToken = token;
+    loginScreen.style.display = "none";
+    adminScreen.style.display = "block";
+    loadAfspraken();
+  }
+
+  loginBtn.addEventListener("click", function () {
+    var pw = pwInput.value.trim();
+    if (pw === TOKEN) {
+      loginErr.style.display = "none";
+      showAdmin(pw);
+    } else {
+      loginErr.style.display = "block";
+    }
+  });
+
+  pwInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") loginBtn.click();
+  });
+
+  refreshBtn.addEventListener("click", loadAfspraken);
+
+  function dagNaam(dateStr) {
+    try {
+      var d = new Date(dateStr);
+      return d.toLocaleDateString("nl-BE", { weekday: "short", year: "numeric", month: "short", day: "numeric" });
+    } catch (e) { return dateStr; }
+  }
+
+  function loadAfspraken() {
+    tableContainer.innerHTML = "<div class=\"empty\">Laden…</div>";
+    fetch("/api/appointments?token=" + encodeURIComponent(storedToken))
+      .then(function (r) { return r.json(); })
+      .then(function (json) {
+        var list = (json && json.appointments) ? json.appointments : [];
+        statTotal.textContent = list.length;
+        var today = new Date().toISOString().slice(0, 10);
+        statToday.textContent = list.filter(function (a) { return a.datum === today; }).length;
+        lastRefreshEl.textContent = "Bijgewerkt: " + new Date().toLocaleTimeString("nl-BE");
+        if (!list.length) {
+          tableContainer.innerHTML = "<div class=\"empty\">Nog geen afspraken ingeboekt.</div>";
+          return;
+        }
+        var html = "<table><thead><tr>" +
+          "<th>Datum</th><th>Tijdstip</th><th>Naam</th>" +
+          "<th class=\"hide-mobile\">E-mail</th><th class=\"hide-mobile\">Onderwerp</th>" +
+          "</tr></thead><tbody>";
+        list.forEach(function (a) {
+          html += "<tr>" +
+            "<td>" + escHtml(dagNaam(a.datum)) + "</td>" +
+            "<td><span class=\"badge\">" + escHtml(a.tijdstip) + "</span></td>" +
+            "<td>" + escHtml(a.naam) + "</td>" +
+            "<td class=\"hide-mobile\"><a href=\"mailto:" + escHtml(a.email) + "\" style=\"color:#2563eb\">" + escHtml(a.email) + "</a></td>" +
+            "<td class=\"hide-mobile\">" + escHtml(a.onderwerp || "—") + "</td>" +
+            "</tr>";
+        });
+        html += "</tbody></table>";
+        tableContainer.innerHTML = html;
+      })
+      .catch(function () {
+        tableContainer.innerHTML = "<div class=\"empty\">Fout bij laden. Vernieuw de pagina.</div>";
+      });
+  }
+
+  function escHtml(s) {
+    return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  // Auto-check URL token param (e.g. /admin-afspraken.html?token=...)
+  (function () {
+    try {
+      var sp = new URLSearchParams(window.location.search);
+      var t = sp.get("token");
+      if (t === TOKEN) { showAdmin(t); }
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>

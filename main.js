@@ -80,8 +80,11 @@ async function submitToCms(form, payload) {
 })();
 
 (function initNavActive() {
-  const navItems = document.querySelectorAll(".nav__links .nav-item");
-  if (!navItems.length) return;
+  const topLinks = document.querySelectorAll(".nav__links > .nav-item[href]");
+  const moreLinks = document.querySelectorAll(".nav-more__link");
+  const moreToggle = document.querySelector(".nav-more__toggle");
+  const moreWrap = document.querySelector(".nav-more");
+  if (!topLinks.length && !moreLinks.length) return;
 
   function normalizeNavPath(raw) {
     if (!raw) return "index";
@@ -94,16 +97,30 @@ async function submitToCms(form, payload) {
     return clean.toLowerCase();
   }
 
-  const current = normalizeNavPath(window.location.pathname);
+  function setActive(el, active) {
+    if (!el) return;
+    el.classList.toggle("nav-item--active", active);
+    if (active) el.setAttribute("aria-current", "page");
+    else el.removeAttribute("aria-current");
+  }
 
-  navItems.forEach((link) => {
+  const current = normalizeNavPath(window.location.pathname);
+  let moreActive = false;
+
+  topLinks.forEach((link) => {
     const href = link.getAttribute("href") || "";
-    const target = normalizeNavPath(href);
-    const active = target === current;
-    link.classList.toggle("nav-item--active", active);
-    if (active) link.setAttribute("aria-current", "page");
-    else link.removeAttribute("aria-current");
+    setActive(link, normalizeNavPath(href) === current);
   });
+
+  moreLinks.forEach((link) => {
+    const href = link.getAttribute("href") || "";
+    const active = normalizeNavPath(href) === current;
+    setActive(link, active);
+    if (active) moreActive = true;
+  });
+
+  setActive(moreToggle, moreActive);
+  if (moreWrap) moreWrap.classList.toggle("nav-more--active", moreActive);
 })();
 
 (function initNavPill() {
@@ -117,6 +134,8 @@ async function submitToCms(form, payload) {
   let hoverTarget = null;
 
   function getActiveTarget() {
+    const activeMore = nav.querySelector(".nav-more--active");
+    if (activeMore) return activeMore;
     return nav.querySelector(".nav-item--active");
   }
 
@@ -130,13 +149,18 @@ async function submitToCms(form, payload) {
     return getActiveTarget();
   }
 
+  function getPillRoot() {
+    return nav;
+  }
+
   function moveTo(el) {
     if (!el) return;
-    const navRect = nav.getBoundingClientRect();
+    const root = getPillRoot();
+    const rootRect = root.getBoundingClientRect();
     const elRect = el.getBoundingClientRect();
     pill.style.opacity = "1";
-    pill.style.left = `${elRect.left - navRect.left + nav.scrollLeft}px`;
-    pill.style.top = `${elRect.top - navRect.top + nav.scrollTop}px`;
+    pill.style.left = `${elRect.left - rootRect.left + root.scrollLeft}px`;
+    pill.style.top = `${elRect.top - rootRect.top + root.scrollTop}px`;
     pill.style.width = `${elRect.width}px`;
     pill.style.height = `${elRect.height}px`;
   }
@@ -175,6 +199,10 @@ async function submitToCms(form, payload) {
 
   pill.classList.add("nav__pill--no-motion");
   moveToIdle();
+  window.addEventListener("load", moveToIdle, { once: true });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(moveToIdle);
+  }
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       pill.classList.remove("nav__pill--no-motion");
@@ -186,14 +214,114 @@ async function submitToCms(form, payload) {
   const header = document.querySelector(".nav");
   const toggle = document.querySelector(".nav__menu");
   const links = header?.querySelector("#nav-primary");
+  const moreWrap = document.querySelector(".nav-more");
+  const moreToggle = document.querySelector(".nav-more__toggle");
+  const morePanel = document.getElementById("nav-more-panel");
+  const subBack = document.getElementById("nav-mobile-sub-back");
+  const mobileMq = window.matchMedia("(max-width: 767px)");
+  const reducedMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
   if (!header || !toggle || !links) return;
+
+  let menuEnterTimer = 0;
+  let subEnterTimer = 0;
+  const MENU_ENTER_MS = 750;
+
+  function clearEnterTimers() {
+    window.clearTimeout(menuEnterTimer);
+    window.clearTimeout(subEnterTimer);
+    header.classList.remove("nav--menu-entering", "nav--sub-entering");
+  }
+
+  function runMenuEnterAnimation() {
+    header.classList.remove("nav--menu-entering");
+    window.clearTimeout(menuEnterTimer);
+
+    if (!mobileMq.matches || reducedMotionMq.matches) {
+      header.classList.add("nav--menu-animate");
+      return;
+    }
+
+    header.classList.remove("nav--menu-animate");
+    header.classList.add("nav--menu-entering");
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        header.classList.add("nav--menu-animate");
+      });
+    });
+    menuEnterTimer = window.setTimeout(() => {
+      header.classList.remove("nav--menu-entering");
+    }, MENU_ENTER_MS);
+  }
+
+  function runSubEnterAnimation() {
+    header.classList.remove("nav--sub-entering");
+    window.clearTimeout(subEnterTimer);
+
+    if (!mobileMq.matches || reducedMotionMq.matches) {
+      header.classList.add("nav--sub-animate");
+      return;
+    }
+
+    header.classList.remove("nav--sub-animate");
+    header.classList.add("nav--sub-entering");
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        header.classList.add("nav--sub-animate");
+      });
+    });
+    subEnterTimer = window.setTimeout(() => {
+      header.classList.remove("nav--sub-entering");
+    }, MENU_ENTER_MS);
+  }
+
+  function resetMobileMore() {
+    if (!mobileMq.matches || !moreWrap || !moreToggle || !morePanel) return;
+    moreWrap.classList.remove("nav-more--open");
+    morePanel.hidden = true;
+    moreToggle.setAttribute("aria-expanded", "false");
+    if (subBack) subBack.hidden = true;
+    header.classList.remove("nav--sub-open", "nav--sub-animate", "nav--sub-entering");
+    window.clearTimeout(subEnterTimer);
+  }
+
+  function setSubOpen(open) {
+    if (!mobileMq.matches) return;
+    const on = Boolean(open);
+    header.classList.toggle("nav--sub-open", on);
+    header.classList.toggle("nav--sub-animate", false);
+    if (moreWrap) moreWrap.classList.toggle("nav-more--open", false);
+    if (moreToggle) moreToggle.setAttribute("aria-expanded", on ? "true" : "false");
+    if (morePanel) morePanel.hidden = !on;
+    if (subBack) subBack.hidden = !on;
+    if (on) {
+      runSubEnterAnimation();
+      window.requestAnimationFrame(() => subBack?.focus());
+    }
+  }
 
   function setOpen(open) {
     const on = Boolean(open);
-    header.classList.toggle("nav--menu-open", on);
-    toggle.setAttribute("aria-expanded", on ? "true" : "false");
-    toggle.setAttribute("aria-label", on ? "Menu sluiten" : "Menu openen");
-    document.body.classList.toggle("nav-menu-open", on);
+
+    if (on) {
+      header.classList.add("nav--menu-open");
+      header.classList.remove("nav--menu-animate");
+      toggle.setAttribute("aria-expanded", "true");
+      toggle.setAttribute("aria-label", "Menu sluiten");
+      document.body.classList.add("nav-menu-open");
+      runMenuEnterAnimation();
+      if (mobileMq.matches && !header.classList.contains("nav--sub-open")) {
+        const first = links.querySelector('.nav-item[href$="sophie.html"]');
+        window.requestAnimationFrame(() => first?.focus());
+      }
+      return;
+    }
+
+    header.classList.remove("nav--menu-animate", "nav--menu-open", "nav--menu-entering");
+    clearEnterTimers();
+    resetMobileMore();
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Menu openen");
+    document.body.classList.remove("nav-menu-open");
   }
 
   toggle.addEventListener("click", () => setOpen(!header.classList.contains("nav--menu-open")));
@@ -202,11 +330,29 @@ async function submitToCms(form, payload) {
     a.addEventListener("click", () => setOpen(false));
   });
 
+  header.querySelectorAll(".nav__actions a").forEach((a) => {
+    a.addEventListener("click", () => setOpen(false));
+  });
+
+  moreToggle?.addEventListener("click", (e) => {
+    if (!mobileMq.matches || !header.classList.contains("nav--menu-open")) return;
+    e.preventDefault();
+    e.stopPropagation();
+    setSubOpen(true);
+  });
+
+  subBack?.addEventListener("click", () => setSubOpen(false));
+
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && header.classList.contains("nav--menu-open")) {
-      setOpen(false);
-      toggle.focus();
+    if (!header.classList.contains("nav--menu-open")) return;
+    if (e.key !== "Escape") return;
+    if (header.classList.contains("nav--sub-open")) {
+      setSubOpen(false);
+      moreToggle?.focus();
+      return;
     }
+    setOpen(false);
+    toggle.focus();
   });
 
   let resizeTimer = 0;
@@ -216,6 +362,118 @@ async function submitToCms(form, payload) {
       if (window.matchMedia("(min-width: 768px)").matches) setOpen(false);
     }, 80);
   });
+})();
+
+(function initNavScrollHide() {
+  const nav = document.querySelector(".nav");
+  if (!nav) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  let lastY = window.scrollY;
+  let ticking = false;
+  const threshold = 6;
+  const topReveal = 72;
+
+  function update() {
+    const y = window.scrollY;
+    const delta = y - lastY;
+
+    if (nav.classList.contains("nav--menu-open")) {
+      nav.classList.remove("nav--scroll-hidden");
+      lastY = y;
+      ticking = false;
+      return;
+    }
+
+    if (y <= topReveal) {
+      nav.classList.remove("nav--scroll-hidden");
+    } else if (delta > threshold) {
+      nav.classList.add("nav--scroll-hidden");
+    } else if (delta < -threshold) {
+      nav.classList.remove("nav--scroll-hidden");
+    }
+
+    lastY = y;
+    ticking = false;
+  }
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(update);
+    },
+    { passive: true }
+  );
+})();
+
+(function initNavMore() {
+  const wrap = document.querySelector(".nav-more");
+  const toggle = document.querySelector(".nav-more__toggle");
+  const panel = document.getElementById("nav-more-panel");
+  if (!wrap || !toggle || !panel) return;
+
+  const desktopMq = window.matchMedia("(min-width: 768px)");
+
+  function isDesktop() {
+    return desktopMq.matches;
+  }
+
+  function setOpen(open) {
+    const on = Boolean(open);
+    wrap.classList.toggle("nav-more--open", on);
+    toggle.setAttribute("aria-expanded", on ? "true" : "false");
+    if (isDesktop()) {
+      panel.hidden = false;
+      return;
+    }
+    panel.hidden = !on;
+  }
+
+  function syncMode() {
+    const header = document.querySelector(".nav");
+    if (isDesktop()) {
+      panel.hidden = false;
+      wrap.classList.remove("nav-more--open");
+      toggle.setAttribute("aria-expanded", "false");
+      header?.classList.remove("nav--sub-open");
+      const subBack = document.getElementById("nav-mobile-sub-back");
+      if (subBack) subBack.hidden = true;
+      return;
+    }
+    if (header?.classList.contains("nav--sub-open")) return;
+    panel.hidden = true;
+    wrap.classList.remove("nav-more--open");
+    toggle.setAttribute("aria-expanded", "false");
+  }
+
+  syncMode();
+
+  wrap.addEventListener("mouseenter", () => {
+    if (!isDesktop()) return;
+    setOpen(true);
+  });
+
+  wrap.addEventListener("mouseleave", () => {
+    if (!isDesktop()) return;
+    setOpen(false);
+  });
+
+  panel.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setOpen(false));
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!isDesktop() || wrap.contains(e.target)) return;
+    setOpen(false);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isDesktop()) setOpen(false);
+  });
+
+  desktopMq.addEventListener("change", syncMode);
 })();
 
 (function initSophieModulesSphere() {
@@ -418,26 +676,12 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
 (function initHeroTerminals() {
   /** @type {Record<string, { gradient?: boolean, pinkBlink?: boolean, text: string }[][]>} */
   const configs = {
-    "home-hero-stage": [
-      [{ text: "De eerste AI-agent", gradient: false }],
-      [{ text: "voor gemeenten en steden", gradient: true }],
-    ],
     "sophie-hero-stage": [
-      [{ text: "Sophie — De eerste AI-chatbot/agent ", gradient: false }],
+      [{ text: "De eerste AI-chatbot/agent ", gradient: false }],
       [
-        { text: "speciaal ontwikkeld", gradient: true },
+        { text: "speciaal ontwikkeld", gradient: false },
         { text: " voor steden en gemeenten", gradient: false },
       ],
-    ],
-    "over-ons-hero-stage": [
-      [{ text: "Hoe artificiële intelligentie uw gemeente ", gradient: false }],
-      [
-        { text: "digitaal", gradient: true },
-        { text: " zal transformeren", gradient: false },
-      ],
-    ],
-    "fixit-hero-stage": [
-      [{ text: "FixIt — ", gradient: false }, { text: "Coming soon", gradient: true }],
     ],
     "sophie-modules-stage": [
       [
@@ -531,16 +775,23 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   /**
    * @param {HTMLElement} stage
    * @param {{ gradient?: boolean, pinkBlink?: boolean, text: string }[][]} rows
+   * @param {{ delayMs?: number }} [options]
    */
-  function mountTerminal(stage, rows) {
-    void runTerminalTyping(stage, rows);
+  function mountTerminal(stage, rows, options = {}) {
+    const start = () => {
+      void runTerminalTyping(stage, rows);
+    };
+    if (options.delayMs) setTimeout(start, options.delayMs);
+    else start();
   }
 
   Object.keys(configs).forEach((id) => {
     if (id === "sophie-modules-stage") return;
     const stage = document.getElementById(id);
     if (!stage) return;
-    mountTerminal(stage, configs[id]);
+    const delayMs =
+      id === "sophie-hero-stage" && !reduced ? 720 : 0;
+    mountTerminal(stage, configs[id], { delayMs });
   });
 
   /** Sophie-modules-sectie: eerst de h2-terminal, daarna de vier moduletitels (zelfde animatie als elders). */
@@ -1744,6 +1995,57 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   field.focus();
 })();
 
+(function initSophieCodeTyping() {
+  const code = document.querySelector(".sophie-xai-card--logic code");
+  if (!code) return;
+
+  const fullText = code.textContent || "";
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const motionScale = (() => {
+    const page = document.querySelector(".page--sophie-xai");
+    if (!page) return 1;
+    const raw = getComputedStyle(page).getPropertyValue("--sophie-anim").trim();
+    const n = parseFloat(raw);
+    return n > 0 ? n : 1.55;
+  })();
+
+  if (reduced) return;
+
+  code.textContent = "";
+
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function typeCode() {
+    code.classList.add("sophie-xai-code--typing");
+
+    for (const char of fullText) {
+      code.textContent += char;
+      const pause =
+        (char === "\n" ? 115 : 14 + Math.random() * 24) * motionScale;
+      await sleep(pause);
+    }
+
+    code.classList.remove("sophie-xai-code--typing");
+  }
+
+  const target = code.closest(".sophie-xai-card--logic") || code;
+  let started = false;
+
+  const io = new IntersectionObserver(
+    (entries, observer) => {
+      if (started || !entries[0]?.isIntersecting) return;
+      started = true;
+      observer.disconnect();
+      void typeCode();
+    },
+    { root: null, rootMargin: "0px 0px -10% 0px", threshold: 0.22 }
+  );
+
+  io.observe(target);
+})();
+
 (function initScrollReveal() {
   const nodes = document.querySelectorAll(".reveal");
   if (!nodes.length) return;
@@ -1783,6 +2085,137 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
       io.observe(el);
     }
   });
+})();
+
+(function initSophieEmbedTypewriter() {
+  const codeEl = document.getElementById("sophie-embed-typewriter");
+  const hintEl = document.getElementById("sophie-embed-hint");
+  const card = document.querySelector(".sophie-xai-embed-card");
+  if (!codeEl || !card) return;
+
+  const hintText = hintEl?.textContent?.trim() || "Één regel embed — Sophie verschijnt op uw site.";
+  const embedSegments = [
+    {
+      className: "sophie-xai-embed-card__muted",
+      text: "<!DOCTYPE html>\n<html lang=\"nl\">\n<head>\n  <title>Gemeente</title>\n</head>\n<body>\n  ",
+    },
+    {
+      className: "sophie-xai-embed-card__highlight",
+      text:
+        '<script src="https://widget.sophie.be/embed.js"\n          async\n          data-gemeente="uw-gemeente"></script>',
+    },
+    {
+      className: "sophie-xai-embed-card__muted",
+      text: "\n</body>\n</html>",
+    },
+  ];
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const motionScale = (() => {
+    const page = document.querySelector(".page--sophie-xai");
+    if (!page) return 1;
+    const raw = getComputedStyle(page).getPropertyValue("--sophie-anim").trim();
+    const n = parseFloat(raw);
+    return n > 0 ? n : 1.55;
+  })();
+  const pre = codeEl.closest("pre");
+
+  function prepareForTyping() {
+    codeEl.innerHTML = "";
+    card.classList.remove("sophie-xai-embed-card--ready");
+  }
+
+  function showHint() {
+    if (!hintEl) return;
+    hintEl.textContent = hintText;
+    card.classList.add("sophie-xai-embed-card--ready");
+  }
+
+  function makeCaret() {
+    const el = document.createElement("span");
+    el.className = "typewriter__caret sophie-xai-embed-card__caret";
+    el.setAttribute("aria-hidden", "true");
+    return el;
+  }
+
+  function charDelay() {
+    return (12 + Math.random() * 16) * motionScale;
+  }
+
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * @param {HTMLElement} el
+   * @param {string} text
+   * @param {HTMLElement} caret
+   */
+  async function typeInto(el, text, caret) {
+    for (let i = 0; i < text.length; i++) {
+      caret.insertAdjacentText("beforebegin", text[i]);
+      await sleep(charDelay());
+    }
+  }
+
+  function renderInstant() {
+    codeEl.innerHTML = "";
+    embedSegments.forEach((segment) => {
+      const span = document.createElement("span");
+      span.className = segment.className;
+      span.textContent = segment.text;
+      codeEl.appendChild(span);
+    });
+    showHint();
+    if (pre) pre.setAttribute("aria-busy", "false");
+  }
+
+  async function runTyping() {
+    if (pre) pre.setAttribute("aria-busy", "true");
+    prepareForTyping();
+
+    const spans = embedSegments.map((segment) => {
+      const span = document.createElement("span");
+      span.className = segment.className;
+      codeEl.appendChild(span);
+      return span;
+    });
+
+    let caret = makeCaret();
+    spans[0].appendChild(caret);
+
+    for (let i = 0; i < embedSegments.length; i++) {
+      if (i > 0) {
+        caret.remove();
+        caret = makeCaret();
+        spans[i].appendChild(caret);
+      }
+      await typeInto(spans[i], embedSegments[i].text, caret);
+    }
+
+    caret.remove();
+    showHint();
+    if (pre) pre.setAttribute("aria-busy", "false");
+  }
+
+  if (reduced) {
+    renderInstant();
+    return;
+  }
+
+  prepareForTyping();
+
+  let started = false;
+  const io = new IntersectionObserver(
+    (entries, observer) => {
+      if (started || !entries[0]?.isIntersecting) return;
+      started = true;
+      observer.disconnect();
+      void runTyping();
+    },
+    { root: null, rootMargin: "0px 0px -8% 0px", threshold: 0.18 }
+  );
+  io.observe(card);
 })();
 
 (function initDevRecruitTerminal() {
@@ -2438,4 +2871,522 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
   );
 
   void run();
+})();
+
+(function initHeroVideo() {
+  var video = document.querySelector('.about-xai-hero__video');
+  if (!video) return;
+  video.playbackRate = 0.4;
+  video.addEventListener('canplay', function() { video.playbackRate = 0.4; });
+})();
+
+(function initSophieApiTabs() {
+  var visual = document.querySelector(".sophie-xai-api__visual");
+  if (!visual) return;
+
+  var codeEl = visual.querySelector(".sophie-xai-code-card code");
+  var preEl = visual.querySelector(".sophie-xai-code-card pre");
+  var tabs = visual.querySelectorAll("[data-sophie-tab]");
+  if (!codeEl || !tabs.length) return;
+
+  var snippets = {
+    javascript:
+      'import Sophie from "@sophie/agent";\n\n' +
+      "const agent = new Sophie({\n" +
+      '  gemeente: "uw-gemeente",\n' +
+      '  kanalen: ["web", "whatsapp"],\n' +
+      "});\n\n" +
+      "agent.route(vraag)\n" +
+      "  .naarJuisteDienst()\n" +
+      "  .metLokaalReglement();",
+    html:
+      '<!-- Sophie chatwidget op uw gemeentelijke website -->\n' +
+      '<div id="sophie-chat"\n' +
+      '     data-sophie-gemeente="uw-gemeente"\n' +
+      '     data-sophie-taal="nl"></div>\n' +
+      '<script src="https://widget.sophie.be/embed.js" async><\/script>',
+    whatsapp:
+      'import Sophie from "@sophie/agent";\n\n' +
+      "const agent = new Sophie({\n" +
+      '  gemeente: "uw-gemeente",\n' +
+      '  kanalen: ["whatsapp"],\n' +
+      "});\n\n" +
+      "agent.verbindWhatsApp({\n" +
+      '  webhook: "/api/sophie/whatsapp",\n' +
+      '  welkom: "Hallo, ik ben Sophie — waarmee kan ik u helpen?",\n' +
+      "});\n\n" +
+      'agent.on("bericht", (vraag) => agent.route(vraag).naarJuisteDienst());',
+  };
+
+  function lockCodePanelHeight() {
+    if (!preEl || !visual) return;
+
+    var activeKey = "javascript";
+    tabs.forEach(function (t) {
+      if (t.classList.contains("is-active")) {
+        activeKey = t.getAttribute("data-sophie-tab") || activeKey;
+      }
+    });
+
+    var isMobile = window.matchMedia("(max-width: 767px)").matches;
+    visual.style.minHeight = "";
+    preEl.style.minHeight = "";
+
+    if (!isMobile) {
+      codeEl.textContent = snippets[activeKey] || snippets.javascript;
+      return;
+    }
+
+    var maxVisualHeight = 0;
+    var maxPreHeight = 0;
+
+    Object.keys(snippets).forEach(function (key) {
+      codeEl.textContent = snippets[key];
+      maxPreHeight = Math.max(maxPreHeight, preEl.scrollHeight);
+      maxVisualHeight = Math.max(maxVisualHeight, visual.getBoundingClientRect().height);
+    });
+
+    preEl.style.minHeight = maxPreHeight + "px";
+    visual.style.minHeight = Math.ceil(maxVisualHeight) + "px";
+    codeEl.textContent = snippets[activeKey] || snippets.javascript;
+  }
+
+  function activateTab(tab) {
+    var key = tab.getAttribute("data-sophie-tab");
+    if (!key || !snippets[key]) return;
+
+    tabs.forEach(function (t) {
+      var isActive = t === tab;
+      t.classList.toggle("is-active", isActive);
+      t.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+
+    if (preEl) {
+      preEl.classList.add("is-updating");
+      preEl.setAttribute("aria-labelledby", tab.id);
+    }
+
+    window.setTimeout(function () {
+      codeEl.textContent = snippets[key];
+      if (preEl) preEl.classList.remove("is-updating");
+    }, 120);
+  }
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      activateTab(tab);
+    });
+  });
+
+  lockCodePanelHeight();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(lockCodePanelHeight);
+  }
+  window.addEventListener("resize", lockCodePanelHeight);
+})();
+
+(function initSophieShowcaseGlobe() {
+  const root = document.getElementById("sophie-showcase-globe");
+  if (!root) return;
+
+  const GLOBE_START = {
+    center: [-42, 26],
+    zoom: 1.42,
+    pitch: 52,
+    bearing: -18,
+  };
+
+  const ZOOM_OUT = {
+    center: [3.58, 50.96],
+    zoom: 7.65,
+    pitch: 44,
+    bearing: -10,
+  };
+
+  /** Gent → uitzoomen → Gavere → De Pinte → Pittem */
+  const ROUTE = [
+    { name: "Gent", lng: 3.7174, lat: 51.0543 },
+    { name: "Gavere", lng: 3.6619, lat: 50.9289 },
+    { name: "De Pinte", lng: 3.6475, lat: 50.9934 },
+    { name: "Pittem", lng: 3.3278, lat: 50.9917 },
+  ];
+
+  let map = null;
+  let mapboxAssetsPromise = null;
+  let mapboxTokenPromise = null;
+  let started = false;
+  let tourRunning = false;
+  let tourActive = false;
+  const motionScale = (() => {
+    const page = document.querySelector(".page--sophie-xai");
+    if (!page) return 1;
+    const raw = getComputedStyle(page).getPropertyValue("--sophie-anim").trim();
+    const n = parseFloat(raw);
+    return n > 0 ? n : 1.55;
+  })();
+
+  function motionMs(base, reducedBase) {
+    return reducedBase != null && arguments.length > 1
+      ? reducedBase
+      : Math.round(base * motionScale);
+  }
+
+  function loadMapboxAssets() {
+    if (window.mapboxgl) return Promise.resolve();
+    if (!mapboxAssetsPromise) {
+      mapboxAssetsPromise = new Promise((resolve, reject) => {
+        const existing = document.querySelector('link[href*="mapbox-gl.css"]');
+        if (existing) {
+          const wait = () => {
+            if (window.mapboxgl) resolve();
+            else window.setTimeout(wait, 30);
+          };
+          wait();
+          return;
+        }
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.css";
+        document.head.appendChild(link);
+        const script = document.createElement("script");
+        script.src = "https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.js";
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error("Mapbox laden mislukt"));
+        document.head.appendChild(script);
+      });
+    }
+    return mapboxAssetsPromise;
+  }
+
+  async function getMapboxToken() {
+    const fromWindow = String(window.MAPBOX_PUBLIC_TOKEN || "").trim();
+    if (fromWindow) return fromWindow;
+    const metaEl = document.querySelector('meta[name="mapbox-public-token"]');
+    const fromMeta = String(metaEl?.content || "").trim();
+    if (fromMeta) return fromMeta;
+    if (!mapboxTokenPromise) {
+      mapboxTokenPromise = fetch("/api/mapbox-token", {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((json) => String(json?.token || "").trim())
+        .catch(() => "");
+    }
+    return mapboxTokenPromise;
+  }
+
+  function disableMapInteractions(instance) {
+    try {
+      instance.scrollZoom.disable();
+      instance.boxZoom.disable();
+      instance.dragRotate.disable();
+      instance.dragPan.disable();
+      instance.keyboard.disable();
+      instance.doubleClickZoom.disable();
+      if (instance.touchZoomRotate) instance.touchZoomRotate.disable();
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function showFallback(message) {
+    root.innerHTML =
+      '<p class="sophie-xai-globe__fallback" role="status">' + message + "</p>";
+  }
+
+  function triggerResize() {
+    if (!map) return;
+    try {
+      map.resize();
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function applySpaceFog(instance) {
+    instance.setFog({
+      range: [0.5, 10],
+      "horizon-blend": 0.1,
+      color: "rgb(186, 210, 235)",
+      "high-color": "rgb(54, 118, 235)",
+      "space-color": "rgb(8, 10, 28)",
+      "star-intensity": 0.55,
+    });
+  }
+
+  function sleep(ms) {
+    return new Promise((resolve) => window.setTimeout(resolve, ms));
+  }
+
+  function waitMoveEnd(instance) {
+    return new Promise((resolve) => {
+      function done() {
+        if (instance.isMoving && instance.isMoving()) {
+          instance.once("moveend", done);
+          return;
+        }
+        resolve();
+      }
+      instance.once("moveend", done);
+    });
+  }
+
+  function flyToView(instance, opts, reduced) {
+    const duration =
+      opts.duration != null ? opts.duration : motionMs(7200, reduced ? 800 : null);
+    instance.flyTo({
+      center: opts.center,
+      zoom: opts.zoom,
+      pitch: opts.pitch != null ? opts.pitch : 50,
+      bearing: opts.bearing != null ? opts.bearing : GLOBE_START.bearing,
+      duration,
+      curve: 1.35,
+      essential: true,
+    });
+    return waitMoveEnd(instance);
+  }
+
+  function flyToCity(instance, target, legIndex, reduced, options) {
+    const o = options || {};
+    const duration =
+      o.duration != null ? o.duration : motionMs(6800, reduced ? 1100 : null);
+    instance.flyTo({
+      center: [target.lng, target.lat],
+      zoom: o.zoom != null ? o.zoom : 13.15 + (legIndex % 3) * 0.05,
+      pitch: o.pitch != null ? o.pitch : 54 + (legIndex % 2),
+      bearing: o.bearing != null ? o.bearing : -18 + (legIndex * 14) % 48,
+      duration,
+      curve: 1.35,
+      essential: true,
+    });
+    return waitMoveEnd(instance);
+  }
+
+  async function runTour(reduced) {
+    if (!map || !tourActive || tourRunning) return;
+    tourRunning = true;
+
+    try {
+      await flyToCity(map, ROUTE[0], 0, reduced, {
+        zoom: 13.2,
+        pitch: 56,
+        duration: reduced ? 1200 : motionMs(9000),
+      });
+      if (!tourActive) return;
+      await sleep(reduced ? 450 : motionMs(1800));
+
+      await flyToView(map, ZOOM_OUT, reduced);
+      if (!tourActive) return;
+      await sleep(reduced ? 450 : motionMs(1600));
+
+      for (let i = 1; i < ROUTE.length; i++) {
+        await flyToCity(map, ROUTE[i], i, reduced, {
+          duration: reduced ? 1000 : motionMs(6400),
+        });
+        if (!tourActive) return;
+        await sleep(reduced ? 380 : motionMs(1500));
+      }
+
+      await flyToView(map, GLOBE_START, reduced);
+      if (!tourActive) return;
+      await sleep(reduced ? 650 : motionMs(2400));
+    } finally {
+      tourRunning = false;
+    }
+
+    if (tourActive) {
+      window.setTimeout(() => {
+        void runTour(reduced);
+      }, reduced ? 500 : motionMs(700));
+    }
+  }
+
+  function stopTour() {
+    tourActive = false;
+  }
+
+  async function initMap() {
+    if (started) return;
+    started = true;
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    try {
+      await loadMapboxAssets();
+    } catch (e) {
+      showFallback("De wereldbol kan niet geladen worden. Controleer je netwerkverbinding.");
+      return;
+    }
+
+    const token = await getMapboxToken();
+    if (!token) {
+      showFallback("De wereldbol kan niet geladen worden. Mapbox token ontbreekt.");
+      return;
+    }
+
+    mapboxgl.accessToken = token;
+
+    await new Promise((resolve) => {
+      window.requestAnimationFrame(() => window.requestAnimationFrame(resolve));
+    });
+
+    map = new mapboxgl.Map({
+      container: root,
+      style: "mapbox://styles/mapbox/satellite-streets-v12",
+      center: GLOBE_START.center,
+      zoom: GLOBE_START.zoom,
+      pitch: GLOBE_START.pitch,
+      bearing: GLOBE_START.bearing,
+      projection: "globe",
+      antialias: true,
+      attributionControl: false,
+      failIfMajorPerformanceCaveat: false,
+    });
+
+    root._sophieGlobeMap = map;
+    disableMapInteractions(map);
+
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(() => triggerResize());
+      ro.observe(root);
+      const card = root.closest(".sophie-xai-card--globe");
+      if (card) ro.observe(card);
+    }
+
+    window.addEventListener("resize", triggerResize, { passive: true });
+    window.addEventListener("orientationchange", triggerResize, { passive: true });
+    window.setTimeout(triggerResize, 120);
+    window.setTimeout(triggerResize, 420);
+
+    await new Promise((resolve) => {
+      if (map.loaded()) resolve();
+      else map.once("load", resolve);
+    });
+
+    triggerResize();
+    applySpaceFog(map);
+
+    if (reduced) {
+      map.jumpTo({
+        center: [ROUTE[0].lng, ROUTE[0].lat],
+        zoom: 12.8,
+        pitch: 52,
+        bearing: -14,
+      });
+      return;
+    }
+
+    tourActive = true;
+    void runTour(reduced);
+  }
+
+  const card = root.closest(".sophie-xai-card--globe");
+  if (!card) {
+    void initMap();
+    return;
+  }
+
+  const io = new IntersectionObserver(
+    (entries, observer) => {
+      if (!entries[0]?.isIntersecting) {
+        stopTour();
+        return;
+      }
+      observer.disconnect();
+      void initMap();
+    },
+    { root: null, rootMargin: "0px 0px -6% 0px", threshold: 0.12 }
+  );
+
+  io.observe(card);
+})();
+
+(function initSophieFaqAccordion() {
+  const root = document.querySelector("[data-sophie-faq]");
+  if (!root) return;
+
+  const items = root.querySelectorAll(".sophie-xai-faq__item");
+
+  items.forEach((item) => {
+    item.addEventListener("toggle", () => {
+      if (!item.open) return;
+      items.forEach((other) => {
+        if (other !== item) other.open = false;
+      });
+    });
+  });
+})();
+
+(function initSophieModuleExpand() {
+  const grid = document.querySelector(".sophie-xai-module-grid");
+  if (!grid) return;
+
+  const mq = window.matchMedia("(max-width: 767px)");
+  const modules = grid.querySelectorAll(".sophie-xai-module");
+
+  function syncVisualA11y(module) {
+    const visual = module.querySelector(".sophie-xai-module__visual");
+    if (!visual) return;
+
+    if (!mq.matches) {
+      visual.removeAttribute("role");
+      visual.removeAttribute("tabindex");
+      visual.removeAttribute("aria-expanded");
+      return;
+    }
+
+    visual.setAttribute("role", "button");
+    visual.setAttribute("tabindex", "0");
+    visual.setAttribute(
+      "aria-expanded",
+      module.classList.contains("is-expanded") ? "true" : "false"
+    );
+  }
+
+  function collapseAll(except) {
+    modules.forEach((module) => {
+      if (module === except) return;
+      module.classList.remove("is-expanded");
+      syncVisualA11y(module);
+    });
+  }
+
+  modules.forEach((module) => {
+    const visual = module.querySelector(".sophie-xai-module__visual");
+    if (!visual) return;
+
+    function toggleModule(event) {
+      if (!mq.matches) return;
+      if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
+      if (event.type === "keydown") event.preventDefault();
+      if (event.target !== visual && !visual.contains(event.target)) return;
+
+      const willExpand = !module.classList.contains("is-expanded");
+      if (willExpand) {
+        collapseAll(module);
+        module.classList.add("is-expanded");
+      } else {
+        module.classList.remove("is-expanded");
+      }
+      syncVisualA11y(module);
+    }
+
+    visual.addEventListener("click", toggleModule);
+    visual.addEventListener("keydown", toggleModule);
+
+    syncVisualA11y(module);
+  });
+
+  mq.addEventListener("change", () => {
+    if (mq.matches) {
+      modules.forEach(syncVisualA11y);
+      return;
+    }
+    modules.forEach((module) => {
+      module.classList.remove("is-expanded");
+      syncVisualA11y(module);
+    });
+  });
 })();

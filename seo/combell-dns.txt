@@ -1,0 +1,53 @@
+Combell DNS — sophietechnologies.be (volledige checklist)
+=========================================================
+
+WAT AL KLAAR IS (Vercel + code)
+-------------------------------
+- Domein gekoppeld aan project website-sophie (apex + www)
+- 301 redirects in vercel.json (vercel.app → www.sophietechnologies.be)
+- robots.txt, sitemap.xml, SEO-meta, structured data in HTML
+
+WAT JIJ NOG MOET DOEN BIJ COMBELL
+---------------------------------
+DNS staat nog op Combell-nameservers (ns1.combell.eu), niet op Vercel.
+Daardoor gelden Vercel DNS-records niet automatisch — jij moet dit in Combell zetten:
+
+1. www (VERPLICHT — site werkt nu niet op www)
+   Type:  A
+   Naam:  www
+   Waarde: 76.76.21.21
+   TTL:   3600 (of default)
+
+   Verwijder de oude www-record die wijst naar 217.21.190.139.
+
+2. @ / apex (AANBEVOLEN — root werkt deels, maar IP is verouderd)
+   Type:  A
+   Naam:  @  (of leeg, afhankelijk van Combell UI)
+   Waarde: 76.76.21.21
+
+   Huidige waarde: 216.198.79.1 (redirect naar www werkt, maar Vercel
+   adviseert 76.76.21.21 voor apex én www).
+
+3. Wacht 5–30 minuten, test:
+   https://www.sophietechnologies.be/
+   https://sophietechnologies.be/  → moet doorsturen naar www
+
+ALTERNATIEF (eenvoudiger op lange termijn)
+------------------------------------------
+Zet nameservers bij Combell op Vercel:
+  ns1.vercel-dns.com
+  ns2.vercel-dns.com
+
+Dan beheert Vercel alle DNS-records automatisch (www-record staat daar al).
+
+NA WERKENDE DNS
+---------------
+1. Deploy laatste code: npx vercel deploy --prod --yes
+2. Google Search Console: zie seo/search-console-setup.txt
+   - Property toevoegen: sophietechnologies.be
+   - Sitemap: https://www.sophietechnologies.be/sitemap.xml
+
+STATUS NU (15 jun 2026)
+-----------------------
+  sophietechnologies.be     → Vercel (307 naar www) ✓
+  www.sophietechnologies.be → Combell IP, faalt     ✗

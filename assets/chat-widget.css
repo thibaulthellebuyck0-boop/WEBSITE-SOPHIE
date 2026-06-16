@@ -1,0 +1,388 @@
+/* Host page + widget: TT Norms Pro (host zelf @font-face / licentie indien nodig) */
+:root {
+  --sophie-font-sans: "TT Norms Pro", "TT Norms", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.demo-page {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 6rem;
+  font-family: var(--sophie-font-sans);
+  font-optical-sizing: auto;
+  line-height: 1.6;
+  color: #0d0d0d;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.demo-page h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.75rem;
+}
+
+/* Sophie widget — chatbalk gecentreerd onderaan; paneel direct erboven (zelfde "rij") */
+.ccw {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: max(6px, env(safe-area-inset-bottom, 6px));
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  pointer-events: none;
+  font-family: var(--sophie-font-sans);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Verborgen tot scroll-trigger */
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ccw--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ccw__launcher {
+    animation: none !important;
+  }
+
+  .ccw__panel {
+    animation: none !important;
+  }
+
+  .ccw__launcher-wave {
+    animation: none !important;
+  }
+
+  .ccw__launcher-copy {
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .ccw.is-open .ccw__panel {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ccw * {
+  box-sizing: border-box;
+}
+
+.ccw__launcher {
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: min(352px, calc((100vw - 32px) * 0.8));
+  min-width: 224px;
+  min-height: 52px;
+  padding: 6px 8px 6px 10px;
+  margin: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  background: #ffffff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: #6b7280;
+  font-family: var(--sophie-font-sans);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    width 0.46s cubic-bezier(0.22, 1, 0.36, 1),
+    min-width 0.46s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.28s ease,
+    transform 0.46s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+  --ccw-glow-x: 50%;
+  --ccw-glow-y: 50%;
+}
+
+.ccw__launcher:hover {
+  color: #4b5563;
+  border-color: #e5e7eb;
+  box-shadow: none;
+}
+
+.ccw__launcher:active {
+  background: #f9fafb;
+  transition-duration: 0.08s;
+}
+
+.ccw__launcher:focus-visible {
+  outline: 3px solid rgba(17, 17, 17, 0.22);
+  outline-offset: 2px;
+}
+
+.ccw__launcher-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+  padding-left: 3.5%;
+  color: inherit;
+}
+
+.ccw__launcher-copy {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  transition:
+    opacity 340ms ease,
+    transform 340ms ease,
+    filter 340ms ease;
+}
+
+.ccw__launcher-copy.is-leaving {
+  opacity: 0;
+  transform: translateY(-6px);
+  filter: blur(0.4px);
+}
+
+.ccw__launcher-copy.is-entering {
+  opacity: 0;
+  transform: translateY(6px);
+  filter: blur(0.4px);
+}
+
+.ccw__launcher::before,
+.ccw__launcher::after {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.ccw__launcher::before {
+  display: none;
+}
+
+.ccw__launcher::after {
+  content: "↑";
+  background: #111827;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ccw__launcher:where(:hover, :focus-visible) {
+  background: radial-gradient(
+    130px 130px at var(--ccw-glow-x) var(--ccw-glow-y),
+    rgba(156, 163, 175, 0.28) 0%,
+    rgba(156, 163, 175, 0.18) 32%,
+    rgba(156, 163, 175, 0.08) 58%,
+    rgba(156, 163, 175, 0) 100%
+  ), #ffffff;
+}
+
+.ccw__launcher-wave {
+  display: none;
+  transform-origin: 70% 70%;
+}
+
+/* Open: volledig scherm op alle formaten */
+.ccw.is-opening,
+.ccw.is-open {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  gap: 0;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+.ccw.is-opening .ccw__panel,
+.ccw.is-open .ccw__panel {
+  display: flex;
+  flex-direction: column;
+  --ccw-panel-w: 100%;
+  --ccw-bar-stack: 0px;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  max-height: none;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  transform: none;
+  transform-origin: 50% 100%;
+}
+
+.ccw.is-opening .ccw__panel {
+  opacity: 0;
+  animation: ccw-panel-morph-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.ccw.is-open:not(.is-closing) .ccw__panel {
+  opacity: 1;
+  animation: none;
+}
+
+@keyframes ccw-panel-morph-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Launcher groeit naar chatbalk-breedte en fadet uit terwijl iframe-composer verschijnt */
+.ccw.is-opening .ccw__launcher,
+.ccw.is-open .ccw__launcher {
+  position: fixed;
+  left: 50%;
+  bottom: max(6px, env(safe-area-inset-bottom, 6px));
+  z-index: 100000;
+  margin: 0;
+  transform: translateX(-50%);
+  width: var(--ccw-morph-width, min(80vw, 910px)) !important;
+  min-width: var(--ccw-morph-width, min(80vw, 910px)) !important;
+}
+
+.ccw.is-opening .ccw__launcher-text,
+.ccw.is-opening .ccw__launcher::after {
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.ccw.is-open:not(.is-opening) .ccw__launcher {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.24s ease,
+    width 0.46s cubic-bezier(0.22, 1, 0.36, 1),
+    min-width 0.46s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0.24s;
+}
+
+.ccw__panel {
+  --ccw-panel-w: min(910px, calc(100vw - 38px));
+  --ccw-bar-stack: 96px;
+  display: none;
+  position: relative;
+  pointer-events: auto;
+  flex-shrink: 0;
+  width: var(--ccw-panel-w);
+  height: min(
+    686px,
+    calc(100dvh - var(--ccw-bar-stack) - 28px),
+    calc(var(--ccw-panel-w) / 1.314)
+  );
+  min-height: min(
+    468px,
+    calc(var(--ccw-panel-w) * 1.279),
+    calc(100dvh - var(--ccw-bar-stack) - 32px)
+  );
+  max-height: calc(100dvh - var(--ccw-bar-stack) - 24px);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 24px 64px rgba(0, 0, 0, 0.12),
+    0 10px 24px rgba(0, 0, 0, 0.06);
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
+  transform-origin: 50% 100%;
+}
+
+.ccw.is-open.is-closing .ccw__panel {
+  animation: ccw-panel-close 180ms ease-in forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ccw.is-opening .ccw__panel {
+    animation: none;
+    opacity: 1;
+  }
+
+  .ccw.is-opening .ccw__launcher-text,
+  .ccw.is-opening .ccw__launcher::after {
+    transition: none;
+  }
+}
+
+@keyframes ccw-panel-close {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+.ccw__frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .ccw {
+    bottom: max(6px, env(safe-area-inset-bottom, 6px));
+    gap: 10px;
+  }
+
+  .ccw__launcher {
+    max-width: calc((100vw - 24px) * 0.8);
+  }
+}
+
+/* Verberg chatbalk zolang het mobiele hoofdmenu open is */
+body.ccw-chat-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
+body.nav-menu-open #corner-chat-widget {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(16px) !important;
+  transition-duration: 0.2s !important;
+}

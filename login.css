@@ -9,6 +9,8 @@
   --split-peach: #f8c48c;
   --split-blue: #0066d6;
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --title-weight: 300;
+  --title-tracking: -0.065em;
 }
 
 *,
@@ -67,8 +69,8 @@ body.login-standalone {
   width: 100%;
   margin: 0;
   font-size: clamp(21px, 2.5vw, 34px);
-  font-weight: 600;
-  letter-spacing: -0.038em;
+  font-weight: var(--title-weight);
+  letter-spacing: var(--title-tracking);
   line-height: 1.06;
   color: var(--text);
 }
@@ -86,7 +88,7 @@ body.login-standalone {
   font-size: inherit;
   font-weight: inherit;
   line-height: 1.06;
-  letter-spacing: -0.038em;
+  letter-spacing: var(--title-tracking);
 }
 
 .login-split__brand .hero-terminal__line {
@@ -116,8 +118,8 @@ body.login-standalone {
 .login-split__title {
   margin: 0 0 28px;
   font-size: clamp(1.5rem, 3vw, 1.75rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-weight: var(--title-weight);
+  letter-spacing: var(--title-tracking);
   color: var(--text);
 }
 
@@ -179,6 +181,34 @@ body.login-standalone {
 
 .login-split__try:hover {
   text-decoration: underline;
+}
+
+.login-split__studio {
+  margin: 24px 0 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.login-split__studio a {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.login-split__studio a:hover {
+  text-decoration: underline;
+}
+
+.login-split__btn--ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--login-line);
+}
+
+.login-split__btn--ghost:hover {
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .login-split__form-wrap {

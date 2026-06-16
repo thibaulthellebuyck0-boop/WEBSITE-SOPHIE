@@ -3,17 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Je wordt doorgestuurd naar Sophie Studio." />
-  <title>Doorsturen naar Sophie Studio</title>
-  <meta http-equiv="refresh" content="0; url=https://chat-widget-demo-six.vercel.app/admin.html" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Log in op uw Sophie-account." />
+  <title>Log in — Sophie</title>
+  <link rel="stylesheet" href="styles.css?v=20260616-nav-active" />
+  <link rel="stylesheet" href="login.css" />
 </head>
-<body>
-  <p>Je wordt doorgestuurd naar Sophie Studio…</p>
-  <p><a href="https://chat-widget-demo-six.vercel.app/admin.html">Klik hier als je niet automatisch wordt doorgestuurd</a>.</p>
-  <script>
-    (function () {
-      window.location.replace("https://chat-widget-demo-six.vercel.app/admin.html");
-    })();
-  </script>
+<body class="login-standalone">
+  <main class="login-split">
+    <aside class="login-split__brand" aria-label="Sophie">
+      <div class="login-split__hero">
+        <h1 class="page-hero__title page-hero__title--typewriter login-split__hero-title">
+          <span id="login-hero-stage" class="hero-terminal__stage" aria-hidden="true"></span>
+          <span id="login-hero-live" class="visually-hidden" aria-live="polite"></span>
+        </h1>
+      </div>
+    </aside>
+
+    <section class="login-split__panel" aria-label="Log in">
+      <div class="login-split__center">
+        <h1 class="login-split__title">Log in</h1>
+        <p class="login-split__demo-hint">
+          Toegang voor bestaande klanten en pilootgemeenten. Nog geen account?
+          <strong><a href="contact.html">Neem contact op</a></strong>.
+        </p>
+        <div class="login-split__actions">
+          <a class="login-split__btn" href="contact.html">Vraag toegang aan</a>
+          <a class="login-split__btn login-split__btn--ghost" href="index.html">Terug naar website</a>
+        </div>
+        <p class="login-split__studio">
+          Beheer Sophie voor uw gemeente?
+          <a href="studio.html">Open Sophie Studio</a>
+        </p>
+      </div>
+
+      <footer class="login-split__foot">
+        <p class="login-split__legal">
+          <a href="contact.html">Gebruiksvoorwaarden</a><span class="login-split__sep" aria-hidden="true">|</span>
+          <a href="contact.html">Privacybeleid</a>
+        </p>
+      </footer>
+    </section>
+  </main>
+
+  <script src="main.js?v=20260616-desktop-nav-fix"></script>
 </body>
 </html>

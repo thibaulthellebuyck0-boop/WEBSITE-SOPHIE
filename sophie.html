@@ -3,35 +3,120 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="description" content="Sophie — de eerste AI-chatbot voor steden en gemeenten. SmartRouting, modules en eenvoudige integratie." />
-  <title>Sophie — AI voor gemeenten</title>
-  <link rel="stylesheet" href="styles.css?v=20260413-sophie-modules-orbit" />
-  <link rel="stylesheet" href="https://chat-widget-demo-six.vercel.app/assets/chat-widget.css?v=4" />
-  <style>
-    @keyframes sophie-ccw-launcher-fly-in {
-      from {
-        opacity: 0;
-        transform: translateY(calc(100% + 32px));
+  <meta name="description" content="Ontdek hoe Sophie 24/7 burgervragen beantwoordt voor Vlaamse gemeenten. SmartRouting, GDPR-conform, gratis pilootmaand. Bekijk een live demo." />
+  <title>Sophie AI-agent voor gemeenten — Demo aanvragen | Sophie Technologies</title>
+  <link rel="canonical" href="https://www.sophietechnologies.be/sophie" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="nl_BE" />
+  <meta property="og:site_name" content="Sophie Technologies" />
+  <meta property="og:title" content="Sophie — AI-agent voor gemeenten en steden" />
+  <meta property="og:description" content="De AI-agent voor Belgische gemeenten en steden. SmartRouting, lokale kennis en modules — op uw website en optioneel via WhatsApp." />
+  <meta property="og:url" content="https://www.sophietechnologies.be/sophie" />
+  <meta property="og:image" content="https://www.sophietechnologies.be/assets/og-sophie.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Sophie — AI-agent voor gemeenten en steden" />
+  <meta name="twitter:description" content="De AI-agent voor Belgische gemeenten en steden. SmartRouting, lokale kennis en modules op maat." />
+  <meta name="twitter:image" content="https://www.sophietechnologies.be/assets/og-sophie.jpg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.sophietechnologies.be/#organization",
+        "name": "Sophie Technologies",
+        "url": "https://www.sophietechnologies.be",
+        "logo": "https://www.sophietechnologies.be/assets/og-sophie.jpg"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.sophietechnologies.be/#website",
+        "url": "https://www.sophietechnologies.be",
+        "name": "Sophie Technologies",
+        "publisher": { "@id": "https://www.sophietechnologies.be/#organization" },
+        "inLanguage": "nl-BE"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Sophie",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "description": "AI-agent voor Belgische gemeenten en steden: SmartRouting naar het juiste loket, begrip van lokale reglementen, modulaire uitbreiding en embed op uw website.",
+        "url": "https://www.sophietechnologies.be/sophie",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "EUR",
+          "description": "Contacteer ons voor demo of pilootgemeente"
+        },
+        "provider": { "@id": "https://www.sophietechnologies.be/#organization" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.sophietechnologies.be/" },
+          { "@type": "ListItem", "position": 2, "name": "Sophie", "item": "https://www.sophietechnologies.be/sophie" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Wat is Sophie?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sophie is een AI-agent voor Belgische gemeenten en steden. Ze beantwoordt burger vragen 24/7, begrijpt lokale reglementen en verwijst via SmartRouting naar het juiste loket."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Waarvoor dient een AI-agent voor gemeenten?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Een AI-agent neemt repetitieve vragen over, begrijpt lokale context en verwijst burgers door naar het juiste loket of de juiste dienst — zodat uw onthaal zich kan focussen op complexere dossiers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Kan Sophie ook via WhatsApp?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Ja, WhatsApp is een optioneel kanaal naast uw website. Dezelfde AI-agent en SmartRouting werken op beide kanalen, zodat antwoorden consistent blijven."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Sophie geschikt voor Belgische gemeenten?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sophie is gebouwd voor lokale besturen in België en Vlaanderen, met aandacht voor lokale reglementen, loketten en meertalige context waar nodig."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Hoe lang duurt de implementatie?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Een eerste piloot kan doorgaans binnen één dag live staan. We streven naar een configuratie van ongeveer twee uur voor een eerste werkende setup."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Voldoet Sophie aan GDPR?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sophie wordt ontwikkeld met privacy en gegevensbescherming als uitgangspunt. We bespreken graag de concrete verwerking en beveiliging in functie van uw gemeente."
+            }
+          }
+        ]
       }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Eén keer bij binnenkomst; uit tijdens open paneel (eigen transform) en na afloop intro (geen herhaling bij sluiten). */
-    #corner-chat-widget.ccw:not(.is-open):not(.ccw-intro-done) .ccw__launcher {
-      animation: sophie-ccw-launcher-fly-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      #corner-chat-widget.ccw:not(.is-open):not(.ccw-intro-done) .ccw__launcher {
-        animation: none;
-        opacity: 1;
-        transform: none;
-      }
-    }
-  </style>
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="styles.css?v=20260616-sophie-modules" />
+  <link rel="stylesheet" href="assets/chat-widget.css?v=20260616-ccw-rotate" />
 </head>
 <body>
   <header class="nav" id="top">
@@ -45,171 +130,508 @@
         aria-controls="nav-primary"
         aria-label="Menu openen"
       >
-        <span class="nav__menu-bar" aria-hidden="true"></span>
-        <span class="nav__menu-bar" aria-hidden="true"></span>
-        <span class="nav__menu-bar" aria-hidden="true"></span>
+        <svg class="nav__menu-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+          <rect class="nav__menu-icon-frame" x="3.5" y="3.5" width="17" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <path class="nav__menu-icon-rail" d="M9 5.5v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path class="nav__menu-icon-close" d="M7 7l10 10M17 7 7 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
       </button>
       <nav class="nav__links" id="nav-primary" aria-label="Hoofdnavigatie">
         <span class="nav__pill" aria-hidden="true"></span>
         <a class="nav-item nav-pill-target" href="index.html">Home</a>
-        <a class="nav-item nav-pill-target" href="over-ons.html">Over ons</a>
         <a class="nav-item nav-pill-target" href="sophie.html">Sophie</a>
-        <a class="nav-item nav-pill-target" href="fixit.html">FixIt</a>
-        <a class="nav-item nav-pill-target" href="contact.html">Contact</a>
+        <a class="nav-item nav-pill-target" href="maatwerk.html">Maatwerk</a>
+        <a class="nav-item nav-pill-target" href="over-ons.html">Over ons</a>
+        <div class="nav-more nav-pill-target">
+          <button
+            type="button"
+            class="nav-item nav-more__toggle"
+            id="nav-more-toggle"
+            aria-expanded="false"
+            aria-controls="nav-more-panel"
+            aria-haspopup="true"
+          >
+            Verder
+          </button>
+          <div class="nav-more__panel nav-mega" id="nav-more-panel" role="menu" hidden>
+            <button type="button" class="nav-mobile-sub__back" id="nav-mobile-sub-back" hidden>
+              <span class="nav-mobile-sub__back-icon" aria-hidden="true">‹</span>
+              Terug
+            </button>
+            <div class="nav-mega__grid">
+              <a class="nav-mega__card nav-more__link" href="blog/" role="menuitem">
+                <span class="nav-mega__card-title">Blog</span>
+                <span class="nav-mega__card-desc">Kennis over AI voor lokale besturen.</span>
+              </a>
+              <a class="nav-mega__card nav-more__link" href="contact.html" role="menuitem">
+                <span class="nav-mega__card-title">Contact</span>
+                <span class="nav-mega__card-desc">Plan een gesprek of stel uw vraag.</span>
+              </a>
+              <a class="nav-mega__card nav-more__link" href="fixit.html" role="menuitem">
+                <span class="nav-mega__card-title">FixIt</span>
+                <span class="nav-mega__card-desc">Meldingen en onderhoud slim op de kaart.</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="nav__actions">
+          <a class="nav__cta nav__cta--ghost" href="login.html">Log in</a>
+          <a class="nav__cta nav__cta--primary" href="contact.html">Begin vandaag</a>
+        </div>
       </nav>
-      <a class="nav__cta" href="aan-de-slag.html">Aan de slag</a>
     </div>
   </header>
 
-  <main class="page page--sophie">
-    <div class="about-shell">
-      <header class="page-hero page-hero--sophie">
-        <p class="eyebrow">Sophie</p>
-        <h1 class="page-hero__title page-hero__title--typewriter">
-          <span id="sophie-hero-stage" class="hero-terminal__stage" aria-hidden="true"></span>
-          <span class="visually-hidden">Sophie — De eerste AI-chatbot/agent speciaal ontwikkeld voor steden en gemeenten</span>
+  <main class="page page--sophie page--sophie-xai">
+    <section class="sophie-xai-hero" aria-labelledby="sophie-xai-heading">
+      <div class="sophie-xai-hero__inner">
+        <h1 class="sophie-xai-hero__title" id="sophie-xai-heading">
+          De AI-agent voor alles wat uw gemeente
+          <span class="sophie-xai-rotator" aria-label="vraagt, regelt en zoekt">
+            <span class="sophie-xai-rotator__word">vraagt.</span>
+            <span class="sophie-xai-rotator__word">regelt.</span>
+            <span class="sophie-xai-rotator__word">zoekt.</span>
+          </span>
         </h1>
-      </header>
-      <div class="page-body">
-      <p class="reveal">
-        Sophie is geen generieke chatbot. Sophie is van de grond af opgebouwd specifiek voor lokale besturen — met een diep
-        begrip van gemeentelijke procedures, reglementen en loketten. Dat maakt het verschil.
-      </p>
-      <p class="reveal">
-        Onze centrale doelstelling is tweeledig: de user experience voor de burger verbeteren, en tegelijk de werkdruk aan
-        het loket verlagen. Sophie beantwoordt repetitieve vragen zelfstandig, 24/7, zodat uw personeel zich kan focussen
-        op wat écht telt.
-      </p>
-      <p class="reveal">
-        Sophie is bereikbaar voor de burger via een chatbox op uw gemeentelijke website én via WhatsApp.
-      </p>
+        <p class="sophie-xai-hero__lead">
+          De AI-agent voor steden en gemeenten in België. Sophie begrijpt uw lokale regels, verwijst naar het juiste loket
+          en neemt repetitieve vragen over — op uw website, en desgewenst ook via WhatsApp.
+        </p>
+        <div class="sophie-xai-hero__actions">
+          <a class="btn btn--primary" href="contact.html">Plan een gesprek</a>
+          <a class="btn btn--ghost" href="#sophie-modules-heading">Bekijk modules</a>
+        </div>
+      </div>
+    </section>
 
-      <h2 class="reveal">Wat maakt Sophie uniek?</h2>
-      <p class="reveal">
-        Sophie beschikt over een unieke RAG-database en routinglogica die specifiek ontworpen zijn voor steden en gemeenten.
-        Ze is volledig op de hoogte van uw lokale procedures en reglementering, leest continu uw website en kent elk
-        event, elk nieuws en elke contactpersoon binnen uw organisatie — voor zover u dat instelt.
-      </p>
-      <p class="reveal">
-        Wanneer Sophie een vraag niet zelfstandig kan beantwoorden, stelt ze samen met de burger een e-mail op en stuurt
-        die automatisch door naar de juiste persoon binnen uw gemeente.
-      </p>
+    <section class="sophie-xai-showcase" aria-label="Sophie in actie">
+      <div class="sophie-xai-showcase__grid">
+        <article class="sophie-xai-card sophie-xai-card--globe reveal">
+          <div
+            class="sophie-xai-globe"
+            id="sophie-showcase-globe"
+            role="img"
+            aria-label="Wereldbol die boven Vlaanderen zweeft"
+          ></div>
+        </article>
 
-      <h2 class="reveal">SmartRouting — de kern van Sophie</h2>
-      <p class="reveal">
-        SmartRouting is altijd aanwezig en vormt het hart van het systeem. Op basis van de persoonlijke situatie van de
-        burger vindt Sophie automatisch de juiste weg door de gemeente — de juiste procedure, het juiste loket, het
-        juiste antwoord.
-      </p>
-      <p class="reveal">
-        Een horecaondernemer vraagt: &ldquo;Moet ik een aanvraag indienen om mijn terras uit te breiden?&rdquo; Sophie
-        weet het antwoord. Een kersverse ouder wil weten hoe hij zijn baby moet aangeven. Sophie verwijst hem direct naar
-        het juiste loket, online of fysiek.
-      </p>
-      <p class="reveal">
-        SmartRouting omvat het aanmaken of uploaden van lokale reglementen, diensten, loketten en een koppeling aan uw
-        website.
-      </p>
+        <article class="sophie-xai-card sophie-xai-card--logic reveal reveal--d1">
+          <div class="sophie-xai-code" aria-hidden="true">
+            <div class="sophie-xai-code__bar">
+              <span></span><span></span><span></span>
+              <strong>SmartRouting</strong>
+            </div>
+            <pre><code>if (vraag.type === "terras") {
+  loket = regels.horeca.find(gemeente);
+  antwoord = loket.procedure();
+}
 
-      <section class="sophie-modules-dark reveal" aria-labelledby="sophie-modules-heading">
-        <div class="sophie-modules-dark__inner">
-          <h2 id="sophie-modules-heading" class="sophie-modules-dark__title">
-            <span id="sophie-modules-stage" class="hero-terminal__stage" aria-hidden="true"></span>
-            <span class="visually-hidden">Modules — de &lsquo;handen&rsquo; van Sophie</span>
-          </h2>
-          <p>
-            Sophie werkt met modules die individueel kunnen worden aan- of afgezet. Zo start u met wat u nodig heeft en
-            breidt u later uit. Gebruikt u al een eigen systeem? Dan stuurt Sophie de burger gewoon door naar dat
-            systeem, meteen naar de juiste dienst.
-          </p>
-          <p>
-            SmartRouting brengt de vraag op het juiste spoor; daarna nemen de modules het over — elk met een eigen
-            ritme, kanaal en uitkomst.
-          </p>
+route.to(juisteDienst);</code></pre>
+          </div>
+        </article>
 
-          <div class="sophie-modules-orbit" aria-label="Module-overzicht">
-            <button type="button" class="sophie-modules-orbit__widget">Agenda</button>
-            <button type="button" class="sophie-modules-orbit__widget">Meldingen</button>
-            <button type="button" class="sophie-modules-orbit__widget">Community</button>
-            <button type="button" class="sophie-modules-orbit__widget">Direct contact</button>
-            <div class="sophie-modules-orbit__sphere-wrap" aria-hidden="true">
-              <canvas id="sophie-modules-sphere" class="sophie-modules-orbit__sphere" width="680" height="680"></canvas>
+        <article class="sophie-xai-card sophie-xai-card--imagine reveal reveal--d2">
+          <div class="sophie-xai-imagine" aria-label="Loketten modules: Agenda, Meldingen, Community, Direct contact">
+            <div class="sophie-xai-imagine__module sophie-xai-imagine__module--landscape sophie-xai-module__visual--agenda">
+              <span>Agenda</span>
+            </div>
+            <div class="sophie-xai-imagine__module sophie-xai-imagine__module--square sophie-xai-module__visual--meldingen">
+              <span>Meldingen</span>
+            </div>
+            <div class="sophie-xai-imagine__module sophie-xai-imagine__module--square sophie-xai-module__visual--community">
+              <span>Community</span>
+            </div>
+            <div class="sophie-xai-imagine__module sophie-xai-imagine__module--landscape sophie-xai-module__visual--contact">
+              <span>Direct contact</span>
             </div>
           </div>
+        </article>
 
-          <div class="sophie-module-blocks" aria-label="Voorbeelden van Sophie-modules">
-            <article class="sophie-module-block">
-              <h3 class="sophie-module-block__title">
-                <span id="sophie-module-stage-agenda" class="hero-terminal__stage" aria-hidden="true"></span>
-                <span class="visually-hidden">Agenda</span>
-              </h3>
-              <p>
-                Sophie boekt afspraken voor de burger, kent welk loket welke dienst aanbiedt en herinnert aan mee te
-                nemen documenten of kosten — bijvoorbeeld voor een nieuwe identiteitskaart. Ook via WhatsApp kan iemand
-                boeken, zonder uw site te openen.
-              </p>
-            </article>
-            <article class="sophie-module-block">
-              <h3 class="sophie-module-block__title">
-                <span id="sophie-module-stage-meldingen" class="hero-terminal__stage" aria-hidden="true"></span>
-                <span class="visually-hidden">Meldingen</span>
-              </h3>
-              <p>
-                Inwoners melden defecten met foto en locatie via web of WhatsApp. Sophie herkent context en stuurt alles
-                netjes geformatteerd door naar de juiste dienst — of verwijst naar uw bestaande meldingsformulier als u
-                dat verkiest.
-              </p>
-            </article>
-            <article class="sophie-module-block">
-              <h3 class="sophie-module-block__title">
-                <span id="sophie-module-stage-community" class="hero-terminal__stage" aria-hidden="true"></span>
-                <span class="visually-hidden">Community</span>
-              </h3>
-              <p>
-                Na een gesprek kan Sophie gerichte vragen stellen over beleidsthema&apos;s — zoals een autovrije markt.
-                Antwoorden worden verwerkt tot bruikbare input voor het bestuur. Proactieve polls via WhatsApp halen
-                vaak meer respons dan klassieke enquêtes.
-              </p>
-            </article>
-            <article class="sophie-module-block">
-              <h3 class="sophie-module-block__title">
-                <span id="sophie-module-stage-direct-contact" class="hero-terminal__stage" aria-hidden="true"></span>
-                <span class="visually-hidden">Direct contact</span>
-              </h3>
-              <p>
-                Als Sophie iets niet met zekerheid kan beantwoorden, stelt ze met de burger een mail op en zet die naar
-                de juiste persoon — schepen, technische dienst, wie nodig is. Verder verloopt het gesprek gewoon via
-                e-mail.
-              </p>
-            </article>
+        <article class="sophie-xai-card sophie-xai-card--voice reveal reveal--d3">
+          <div class="sophie-xai-voice" aria-hidden="true">
+            <svg class="sophie-xai-whatsapp-logo" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M19.05 4.91A9.83 9.83 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91a9.86 9.86 0 0 0-2.91-7.01ZM12.04 20.15h-.01a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.22 8.22 0 0 1-1.26-4.39c0-4.54 3.7-8.24 8.25-8.24a8.18 8.18 0 0 1 5.83 2.42 8.2 8.2 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.25 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.8-.23-.08-.39-.12-.56.12-.16.25-.64.8-.78.96-.14.16-.29.18-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.38-1.73-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.35-.76-1.85-.2-.48-.4-.41-.56-.42h-.48c-.16 0-.43.06-.66.31-.23.25-.86.84-.86 2.05s.88 2.38 1 2.54c.12.16 1.73 2.65 4.2 3.72.59.25 1.04.4 1.4.52.59.19 1.12.16 1.54.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.1-.23-.16-.48-.28Z"
+              />
+            </svg>
           </div>
-        </div>
-      </section>
+        </article>
 
-      <h2 class="reveal">Technisch eenvoudig te integreren</h2>
-      <p class="reveal">
-        De chatbox integreert u met één regel code op uw website. U kiest zelf welke modules u activeert. Het opzetten van
-        Sophie is intuïtief — vergelijkbaar met het instellen van een nieuwe telefoon. Wij begeleiden u door het hele
-        proces.
-      </p>
-      <p class="reveal">
-        We merkten direct bij de gesprekken die we voerden met IT-verantwoordelijken van gemeenten hoe belangrijk
-        <strong>de flexibiliteit bij integraties</strong> is. Daarom werken we met <strong>modules</strong>. Dit zijn de
-        functie- of &ldquo;handen&rdquo; van Sophie en kunnen individueel worden losgekoppeld.
-      </p>
-      <p class="reveal">
-        Sophie stuurt dan gewoon een knop in de chat naar het bestaande systeem dat jullie gebruiken.
-        <em>
-          Bijvoorbeeld: willen jullie blijven gebruik maken van jullie eigen agendasysteem, dan stuurt Sophie de burger
-          door naar het bestaande agendasysteem — bijvoorbeeld al direct naar de juiste dienst.
-        </em>
-      </p>
-      <p class="reveal">Allemaal eenvoudig in te stellen.</p>
-      <p class="reveal">
-        Neem <a href="contact.html">contact op</a> voor prijsinformatie.
-      </p>
+        <article class="sophie-xai-card sophie-xai-card--embed reveal reveal--d4">
+          <div class="sophie-xai-showcase-embed" aria-label="Embed in één regel code">
+            <p class="sophie-xai-showcase-embed__label">Snelle implementatie</p>
+            <div class="sophie-xai-showcase-embed__terminal">
+              <div class="sophie-xai-showcase-embed__bar">
+                <span></span><span></span><span></span>
+                <strong>index.html</strong>
+              </div>
+              <pre><code><span class="sophie-xai-showcase-embed__muted">&lt;body&gt;</span>
+  <span class="sophie-xai-showcase-embed__highlight">&lt;script src="https://widget.sophie.be/embed.js"
+          async
+          data-gemeente="uw-gemeente"&gt;&lt;/script&gt;</span>
+<span class="sophie-xai-showcase-embed__muted">&lt;/body&gt;</span></code></pre>
+            </div>
+          </div>
+        </article>
+
+        <article class="sophie-xai-card sophie-xai-card--chat reveal reveal--d5">
+          <div class="sophie-xai-chat">
+            <p class="sophie-xai-chat__bubble">Ik wil een afspraak maken voor een nieuwe identiteitskaart.</p>
+            <p class="sophie-xai-chat__bubble sophie-xai-chat__bubble--right">Welke documenten moet ik meenemen?</p>
+            <p class="sophie-xai-chat__bubble">
+              Sophie kiest het juiste loket, toont de vereisten en stuurt door naar het bestaande agendasysteem.
+            </p>
+          </div>
+        </article>
       </div>
-    </div>
+    </section>
+
+    <section class="sophie-xai-api" aria-labelledby="sophie-api-heading">
+      <div class="sophie-xai-api__copy reveal">
+        <p class="sophie-xai-kicker">Voor gemeenten</p>
+        <h2 id="sophie-api-heading">Betere ervaring. Minder loketdruk.</h2>
+        <p>
+          Sophie is specifiek ontwikkeld voor lokale besturen. Binnen het platform configureert u diensten, loketten en
+          bestaande e-loketten; indien gewenst via een automatische LDAP-import.
+        </p>
+        <p>
+          Dankzij RAG-technologie put Sophie haar kennis uit uw gemeentelijke website, lokale reglementen en gevalideerde
+          bronnen. Zo blijft ze op de hoogte van procedures, evenementen en nieuws, zonder zelf informatie te verzinnen.
+        </p>
+        <div class="sophie-xai-api__actions">
+          <a class="btn btn--primary" href="contact.html">Start piloot</a>
+          <a class="btn btn--ghost" href="#sophie-modules-heading">Lees docs</a>
+        </div>
+        <dl class="sophie-xai-metrics">
+          <div>
+            <dt>24/7</dt>
+            <dd>bereikbaar</dd>
+          </div>
+          <div>
+            <dt>1 regel</dt>
+            <dd>integratie</dd>
+          </div>
+          <div>
+            <dt>4+</dt>
+            <dd>modules</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="sophie-xai-api__visual reveal reveal--d1">
+        <div class="sophie-xai-code-card">
+          <div class="sophie-xai-code-card__bar">
+            <span></span><span></span><span></span>
+            <button type="button">Copy</button>
+          </div>
+          <pre id="sophie-xai-code-panel" role="tabpanel" aria-labelledby="sophie-xai-tab-js"><code>import Sophie from "@sophie/agent";
+
+const agent = new Sophie({
+  gemeente: "uw-gemeente",
+  kanalen: ["web", "whatsapp"],
+});
+
+agent.route(vraag)
+  .naarJuisteDienst()
+  .metLokaalReglement();</code></pre>
+        </div>
+        <div class="sophie-xai-tabs" role="tablist" aria-label="Integratievoorbeelden">
+          <button
+            type="button"
+            class="sophie-xai-tabs__tab is-active"
+            role="tab"
+            id="sophie-xai-tab-js"
+            aria-selected="true"
+            aria-controls="sophie-xai-code-panel"
+            data-sophie-tab="javascript"
+          >
+            JavaScript
+          </button>
+          <button
+            type="button"
+            class="sophie-xai-tabs__tab"
+            role="tab"
+            id="sophie-xai-tab-html"
+            aria-selected="false"
+            aria-controls="sophie-xai-code-panel"
+            data-sophie-tab="html"
+          >
+            HTML
+          </button>
+          <button
+            type="button"
+            class="sophie-xai-tabs__tab"
+            role="tab"
+            id="sophie-xai-tab-whatsapp"
+            aria-selected="false"
+            aria-controls="sophie-xai-code-panel"
+            data-sophie-tab="whatsapp"
+          >
+            WhatsApp
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="sophie-xai-info sophie-xai-info--routing" aria-labelledby="sophie-routing-heading">
+      <div class="sophie-xai-info__copy reveal">
+        <p class="sophie-xai-kicker">SmartRouting</p>
+        <h2 id="sophie-routing-heading">Sophie vindt automatisch het juiste pad door uw gemeente.</h2>
+        <p>
+          SmartRouting is de kern van Sophie en is altijd aanwezig. Het combineert lokale regelgeving, diensten,
+          loketten, e-loketten en de inhoud van uw website. Daardoor begrijpt Sophie niet alleen de vraag, maar ook welke
+          procedure, dienst of medewerker erbij hoort.
+        </p>
+        <p>
+          Een caféhouder vraagt of hij een aanvraag moet indienen om zijn terras uit te breiden. Een ouder vraagt of een
+          pasgeboren baby moet worden aangegeven. Sophie weet welk loket relevant is, online of fysiek, en geeft de burger
+          meteen het juiste vervolg.
+        </p>
+      </div>
+    </section>
+
+    <section class="sophie-xai-modules" aria-labelledby="sophie-modules-heading">
+      <div class="sophie-xai-section-head">
+        <h2 id="sophie-modules-heading">Modules: de handen van Sophie.</h2>
+        <a href="contact.html">Alles bekijken ›</a>
+      </div>
+      <p class="sophie-xai-modules__lead reveal">
+        Modules kunnen individueel worden geactiveerd of losgekoppeld. Gebruikt u al een bestaand systeem, dan stuurt
+        Sophie de burger gewoon door via een duidelijke knop in de chat — eventueel meteen naar de juiste dienst.
+      </p>
+      <div class="sophie-xai-module-grid">
+        <article class="sophie-xai-module reveal">
+          <div class="sophie-xai-module__visual sophie-xai-module__visual--agenda">
+            <span>Agenda</span>
+          </div>
+          <time>Module 01</time>
+          <h3>Afspraken boeken</h3>
+          <p>
+            Sophie boekt afspraken, weet welke loketten welke diensten aanbieden en herinnert de burger aan documenten,
+            voorwaarden en kosten. Via WhatsApp kan iemand boeken zonder de website te openen. Uw bestaande agenda kan
+            behouden blijven of gesynchroniseerd worden met veelgebruikte systemen.
+          </p>
+        </article>
+        <article class="sophie-xai-module reveal reveal--d1">
+          <div class="sophie-xai-module__visual sophie-xai-module__visual--meldingen">
+            <span>Meldingen</span>
+          </div>
+          <time>Module 02</time>
+          <h3>Defecten melden</h3>
+          <p>
+            Via de website of WhatsApp melden inwoners defecten in de openbare ruimte met foto en locatie-pin. Sophie
+            herkent de aard en locatie van de melding en stuurt ze gestructureerd door naar het meldpunt of de juiste
+            dienst.
+          </p>
+        </article>
+        <article class="sophie-xai-module reveal reveal--d2">
+          <div class="sophie-xai-module__visual sophie-xai-module__visual--community">
+            <span>Community</span>
+          </div>
+          <time>Module 03</time>
+          <h3>Input ophalen</h3>
+          <p>
+            Aan het einde van een gesprek kan Sophie gerichte vragen stellen over actuele thema's. Antwoorden worden
+            verwerkt tot beleidsinformatie. Via WhatsApp kan het bestuur later ook proactief polls uitsturen met een
+            hogere respons dan klassieke enquêtes.
+          </p>
+        </article>
+        <article class="sophie-xai-module reveal reveal--d3">
+          <div class="sophie-xai-module__visual sophie-xai-module__visual--contact">
+            <span>Direct contact</span>
+          </div>
+          <time>Module 04</time>
+          <h3>Naar de juiste persoon</h3>
+          <p>
+            Wanneer Sophie een vraag niet met zekerheid kan beantwoorden, stelt ze samen met de burger een mail op en
+            stuurt die intern door naar de juiste vooraf ingestelde contactpersoon. Daarna loopt het gesprek gewoon
+            verder via e-mail.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="sophie-xai-info sophie-xai-info--light" aria-labelledby="sophie-tech-heading">
+      <div class="sophie-xai-info__copy reveal">
+        <p class="sophie-xai-kicker">Implementatie</p>
+        <h2 id="sophie-tech-heading">Snel op te starten, technisch eenvoudig te integreren.</h2>
+        <p>
+          U kiest zelf welke modules u activeert, waardoor de opstart klein en beheersbaar blijft. De chatbox staat met
+          één regel code op uw website. Wij werken samen met uw IT-verantwoordelijke of ontzorgen uw gemeente volledig.
+        </p>
+        <p>
+          Het opzetten van Sophie duurt minder dan één dag; we streven naar een configuratie van ongeveer twee uur voor
+          een eerste piloot. We zoeken 25 innovatieve gemeenten die Sophie een maand kosteloos willen uitproberen.
+        </p>
+      </div>
+      <div class="sophie-xai-info__visual reveal reveal--d1">
+        <div class="sophie-xai-embed-card" aria-label="Embed-voorbeeld voor uw website">
+          <div class="sophie-xai-embed-card__bar">
+            <span></span><span></span><span></span>
+            <strong>index.html</strong>
+          </div>
+          <pre aria-live="polite" class="sophie-xai-embed-card__pre">
+            <code class="sophie-xai-embed-card__sizer" aria-hidden="true"><span class="sophie-xai-embed-card__muted">&lt;!DOCTYPE html&gt;
+&lt;html lang="nl"&gt;
+&lt;head&gt;
+  &lt;title&gt;Gemeente&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;</span>
+  <span class="sophie-xai-embed-card__highlight">&lt;script src="https://widget.sophie.be/embed.js"
+          async
+          data-gemeente="uw-gemeente"&gt;&lt;/script&gt;</span>
+<span class="sophie-xai-embed-card__muted">&lt;/body&gt;
+&lt;/html&gt;</span></code>
+            <code id="sophie-embed-typewriter" class="sophie-xai-embed-card__code"><span class="sophie-xai-embed-card__muted">&lt;!DOCTYPE html&gt;
+&lt;html lang="nl"&gt;
+&lt;head&gt;
+  &lt;title&gt;Gemeente&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;</span>
+  <span class="sophie-xai-embed-card__highlight">&lt;script src="https://widget.sophie.be/embed.js"
+          async
+          data-gemeente="uw-gemeente"&gt;&lt;/script&gt;</span>
+<span class="sophie-xai-embed-card__muted">&lt;/body&gt;
+&lt;/html&gt;</span></code>
+          </pre>
+          <p class="sophie-xai-embed-card__hint" id="sophie-embed-hint">Één regel embed — Sophie verschijnt op uw site.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sophie-xai-kanalen" aria-labelledby="sophie-kanalen-heading">
+      <div class="sophie-xai-kanalen__inner reveal">
+        <p class="sophie-xai-kicker">Kanalen</p>
+        <h2 id="sophie-kanalen-heading">Eén AI-agent, meerdere kanalen</h2>
+        <div class="sophie-xai-kanalen__prose">
+          <p>
+            Sophie is in de eerste plaats een AI-agent voor uw gemeente of stad — geen losse chatbot per kanaal.
+            Burgers stellen vragen, krijgen antwoorden op basis van lokale reglementen en worden doorgestuurd naar het
+            juiste loket.
+          </p>
+          <p>
+            Standaard embedt u Sophie op uw gemeentelijke website. Wilt u burgers ook via WhatsApp bereiken? Dat is een
+            optionele functie: dezelfde agent, dezelfde SmartRouting, dezelfde kennis — zonder apart beheer.
+          </p>
+          <p>
+            Zo blijft uw digitale dienstverlening coherent, of inwoners nu via de site of via een messaging-app contact
+            opnemen.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sophie-xai-faq" aria-labelledby="sophie-faq-heading">
+      <div class="sophie-xai-faq__inner">
+        <h2 id="sophie-faq-heading">Veelgestelde vragen</h2>
+        <div class="sophie-xai-faq__list reveal" data-sophie-faq>
+          <details class="sophie-xai-faq__item">
+            <summary class="sophie-xai-faq__trigger">
+              <span class="sophie-xai-faq__question">Wat is Sophie?</span>
+              <span class="sophie-xai-faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="sophie-xai-faq__panel">
+              <div class="sophie-xai-faq__panel-inner">
+                <p>
+                  Sophie is een AI-agent voor Belgische gemeenten en steden. Ze beantwoordt burger vragen 24/7, begrijpt
+                  lokale reglementen en verwijst via SmartRouting naar het juiste loket.
+                </p>
+              </div>
+            </div>
+          </details>
+          <details class="sophie-xai-faq__item">
+            <summary class="sophie-xai-faq__trigger">
+              <span class="sophie-xai-faq__question">Waarvoor dient een AI-agent voor gemeenten?</span>
+              <span class="sophie-xai-faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="sophie-xai-faq__panel">
+              <div class="sophie-xai-faq__panel-inner">
+                <p>
+                  Een AI-agent neemt repetitieve vragen over, begrijpt lokale context en verwijst burgers door naar het
+                  juiste loket of de juiste dienst — zodat uw onthaal zich kan focussen op complexere dossiers.
+                </p>
+              </div>
+            </div>
+          </details>
+          <details class="sophie-xai-faq__item">
+            <summary class="sophie-xai-faq__trigger">
+              <span class="sophie-xai-faq__question">Kan Sophie ook via WhatsApp?</span>
+              <span class="sophie-xai-faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="sophie-xai-faq__panel">
+              <div class="sophie-xai-faq__panel-inner">
+                <p>
+                  Ja, WhatsApp is een optioneel kanaal naast uw website. Dezelfde AI-agent en SmartRouting werken op
+                  beide kanalen, zodat antwoorden consistent blijven.
+                </p>
+              </div>
+            </div>
+          </details>
+          <details class="sophie-xai-faq__item">
+            <summary class="sophie-xai-faq__trigger">
+              <span class="sophie-xai-faq__question">Is Sophie geschikt voor Belgische gemeenten?</span>
+              <span class="sophie-xai-faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="sophie-xai-faq__panel">
+              <div class="sophie-xai-faq__panel-inner">
+                <p>
+                  Sophie is gebouwd voor lokale besturen in België en Vlaanderen, met aandacht voor lokale reglementen,
+                  loketten en meertalige context waar nodig.
+                </p>
+              </div>
+            </div>
+          </details>
+          <details class="sophie-xai-faq__item">
+            <summary class="sophie-xai-faq__trigger">
+              <span class="sophie-xai-faq__question">Hoe lang duurt de implementatie?</span>
+              <span class="sophie-xai-faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="sophie-xai-faq__panel">
+              <div class="sophie-xai-faq__panel-inner">
+                <p>
+                  Een eerste piloot kan doorgaans binnen één dag live staan. We streven naar een configuratie van
+                  ongeveer twee uur voor een eerste werkende setup.
+                </p>
+              </div>
+            </div>
+          </details>
+          <details class="sophie-xai-faq__item">
+            <summary class="sophie-xai-faq__trigger">
+              <span class="sophie-xai-faq__question">Voldoet Sophie aan GDPR?</span>
+              <span class="sophie-xai-faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="sophie-xai-faq__panel">
+              <div class="sophie-xai-faq__panel-inner">
+                <p>
+                  Sophie wordt ontwikkeld met privacy en gegevensbescherming als uitgangspunt. We bespreken graag de
+                  concrete verwerking en beveiliging in functie van uw gemeente.
+                </p>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="sophie-xai-start" aria-labelledby="sophie-start-heading">
+      <h2 id="sophie-start-heading">Kies hoe u start.</h2>
+      <div class="sophie-xai-start__grid">
+        <a class="sophie-xai-start__item reveal" href="contact.html">
+          <span>01</span>
+          <strong>Pilootgemeente</strong>
+          <em>Test Sophie één maand kosteloos als een van 25 pilootpartners.</em>
+        </a>
+        <a class="sophie-xai-start__item reveal reveal--d1" href="maatwerk.html">
+          <span>02</span>
+          <strong>Modulaire start</strong>
+          <em>Begin met SmartRouting en activeer enkel de modules die u nodig hebt.</em>
+        </a>
+        <a class="sophie-xai-start__item reveal reveal--d2" href="contact.html">
+          <span>03</span>
+          <strong>Demo aanvragen</strong>
+          <em>Bekijk hoe Sophie uw website, lokale regels en loketten begrijpt.</em>
+        </a>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">
@@ -231,9 +653,11 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="over-ons.html">Over ons</a></li>
             <li><a href="sophie.html">Sophie</a></li>
+            <li><a href="maatwerk.html">Maatwerk</a></li>
             <li><a href="fixit.html">FixIt</a></li>
             <li><a href="contact.html">Contact</a></li>
-            <li><a href="aan-de-slag.html">Aan de slag</a></li>
+            <li><a href="login.html">Log in</a></li>
+            <li><a href="studio.html">Sophie Studio</a></li>
           </ul>
         </nav>
         <div class="footer__contact-block">
@@ -297,45 +721,62 @@
     </div>
   </footer>
 
-  <script src="main.js?v=20260413-sophie-modules-orbit"></script>
+  <script src="main.js?v=20260616-sophie-modules"></script>
+
   <div
     id="corner-chat-widget"
     class="ccw"
-    data-chat-iframe-src="https://chat-widget-demo-six.vercel.app/embed/chat-panel.html"
-    data-chat-api-origin="https://chat-widget-demo-six.vercel.app"
+    data-chat-iframe-src="embed/chat-panel.html"
     aria-label="Chat ondersteuning"
   ></div>
-  <script src="https://chat-widget-demo-six.vercel.app/assets/chat-widget.js?v=20260504-sources-agenda" defer></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var root = document.getElementById("corner-chat-widget");
-      if (!root) return;
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        root.classList.add("ccw-intro-done");
-        return;
-      }
-      function finishIntro() {
-        root.classList.add("ccw-intro-done");
-      }
-      function attach(launcher) {
-        launcher.addEventListener("animationend", function (e) {
-          if (e.animationName === "sophie-ccw-launcher-fly-in") finishIntro();
-        });
-      }
-      var existing = root.querySelector(".ccw__launcher");
-      if (existing) {
-        attach(existing);
-        return;
-      }
-      var obs = new MutationObserver(function () {
-        var el = root.querySelector(".ccw__launcher");
-        if (el) {
-          obs.disconnect();
-          attach(el);
+  <script src="assets/chat-widget.js?v=20260616-ccw-rotate" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Wat kost Sophie voor onze gemeente?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sophie start met een gratis pilootmaand. Daarna betaalt u een maandelijkse licentie zonder installatiekosten of langetermijncontract."
         }
-      });
-      obs.observe(root, { childList: true, subtree: true });
-    });
+      },
+      {
+        "@type": "Question",
+        "name": "Is Sophie GDPR-conform?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ja. Gespreksdata wordt verwerkt binnen de EU, nooit opgeslagen na de sessie, en gedeeld met geen enkele derde partij. Sophie voldoet aan de AVG/GDPR-vereisten voor overheidsinstanties."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hoe lang duurt de implementatie?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Een standaard pilootinstallatie duurt 3 werkdagen. U levert ons uw websitelink en bestaande FAQ-documenten; wij verzorgen de rest."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Kan Sophie integreren met ons e-loket?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ja. Sophie heeft een SmartRouting-systeem dat burgers automatisch doorstuurt naar het juiste e-loketformulier op basis van hun vraag."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Welke talen spreekt Sophie?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sophie communiceert standaard in het Nederlands. Op aanvraag is uitbreiding naar Frans en Engels mogelijk."
+        }
+      }
+    ]
+  }
   </script>
 </body>
 </html>

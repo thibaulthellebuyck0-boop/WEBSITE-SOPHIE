@@ -3,9 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="description" content="Contact Sophie — demo aanvragen of je vraag stellen." />
-  <title>Contact Sophie</title>
-  <link rel="stylesheet" href="styles.css?v=20260415-hidden-fix" />
+  <meta name="description" content="Plan een gesprek over Sophie, de AI-agent voor uw gemeente of stad. Demo, piloot of maatwerk — in enkele stappen." />
+  <title>Contact — demo of pilootgemeente | Sophie Technologies</title>
+  <link rel="canonical" href="https://www.sophietechnologies.be/contact" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="nl_BE" />
+  <meta property="og:site_name" content="Sophie Technologies" />
+  <meta property="og:title" content="Contact — demo of pilootgemeente | Sophie Technologies" />
+  <meta property="og:description" content="Plan een gesprek over Sophie voor uw gemeente. Demo, piloot of maatwerk." />
+  <meta property="og:url" content="https://www.sophietechnologies.be/contact" />
+  <meta property="og:image" content="https://www.sophietechnologies.be/assets/og-sophie.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Contact Sophie Technologies" />
+  <meta name="twitter:description" content="Plan een gesprek over Sophie voor uw gemeente." />
+  <meta name="twitter:image" content="https://www.sophietechnologies.be/assets/og-sophie.jpg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.sophietechnologies.be/#organization",
+        "name": "Sophie Technologies",
+        "url": "https://www.sophietechnologies.be",
+        "logo": "https://www.sophietechnologies.be/assets/og-sophie.jpg"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.sophietechnologies.be/" },
+          { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://www.sophietechnologies.be/contact" }
+        ]
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="styles.css?v=20260616-nav-active" />
 </head>
 <body>
   <header class="nav" id="top">
@@ -19,19 +53,55 @@
         aria-controls="nav-primary"
         aria-label="Menu openen"
       >
-        <span class="nav__menu-bar" aria-hidden="true"></span>
-        <span class="nav__menu-bar" aria-hidden="true"></span>
-        <span class="nav__menu-bar" aria-hidden="true"></span>
+        <svg class="nav__menu-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+          <rect class="nav__menu-icon-frame" x="3.5" y="3.5" width="17" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <path class="nav__menu-icon-rail" d="M9 5.5v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path class="nav__menu-icon-close" d="M7 7l10 10M17 7 7 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
       </button>
       <nav class="nav__links" id="nav-primary" aria-label="Hoofdnavigatie">
         <span class="nav__pill" aria-hidden="true"></span>
         <a class="nav-item nav-pill-target" href="index.html">Home</a>
-        <a class="nav-item nav-pill-target" href="over-ons.html">Over ons</a>
         <a class="nav-item nav-pill-target" href="sophie.html">Sophie</a>
-        <a class="nav-item nav-pill-target" href="fixit.html">FixIt</a>
-        <a class="nav-item nav-pill-target" href="contact.html">Contact</a>
+        <a class="nav-item nav-pill-target" href="maatwerk.html">Maatwerk</a>
+        <a class="nav-item nav-pill-target" href="over-ons.html">Over ons</a>
+        <div class="nav-more nav-pill-target">
+          <button
+            type="button"
+            class="nav-item nav-more__toggle"
+            id="nav-more-toggle"
+            aria-expanded="false"
+            aria-controls="nav-more-panel"
+            aria-haspopup="true"
+          >
+            Verder
+          </button>
+          <div class="nav-more__panel nav-mega" id="nav-more-panel" role="menu" hidden>
+            <button type="button" class="nav-mobile-sub__back" id="nav-mobile-sub-back" hidden>
+              <span class="nav-mobile-sub__back-icon" aria-hidden="true">‹</span>
+              Terug
+            </button>
+            <div class="nav-mega__grid">
+              <a class="nav-mega__card nav-more__link" href="blog/" role="menuitem">
+                <span class="nav-mega__card-title">Blog</span>
+                <span class="nav-mega__card-desc">Kennis over AI voor lokale besturen.</span>
+              </a>
+              <a class="nav-mega__card nav-more__link" href="contact.html" role="menuitem">
+                <span class="nav-mega__card-title">Contact</span>
+                <span class="nav-mega__card-desc">Plan een gesprek of stel uw vraag.</span>
+              </a>
+              <a class="nav-mega__card nav-more__link" href="fixit.html" role="menuitem">
+                <span class="nav-mega__card-title">FixIt</span>
+                <span class="nav-mega__card-desc">Meldingen en onderhoud slim op de kaart.</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="nav__actions">
+          <a class="nav__cta nav__cta--ghost" href="login.html">Log in</a>
+          <a class="nav__cta nav__cta--primary" href="contact.html">Begin vandaag</a>
+        </div>
       </nav>
-      <a class="nav__cta" href="aan-de-slag.html">Aan de slag</a>
     </div>
   </header>
 
@@ -41,10 +111,9 @@
         <p class="eyebrow">Contact</p>
         <h1 class="page-hero__title page-hero__title--typewriter">
           <span class="typewriter" aria-hidden="true">
-            <span class="typewriter__row">Contact, laat <span class="hero__gradient">van je horen</span></span>
-            <span class="typewriter__row">in een paar korte vragen<span class="typewriter__caret" aria-hidden="true"></span></span>
+            <span class="typewriter__row">Vertel ons waar we <span class="hero__gradient">u mee kunnen helpen</span><span class="typewriter__caret" aria-hidden="true"></span></span>
           </span>
-          <span class="visually-hidden">Contact, laat van je horen in een paar korte vragen</span>
+          <span class="visually-hidden">Vertel ons waar we u mee kunnen helpen</span>
         </h1>
       </header>
 
@@ -155,9 +224,11 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="over-ons.html">Over ons</a></li>
             <li><a href="sophie.html">Sophie</a></li>
+            <li><a href="maatwerk.html">Maatwerk</a></li>
             <li><a href="fixit.html">FixIt</a></li>
             <li><a href="contact.html">Contact</a></li>
-            <li><a href="aan-de-slag.html">Aan de slag</a></li>
+            <li><a href="login.html">Log in</a></li>
+            <li><a href="studio.html">Sophie Studio</a></li>
           </ul>
         </nav>
         <div class="footer__contact-block">
@@ -221,6 +292,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=20260415-mobile-map-fix"></script>
+  <script src="main.js?v=20260616-nav-active"></script>
 </body>
 </html>
