@@ -6587,10 +6587,11 @@ html.js .reveal--d4.reveal--visible {
 .about-xai-panel--quote blockquote {
   margin: 0;
   color: rgba(255, 255, 255, 0.92);
-  font-size: clamp(22px, 3vw, 30px);
-  font-weight: 500;
-  letter-spacing: -0.045em;
-  line-height: 1.1;
+  font-size: clamp(34px, 5vw, 56px);
+  font-weight: 600;
+  letter-spacing: -0.066em;
+  line-height: 1;
+  text-wrap: balance;
 }
 
 .about-xai-panel--quote p {
@@ -8581,6 +8582,7 @@ html.js .reveal.reveal--visible {
   .maatwerk-xai-api__copy h2,
   .maatwerk-xai-cta h2,
   .about-xai-panel h2,
+  .about-xai-panel--quote blockquote,
   .about-xai-section__copy h2,
   .about-xai-roadmap__head h2,
   .cta__box h2 {
@@ -8991,6 +8993,7 @@ html.js .reveal.reveal--visible {
   .page--over-ons .about-section h2,
   .about-xai-hero__title,
   .about-xai-panel h2,
+  .about-xai-panel--quote blockquote,
   .about-xai-section__copy h2,
   .about-xai-roadmap__head h2,
   .about-xai-step h3,
