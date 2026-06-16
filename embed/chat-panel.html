@@ -4826,6 +4826,31 @@
           } catch (e) {}
           return MAPBOX_DEFAULT_PK;
         })();
+        var mapboxTokenPromise = null;
+        function resolveMapboxToken() {
+          var direct = String(MAPBOX_TOKEN || "").trim();
+          if (direct) return Promise.resolve(direct);
+          if (!mapboxTokenPromise) {
+            var apiBase = "";
+            try {
+              apiBase = String(CHAT_API_BASE || window.location.origin || "").replace(/\/$/, "");
+            } catch (e) {}
+            mapboxTokenPromise = fetch(apiBase + "/api/mapbox-token", {
+              method: "GET",
+              headers: { Accept: "application/json" },
+            })
+              .then(function (res) {
+                return res.ok ? res.json() : null;
+              })
+              .then(function (json) {
+                return String((json && json.token) || "").trim();
+              })
+              .catch(function () {
+                return "";
+              });
+          }
+          return mapboxTokenPromise;
+        }
         var SOPHIE_AGENDA_MODE = "sophie";
         var SOPHIE_EXTERNAL_AGENDA_URL = "";
         var SOPHIE_AGENDA_API_BASE_URL = "";
@@ -7294,7 +7319,13 @@
           wrap.appendChild(success);
 
           var query = String(spec.location || "").trim();
-          var token = String(spec.mapboxToken != null ? spec.mapboxToken : MAPBOX_TOKEN).trim();
+
+          function bootMap(resolvedToken) {
+            var token = String(
+              spec.mapboxToken != null && String(spec.mapboxToken).trim()
+                ? spec.mapboxToken
+                : resolvedToken
+            ).trim();
 
           function hideFallback() {
             mapFallback.hidden = true;
@@ -7380,6 +7411,9 @@
               ? "Geen locatie om te tonen."
               : "Zet een Mapbox-token om de kaart en geocoding te gebruiken (demo).";
           }
+          }
+
+          resolveMapboxToken().then(bootMap);
 
           btn.addEventListener("click", function () {
             if (btn.disabled) return;
