@@ -97,7 +97,52 @@
     var rotatingPromptTimer = null;
     var lockLauncherSizeTimer = null;
 
-    var LAUNCHER_WIDTH_SCALE = 0.8;
+    var LAUNCHER_SIZE_REFERENCE = "ID verloren?";
+
+    function launcherSizePrompts() {
+      var ref = LAUNCHER_SIZE_REFERENCE;
+      if (rotatingPrompts.indexOf(ref) !== -1) return [ref];
+      return rotatingPrompts.slice();
+    }
+
+    function measureLauncherForPrompt(prompt) {
+      launcherCopy.textContent = prompt;
+      launcher.style.width = "max-content";
+      launcher.style.maxWidth = "none";
+      launcher.style.minWidth = "0";
+      return launcher.getBoundingClientRect();
+    }
+
+    function lockLauncherSize() {
+      if (!launcher || !launcherCopy || !rotatingPrompts.length) return;
+
+      var savedIndex = rotatingPromptIndex;
+      var savedText = launcherCopy.textContent;
+      var promptsToMeasure = launcherSizePrompts();
+      var maxWidth = 0;
+      var maxHeight = 0;
+
+      launcher.style.height = "";
+      launcher.style.minHeight = "";
+
+      promptsToMeasure.forEach(function (prompt) {
+        var rect = measureLauncherForPrompt(prompt);
+        maxWidth = Math.max(maxWidth, rect.width);
+        maxHeight = Math.max(maxHeight, rect.height);
+      });
+
+      rotatingPromptIndex = savedIndex;
+      launcherCopy.textContent = savedText || rotatingPrompts[savedIndex] || rotatingPrompts[0];
+
+      var lockedWidth = Math.ceil(maxWidth);
+      var lockedHeight = Math.max(52, Math.ceil(maxHeight));
+
+      launcher.style.width = lockedWidth + "px";
+      launcher.style.minWidth = lockedWidth + "px";
+      launcher.style.maxWidth = lockedWidth + "px";
+      launcher.style.height = lockedHeight + "px";
+      launcher.style.minHeight = lockedHeight + "px";
+    }
 
     function stopLauncherPromptRotation() {
       if (!rotatingPromptTimer) return;
@@ -135,52 +180,6 @@
       scheduleLauncherPromptRotation();
     }
 
-    function launcherWidthCap() {
-      var cap = Math.min(440, window.innerWidth - 32);
-      if (window.matchMedia("(max-width: 640px)").matches) {
-        cap = window.innerWidth - 24;
-      }
-      return Math.floor(cap * LAUNCHER_WIDTH_SCALE);
-    }
-
-    function lockLauncherSize() {
-      if (!launcher || !launcherCopy || !rotatingPrompts.length) return;
-
-      var savedIndex = rotatingPromptIndex;
-      var savedText = launcherCopy.textContent;
-      var capWidth = launcherWidthCap();
-      var launcherText = launcher.querySelector(".ccw__launcher-text");
-      var maxWidth = 0;
-      var maxHeight = 0;
-
-      launcher.style.width = "";
-      launcher.style.minWidth = "";
-      launcher.style.height = "";
-      launcher.style.minHeight = "";
-
-      if (launcherText) launcherText.style.visibility = "hidden";
-
-      rotatingPrompts.forEach(function (prompt) {
-        launcherCopy.textContent = prompt;
-        var rect = launcher.getBoundingClientRect();
-        maxWidth = Math.max(maxWidth, rect.width);
-        maxHeight = Math.max(maxHeight, rect.height);
-      });
-
-      if (launcherText) launcherText.style.visibility = "";
-
-      rotatingPromptIndex = savedIndex;
-      launcherCopy.textContent = savedText || rotatingPrompts[savedIndex] || rotatingPrompts[0];
-
-      var lockedWidth = Math.min(Math.ceil(maxWidth * LAUNCHER_WIDTH_SCALE), capWidth);
-      var lockedHeight = Math.max(52, Math.ceil(maxHeight));
-
-      launcher.style.width = lockedWidth + "px";
-      launcher.style.minWidth = lockedWidth + "px";
-      launcher.style.height = lockedHeight + "px";
-      launcher.style.minHeight = lockedHeight + "px";
-    }
-
     function lockLauncherSizeDebounced() {
       if (lockLauncherSizeTimer) window.clearTimeout(lockLauncherSizeTimer);
       lockLauncherSizeTimer = window.setTimeout(function () {
@@ -211,34 +210,48 @@
       } catch (e) {}
     }
 
+    function isMobileChat() {
+      return window.matchMedia("(max-width: 640px)").matches;
+    }
+
     function openChat() {
       if (root.classList.contains("is-open") || root.classList.contains("is-opening")) return;
 
       stopLauncherPromptRotation();
-
-      var morphWidth = morphLauncherWidth();
-      root.style.setProperty("--ccw-morph-width", morphWidth + "px");
-      launcher.style.width = morphWidth + "px";
-      launcher.style.minWidth = morphWidth + "px";
-
-      root.classList.add("is-opening");
       launcher.setAttribute("aria-expanded", "true");
       root.classList.remove("ccw--close-done");
-      document.body.classList.add("ccw-chat-open");
 
-      requestAnimationFrame(function () {
-        root.classList.add("is-open");
-      });
+      if (isMobileChat()) {
+        var morphWidth = morphLauncherWidth();
+        root.style.setProperty("--ccw-morph-width", morphWidth + "px");
+        launcher.style.width = morphWidth + "px";
+        launcher.style.minWidth = morphWidth + "px";
 
+        root.classList.add("is-opening");
+        document.body.classList.add("ccw-chat-open");
+
+        requestAnimationFrame(function () {
+          root.classList.add("is-open");
+        });
+
+        window.setTimeout(function () {
+          postToFrame("open-messages");
+          postToFrame("panel-visible");
+          showSuggestionsAfterDelay();
+        }, 240);
+
+        window.setTimeout(function () {
+          root.classList.remove("is-opening");
+        }, OPEN_MORPH_MS);
+        return;
+      }
+
+      root.classList.add("is-open");
+      postToFrame("open-messages");
       window.setTimeout(function () {
         postToFrame("open-messages");
-        postToFrame("panel-visible");
-        showSuggestionsAfterDelay();
-      }, 240);
-
-      window.setTimeout(function () {
-        root.classList.remove("is-opening");
-      }, OPEN_MORPH_MS);
+      }, 120);
+      window.setTimeout(showSuggestionsAfterDelay, 40);
     }
 
     function openMessagesTab() {

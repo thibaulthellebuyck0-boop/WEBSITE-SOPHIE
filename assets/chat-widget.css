@@ -89,8 +89,8 @@
   align-items: center;
   justify-content: flex-start;
   gap: 10px;
-  width: min(352px, calc((100vw - 32px) * 0.8));
-  min-width: 224px;
+  width: auto;
+  min-width: 0;
   min-height: 52px;
   padding: 6px 8px 6px 10px;
   margin: 0;
@@ -210,88 +210,23 @@
   transform-origin: 70% 70%;
 }
 
-/* Open: volledig scherm op alle formaten */
-.ccw.is-opening,
+/* Desktop open: paneel boven launcher (geen fullscreen) */
 .ccw.is-open {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-right: env(safe-area-inset-right, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  padding-left: env(safe-area-inset-left, 0px);
-  gap: 0;
-  justify-content: stretch;
-  align-items: stretch;
+  bottom: max(
+    calc(12px * 1.2),
+    calc(env(safe-area-inset-bottom, 10px) * 1.2)
+  );
 }
 
-.ccw.is-opening .ccw__panel,
-.ccw.is-open .ccw__panel {
-  display: flex;
-  flex-direction: column;
-  --ccw-panel-w: 100%;
-  --ccw-bar-stack: 0px;
-  width: 100%;
-  flex: 1 1 auto;
-  min-height: 0;
-  height: 100%;
-  max-height: none;
-  border-radius: 0;
-  border: none;
-  box-shadow: none;
-  transform: none;
-  transform-origin: 50% 100%;
-}
-
-.ccw.is-opening .ccw__panel {
-  opacity: 0;
-  animation: ccw-panel-morph-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.ccw.is-open:not(.is-closing) .ccw__panel {
-  opacity: 1;
-  animation: none;
-}
-
-@keyframes ccw-panel-morph-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-/* Launcher groeit naar chatbalk-breedte en fadet uit terwijl iframe-composer verschijnt */
-.ccw.is-opening .ccw__launcher,
 .ccw.is-open .ccw__launcher {
-  position: fixed;
+  position: absolute;
   left: 50%;
-  bottom: max(6px, env(safe-area-inset-bottom, 6px));
-  z-index: 100000;
-  margin: 0;
+  bottom: 0;
   transform: translateX(-50%);
-  width: var(--ccw-morph-width, min(80vw, 910px)) !important;
-  min-width: var(--ccw-morph-width, min(80vw, 910px)) !important;
-}
-
-.ccw.is-opening .ccw__launcher-text,
-.ccw.is-opening .ccw__launcher::after {
-  opacity: 0;
-  transition: opacity 0.18s ease;
-}
-
-.ccw.is-open:not(.is-opening) .ccw__launcher {
+  margin: 0;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition:
-    opacity 0.24s ease,
-    width 0.46s cubic-bezier(0.22, 1, 0.36, 1),
-    min-width 0.46s cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0s linear 0.24s;
 }
 
 .ccw__panel {
@@ -326,19 +261,25 @@
   transform-origin: 50% 100%;
 }
 
+.ccw.is-open .ccw__panel {
+  display: flex;
+  flex-direction: column;
+  animation: ccw-panel-open 0.34s cubic-bezier(0.32, 0.92, 0.32, 1.02) forwards;
+}
+
 .ccw.is-open.is-closing .ccw__panel {
   animation: ccw-panel-close 180ms ease-in forwards;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ccw.is-opening .ccw__panel {
-    animation: none;
-    opacity: 1;
+@keyframes ccw-panel-open {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
   }
 
-  .ccw.is-opening .ccw__launcher-text,
-  .ccw.is-opening .ccw__launcher::after {
-    transition: none;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -371,13 +312,110 @@
   .ccw__launcher {
     max-width: calc((100vw - 24px) * 0.8);
   }
+
+  /* Mobiel open: volledig scherm + morph van launcher */
+  .ccw.is-opening,
+  .ccw.is-open {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    gap: 0;
+    justify-content: stretch;
+    align-items: stretch;
+  }
+
+  .ccw.is-opening .ccw__panel,
+  .ccw.is-open .ccw__panel {
+    --ccw-panel-w: 100%;
+    --ccw-bar-stack: 0px;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    transform: none;
+    transform-origin: 50% 100%;
+    animation: none;
+  }
+
+  .ccw.is-opening .ccw__panel {
+    opacity: 0;
+    animation: ccw-panel-morph-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .ccw.is-open:not(.is-closing) .ccw__panel {
+    opacity: 1;
+    animation: none;
+  }
+
+  .ccw.is-opening .ccw__launcher,
+  .ccw.is-open .ccw__launcher {
+    position: fixed;
+    left: 50%;
+    bottom: max(6px, env(safe-area-inset-bottom, 6px));
+    z-index: 100000;
+    margin: 0;
+    transform: translateX(-50%);
+    width: var(--ccw-morph-width, min(80vw, 910px)) !important;
+    min-width: var(--ccw-morph-width, min(80vw, 910px)) !important;
+  }
+
+  .ccw.is-opening .ccw__launcher-text,
+  .ccw.is-opening .ccw__launcher::after {
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+
+  .ccw.is-open:not(.is-opening) .ccw__launcher {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.24s ease,
+      width 0.46s cubic-bezier(0.22, 1, 0.36, 1),
+      min-width 0.46s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s linear 0.24s;
+  }
+
+  body.ccw-chat-open {
+    overflow: hidden;
+    touch-action: none;
+  }
+}
+
+@keyframes ccw-panel-morph-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @media (max-width: 640px) {
+    .ccw.is-opening .ccw__panel {
+      animation: none;
+      opacity: 1;
+    }
+
+    .ccw.is-opening .ccw__launcher-text,
+    .ccw.is-opening .ccw__launcher::after {
+      transition: none;
+    }
+  }
 }
 
 /* Verberg chatbalk zolang het mobiele hoofdmenu open is */
-body.ccw-chat-open {
-  overflow: hidden;
-  touch-action: none;
-}
 
 body.nav-menu-open #corner-chat-widget {
   opacity: 0 !important;
