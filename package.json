@@ -1,10 +1,13 @@
 {
   "private": true,
   "scripts": {
-    "sitemap": "node scripts/generate-sitemap.js"
+    "sitemap": "node scripts/generate-sitemap.js",
+    "gemeenten": "node scripts/generate-gemeenten.js",
+    "nav:sync": "node scripts/sync-nav-visibility.js",
+    "seo:build": "node scripts/generate-gemeenten.js && node scripts/sync-nav-visibility.js && node scripts/generate-sitemap.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.49.1",
+    "@upstash/redis": "^1.38.0",
     "nodemailer": "^9.0.0"
   }
 }

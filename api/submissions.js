@@ -1,4 +1,4 @@
-const { createClient } = require("@supabase/supabase-js");
+const { saveAppointment } = require("./lib/appointments-store");
 
 /**
  * Vercel levert `req.body` soms als object, soms als string of Buffer.
@@ -11,11 +11,6 @@ function parseRequestBody(req) {
   return JSON.parse(s || "{}");
 }
 
-function getClientIp(req) {
-  const xff = req.headers["x-forwarded-for"];
-  if (typeof xff === "string" && xff.length) return xff.split(",")[0].trim();
-  return req.headers["x-real-ip"] || "";
-}
 
 function validateContact(payload) {
   if (!payload || typeof payload !== "object") return "Ongeldige payload.";
@@ -42,6 +37,7 @@ function validateRecruit(payload) {
   return null;
 }
 
+
 module.exports = async function handler(req, res) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
 
@@ -58,12 +54,6 @@ module.exports = async function handler(req, res) {
   }
 
   res.setHeader("Access-Control-Allow-Origin", "*");
-
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) {
-    return res.status(503).json({ error: "Server is niet geconfigureerd (Supabase-omgeving ontbreekt)." });
-  }
 
   let body;
   try {
@@ -88,18 +78,26 @@ module.exports = async function handler(req, res) {
   const err = form === "contact" ? validateContact(payload) : validateRecruit(payload);
   if (err) return res.status(400).json({ error: err });
 
-  const supabase = createClient(url, key, { auth: { persistSession: false } });
-  const source_ip = getClientIp(req) || null;
-
-  const { error } = await supabase.from("submissions").insert({
-    form,
-    payload,
-    source_ip,
-  });
-
-  if (error) {
-    console.error("Supabase insert error:", error);
-    return res.status(500).json({ error: "Opslaan mislukt. Probeer later opnieuw." });
+  if (form === "contact") {
+    const roleLabel = payload.role === "gemeente" ? "Gemeente" : "Ontwikkelaar";
+    try {
+      await saveAppointment({
+        naam: `${payload.firstName.trim()} ${payload.lastName.trim()}`,
+        email: payload.email.trim(),
+        telefoon: payload.phone?.trim() || "",
+        datum: "",
+        tijdstip: "",
+        onderwerp: `Contactformulier — ${roleLabel}`,
+        bericht: payload.message.trim(),
+        gemeente: payload.role === "gemeente" ? payload.municipality?.trim() || "" : "",
+        rol: payload.role,
+        bron: "contact",
+        payload,
+      });
+    } catch (e) {
+      console.error("Appointment store (contact):", e);
+      return res.status(500).json({ error: "Opslaan mislukt. Probeer later opnieuw." });
+    }
   }
 
   return res.status(201).json({ ok: true });

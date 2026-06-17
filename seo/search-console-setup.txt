@@ -7,7 +7,9 @@ Google Search Console — setup checklist
 4. Submit sitemap: https://www.sophietechnologies.be/sitemap.xml
 5. Request indexing for:
    - https://www.sophietechnologies.be/
+   - https://www.sophietechnologies.be/chatbot-gemeente
    - https://www.sophietechnologies.be/sophie
+   - https://www.sophietechnologies.be/gemeenten
    - https://www.sophietechnologies.be/maatwerk
 6. Monitor Coverage and Core Web Vitals weekly
 

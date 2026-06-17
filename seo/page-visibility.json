@@ -1,0 +1,6 @@
+{
+  "blog": { "online": false },
+  "fixit": { "online": false },
+  "login": { "online": false },
+  "chatbotGemeente": { "online": false }
+}

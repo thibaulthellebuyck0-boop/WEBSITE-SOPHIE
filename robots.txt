@@ -2,5 +2,9 @@ User-agent: *
 Allow: /
 Disallow: /dashboard/
 Disallow: /api/
+Disallow: /blog/
+Disallow: /fixit
+Disallow: /login
+Disallow: /chatbot-gemeente
 
 Sitemap: https://www.sophietechnologies.be/sitemap.xml

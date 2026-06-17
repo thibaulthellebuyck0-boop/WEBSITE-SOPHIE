@@ -1,84 +1,104 @@
 /**
- * FixIt — Mapbox globe: start als wereldbol, daarna vaste route door Vlaanderen/België.
- * Zelfde publieke token als main.js (contact / geocoding).
+ * FixIt Public — Mapbox globe tour.
+ * Starts from the world, zooms into Belgian municipalities, and highlights sample public-space reports.
  */
 (function () {
-  // #region agent log
-  fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-    body: JSON.stringify({
-      sessionId: "0c9bba",
-      runId: "pre-fix-2",
-      hypothesisId: "H6",
-      location: "fixit.js:top-level",
-      message: "FixIt script loaded",
-      data: { href: window.location.href, protocol: window.location.protocol },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
-
   const MAPBOX_TOKEN = window.MAPBOX_PUBLIC_TOKEN || "";
   let mapboxTokenPromise = null;
 
-  /** Startweergave: volledige wereldbol (zelfde idee als contact-globe). [lng, lat] */
   const GLOBE_START = {
-    center: [-40, 28],
-    zoom: 1.48,
-    pitch: 50,
-    bearing: -16,
+    center: [-34, 26],
+    zoom: 1.35,
+    pitch: 48,
+    bearing: -18,
   };
 
-  /**
-   * Vaste volgorde — [lng, lat] Mapbox-conventie
-   * Gavere → Gent → Pittem → Kortrijk → Hasselt → Oosterzele → Merelbeke → Luik → Charleroi → Brussel
-   */
   const ROUTE = [
-    { name: "Gavere", lng: 3.6619, lat: 50.9289 },
-    { name: "Gent", lng: 3.7174, lat: 51.0543 },
-    { name: "Pittem", lng: 3.3278, lat: 50.9917 },
-    { name: "Kortrijk", lng: 3.2649, lat: 50.827 },
-    { name: "Hasselt", lng: 5.3378, lat: 50.9307 },
-    { name: "Oosterzele", lng: 3.7756, lat: 50.9456 },
-    { name: "Merelbeke", lng: 3.7461, lat: 51.0017 },
-    { name: "Luik", lng: 5.5797, lat: 50.6326 },
-    { name: "Charleroi", lng: 4.4446, lat: 50.4108 },
-    { name: "Brussel", lng: 4.3517, lat: 50.8503 },
+    {
+      name: "Gavere",
+      lng: 3.6619,
+      lat: 50.9289,
+      zoom: 13.35,
+      reports: [
+        { type: "Straatlamp", status: "Fluvius", lng: 3.6569, lat: 50.9304, urgency: "normal" },
+        { type: "Sluikstort", status: "Groendienst", lng: 3.6676, lat: 50.9256, urgency: "high" },
+        { type: "Losse tegel", status: "Klusjesdienst", lng: 3.6627, lat: 50.9342, urgency: "normal" },
+      ],
+    },
+    {
+      name: "Gent",
+      lng: 3.7174,
+      lat: 51.0543,
+      zoom: 12.8,
+      reports: [
+        { type: "Fietspad", status: "Mobiliteit", lng: 3.7268, lat: 51.0566, urgency: "normal" },
+        { type: "Afval", status: "Netheid", lng: 3.7105, lat: 51.0508, urgency: "high" },
+      ],
+    },
+    {
+      name: "Kortrijk",
+      lng: 3.2649,
+      lat: 50.827,
+      zoom: 12.9,
+      reports: [
+        { type: "Signalisatie", status: "Technische dienst", lng: 3.2699, lat: 50.8291, urgency: "normal" },
+        { type: "Wateroverlast", status: "Extern", lng: 3.2558, lat: 50.8238, urgency: "high" },
+      ],
+    },
+    {
+      name: "Hasselt",
+      lng: 5.3378,
+      lat: 50.9307,
+      zoom: 12.9,
+      reports: [
+        { type: "Groenonderhoud", status: "Groendienst", lng: 5.3442, lat: 50.9344, urgency: "normal" },
+        { type: "Put in wegdek", status: "Aannemer", lng: 5.331, lat: 50.9282, urgency: "high" },
+      ],
+    },
   ];
 
   function loadMapboxAssets() {
     if (window.mapboxgl) return Promise.resolve();
+
     return new Promise((resolve, reject) => {
-      const existing = document.querySelector('link[href*="mapbox-gl.css"]');
-      if (existing) {
+      const existingScript = document.querySelector('script[src*="mapbox-gl.js"]');
+      const existingCss = document.querySelector('link[href*="mapbox-gl.css"]');
+
+      if (!existingCss) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.css";
+        document.head.appendChild(link);
+      }
+
+      if (existingScript) {
         const wait = () => {
           if (window.mapboxgl) resolve();
-          else setTimeout(wait, 30);
+          else window.setTimeout(wait, 30);
         };
         wait();
         return;
       }
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = "https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.css";
-      document.head.appendChild(link);
-      const s = document.createElement("script");
-      s.src = "https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.js";
-      s.async = true;
-      s.onload = () => resolve();
-      s.onerror = () => reject(new Error("Mapbox laden mislukt"));
-      document.head.appendChild(s);
+
+      const script = document.createElement("script");
+      script.src = "https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.js";
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("Mapbox laden mislukt"));
+      document.head.appendChild(script);
     });
   }
 
   async function getMapboxToken() {
     if (MAPBOX_TOKEN) return MAPBOX_TOKEN;
+
     const fromWindow = String(window.MAPBOX_PUBLIC_TOKEN || "").trim();
     if (fromWindow) return fromWindow;
+
     const metaEl = document.querySelector('meta[name="mapbox-public-token"]');
     const fromMeta = String(metaEl?.content || "").trim();
     if (fromMeta) return fromMeta;
+
     if (!mapboxTokenPromise) {
       mapboxTokenPromise = fetch("/api/mapbox-token", {
         method: "GET",
@@ -88,21 +108,18 @@
         .then((json) => String(json?.token || "").trim())
         .catch(() => "");
     }
+
     return mapboxTokenPromise;
   }
 
   function disableMapInteractions(map) {
-    try {
-      map.scrollZoom.disable();
-      map.boxZoom.disable();
-      map.dragRotate.disable();
-      map.dragPan.disable();
-      map.keyboard.disable();
-      map.doubleClickZoom.disable();
-      if (map.touchZoomRotate) map.touchZoomRotate.disable();
-    } catch (e) {
-      /* ignore */
-    }
+    map.scrollZoom.disable();
+    map.boxZoom.disable();
+    map.dragRotate.disable();
+    map.dragPan.disable();
+    map.keyboard.disable();
+    map.doubleClickZoom.disable();
+    if (map.touchZoomRotate) map.touchZoomRotate.disable();
   }
 
   function waitMoveEnd(map) {
@@ -119,77 +136,61 @@
   }
 
   function sleep(ms) {
-    return new Promise((r) => setTimeout(r, ms));
+    return new Promise((resolve) => window.setTimeout(resolve, ms));
+  }
+
+  function buildReportFeatures(reports) {
+    return reports.map((report, index) => ({
+      type: "Feature",
+      properties: {
+        id: `${report.type}-${index}`,
+        typeLabel: report.type,
+        status: report.status,
+        urgency: report.urgency,
+      },
+      geometry: {
+        type: "Point",
+        coordinates: [report.lng, report.lat],
+      },
+    }));
+  }
+
+  function setActiveReports(map, city) {
+    const data = {
+      type: "FeatureCollection",
+      features: buildReportFeatures(city.reports),
+    };
+
+    const source = map.getSource("fixit-reports");
+    if (source) {
+      source.setData(data);
+    }
   }
 
   async function init() {
     const root = document.getElementById("fixit-globe-root");
-    // #region agent log
-    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-      body: JSON.stringify({
-        sessionId: "0c9bba",
-        runId: "pre-fix-1",
-        hypothesisId: "H5",
-        location: "fixit.js:init:entry",
-        message: "FixIt init started",
-        data: { hasRoot: Boolean(root) },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
     if (!root) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     try {
       await loadMapboxAssets();
-    } catch (e) {
-      // #region agent log
-      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-        body: JSON.stringify({
-          sessionId: "0c9bba",
-          runId: "pre-fix-1",
-          hypothesisId: "H5",
-          location: "fixit.js:init:asset-load-failed",
-          message: "FixIt mapbox assets failed",
-          data: { error: e instanceof Error ? e.message : String(e) },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
+    } catch (error) {
       root.innerHTML =
-        '<p class="fixit-map-fallback" role="status">De kaart kan niet geladen worden. Controleer je netwerkverbinding.</p>';
+        '<p class="fixit-map-fallback" role="status">De kaart kan niet geladen worden. Controleer uw netwerkverbinding.</p>';
       return;
     }
 
     const token = await getMapboxToken();
-    // #region agent log
-    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-      body: JSON.stringify({
-        sessionId: "0c9bba",
-        runId: "pre-fix-1",
-        hypothesisId: "H5",
-        location: "fixit.js:init:token-resolved",
-        message: "FixIt token resolved",
-        data: { tokenLength: token ? token.length : 0 },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
     if (!token) {
       root.innerHTML =
         '<p class="fixit-map-fallback" role="status">De kaart kan niet geladen worden. Mapbox token ontbreekt op de server.</p>';
       return;
     }
+
     mapboxgl.accessToken = token;
 
-    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
     const map = new mapboxgl.Map({
       container: root,
@@ -207,139 +208,129 @@
     root._fixitMap = map;
     disableMapInteractions(map);
 
-    function triggerResize() {
+    const resize = () => {
       try {
         map.resize();
-      } catch (e) {
-        /* ignore */
+      } catch {
+        /* Mapbox can throw while tearing down; ignore resize races. */
       }
-    }
+    };
 
-    const onViewportResize = () => triggerResize();
-
-    const heroEl = root.closest(".fixit-hero");
     if (typeof ResizeObserver !== "undefined") {
-      const ro = new ResizeObserver(() => triggerResize());
+      const ro = new ResizeObserver(resize);
       ro.observe(root);
-      if (heroEl) ro.observe(heroEl);
+      const hero = root.closest(".fixit-hero");
+      if (hero) ro.observe(hero);
     }
 
-    window.addEventListener("load", () => triggerResize(), { once: true });
-    window.addEventListener("resize", onViewportResize, { passive: true });
-    window.addEventListener("orientationchange", onViewportResize, { passive: true });
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", onViewportResize, { passive: true });
-    }
-    window.setTimeout(triggerResize, 100);
-    window.setTimeout(triggerResize, 400);
-
-    map.on("error", (e) => {
-      if (e && e.error) {
-        console.warn("[FixIt map]", e.error);
-      }
-    });
+    window.addEventListener("load", resize, { once: true });
+    window.addEventListener("resize", resize, { passive: true });
+    window.addEventListener("orientationchange", resize, { passive: true });
+    window.setTimeout(resize, 120);
+    window.setTimeout(resize, 520);
 
     await new Promise((resolve) => {
       if (map.loaded()) resolve();
       else map.once("load", resolve);
     });
-    // #region agent log
-    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-      body: JSON.stringify({
-        sessionId: "0c9bba",
-        runId: "pre-fix-1",
-        hypothesisId: "H5",
-        location: "fixit.js:init:map-loaded",
-        message: "FixIt map load completed",
-        data: { style: "satellite-streets-v12" },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
-
-    map.resize();
-    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-    map.resize();
-
-    /**
-     * Niet wachten op `idle`: dat kan seconden duren (alle tegels laden) — dan blijft de kaart stil.
-     * Eén frame is genoeg om het canvas te laten meten; daarna mag de tour starten.
-     */
-    await new Promise((r) => requestAnimationFrame(r));
 
     map.setFog({
-      range: [0.5, 10],
-      "horizon-blend": 0.1,
-      color: "rgb(186, 210, 235)",
-      "high-color": "rgb(54, 118, 235)",
-      "space-color": "rgb(22, 28, 48)",
-      "star-intensity": 0.35,
+      range: [0.4, 9],
+      "horizon-blend": 0.12,
+      color: "rgb(220, 232, 245)",
+      "high-color": "rgb(78, 119, 201)",
+      "space-color": "rgb(7, 10, 22)",
+      "star-intensity": 0.28,
     });
 
-    function flyToView(opts) {
-      const duration = opts.duration != null ? opts.duration : reduced ? 800 : 12000;
+    map.addSource("fixit-reports", {
+      type: "geojson",
+      data: { type: "FeatureCollection", features: [] },
+    });
+
+    map.addLayer({
+      id: "fixit-report-halo",
+      type: "circle",
+      source: "fixit-reports",
+      paint: {
+        "circle-radius": ["case", ["==", ["get", "urgency"], "high"], 24, 18],
+        "circle-color": ["case", ["==", ["get", "urgency"], "high"], "#ff5c35", "#0a84ff"],
+        "circle-opacity": 0.16,
+        "circle-blur": 0.25,
+      },
+    });
+
+    map.addLayer({
+      id: "fixit-report-dot",
+      type: "circle",
+      source: "fixit-reports",
+      paint: {
+        "circle-radius": ["case", ["==", ["get", "urgency"], "high"], 7, 5],
+        "circle-color": ["case", ["==", ["get", "urgency"], "high"], "#ff5c35", "#ffffff"],
+        "circle-stroke-color": "#0b0b0d",
+        "circle-stroke-width": 1.5,
+      },
+    });
+
+    map.addLayer({
+      id: "fixit-report-label",
+      type: "symbol",
+      source: "fixit-reports",
+      layout: {
+        "text-field": ["concat", ["get", "typeLabel"], " · ", ["get", "status"]],
+        "text-size": 12,
+        "text-offset": [0, 1.6],
+        "text-anchor": "top",
+        "text-allow-overlap": false,
+      },
+      paint: {
+        "text-color": "#ffffff",
+        "text-halo-color": "rgba(0, 0, 0, 0.72)",
+        "text-halo-width": 1.4,
+      },
+    });
+
+    async function flyToCity(city, index) {
+      setActiveReports(map, city);
       map.flyTo({
-        center: opts.center,
-        zoom: opts.zoom,
-        pitch: opts.pitch != null ? opts.pitch : 50,
-        bearing: opts.bearing != null ? opts.bearing : GLOBE_START.bearing,
-        duration,
+        center: [city.lng, city.lat],
+        zoom: city.zoom,
+        pitch: 58,
+        bearing: -24 + index * 18,
+        duration: reduced ? 1200 : index === 0 ? 12500 : 9000,
+        curve: 1.42,
+        essential: true,
+      });
+      await waitMoveEnd(map);
+    }
+
+    async function flyToGlobe() {
+      map.flyTo({
+        center: GLOBE_START.center,
+        zoom: GLOBE_START.zoom,
+        pitch: GLOBE_START.pitch,
+        bearing: GLOBE_START.bearing,
+        duration: reduced ? 900 : 10500,
         curve: 1.35,
         essential: true,
       });
-      return waitMoveEnd(map);
+      await waitMoveEnd(map);
     }
-
-    function flyToCity(target, legIndex, options) {
-      const o = options || {};
-      const duration = o.duration != null ? o.duration : reduced ? 1400 : 12500;
-      map.flyTo({
-        center: [target.lng, target.lat],
-        zoom: o.zoom != null ? o.zoom : 13.35,
-        pitch: o.pitch != null ? o.pitch : 56,
-        bearing: o.bearing != null ? o.bearing : -20 + (legIndex * 17) % 55,
-        duration,
-        curve: 1.35,
-        essential: true,
-      });
-      return waitMoveEnd(map);
-    }
-
-    let tourRunning = false;
 
     async function runTour() {
-      if (tourRunning) return;
-      tourRunning = true;
-      try {
-        /* Kaart start al op de wereldbol — eerste vlucht is de lange zoom naar Gavere. */
-        for (let i = 0; i < ROUTE.length; i++) {
-          const city = ROUTE[i];
-          const firstFromGlobe = i === 0;
-          await flyToCity(city, i, {
-            zoom: 13.25 + (i % 4) * 0.06,
-            pitch: 56 + (i % 3),
-            duration: reduced ? (firstFromGlobe ? 1600 : 1200) : firstFromGlobe ? 17000 : 11800,
-          });
-          await sleep(reduced ? 500 : 2000);
+      for (;;) {
+        for (let i = 0; i < ROUTE.length; i += 1) {
+          await flyToCity(ROUTE[i], i);
+          await sleep(reduced ? 550 : 2200);
         }
 
-        await flyToView({
-          center: GLOBE_START.center,
-          zoom: GLOBE_START.zoom,
-          pitch: GLOBE_START.pitch,
-          bearing: GLOBE_START.bearing,
-          duration: reduced ? 900 : 14000,
-        });
-        await sleep(reduced ? 800 : 2800);
-      } finally {
-        tourRunning = false;
+        setActiveReports(map, { reports: [] });
+        await flyToGlobe();
+        await sleep(reduced ? 700 : 1800);
       }
-
-      window.setTimeout(runTour, reduced ? 600 : 2000);
     }
 
+    resize();
     void runTour();
   }
 
@@ -348,11 +339,4 @@
   } else {
     init();
   }
-
-  window.addEventListener("resize", () => {
-    const root = document.getElementById("fixit-globe-root");
-    if (root && root._fixitMap) {
-      root._fixitMap.resize();
-    }
-  });
 })();

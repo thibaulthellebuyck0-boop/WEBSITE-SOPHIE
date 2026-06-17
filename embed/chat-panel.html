@@ -6904,6 +6904,7 @@
                 datum: data.datum,
                 tijdstip: data.tijdstip,
                 onderwerp: data.onderwerp || "Algemeen gesprek",
+                bron: "chatbot",
               }),
             })
               .then(function (r) { return r.json(); })
@@ -8171,7 +8172,31 @@
           return wrap;
         }
 
+        function postBookingToAdmin(payload) {
+          var endpoint = "/api/book-appointment";
+          try {
+            var base = String(typeof CHAT_API_BASE !== "undefined" ? CHAT_API_BASE : "").replace(/\/$/, "");
+            endpoint = base ? base + "/api/book-appointment" : "/api/book-appointment";
+          } catch (e) {}
+          return fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }).catch(function () {
+            return null;
+          });
+        }
+
         function afterBookingConfirm(detail) {
+          postBookingToAdmin({
+            naam: detail.name,
+            telefoon: detail.phone,
+            email: "",
+            datum: detail.iso,
+            tijdstip: detail.time,
+            onderwerp: detail.purposeLabel || "Loketafspraak",
+            bron: "chatbot",
+          });
           var line =
             "Afspraak (" +
             (detail.purposeLabel || "") +
@@ -8189,11 +8214,11 @@
               "bot",
               "Helemaal goed — " +
                 detail.name +
-                ", we hebben uw reservering genoteerd (" +
+                ", we hebben uw afspraak geregistreerd (" +
                 (detail.purposeLabel || "") +
                 ", " +
                 detail.summary +
-                "). In productie gaat dit naar het afspraak- of loketsysteem van de gemeente."
+                "). U hoort zo snel mogelijk van ons."
             );
           }, 1100);
         }

@@ -121,6 +121,11 @@
       font-size: 12px;
       font-weight: 500;
     }
+    .badge--contact { background: #dbeafe; color: #1d4ed8; }
+    .badge--chatbot { background: #dcfce7; color: #15803d; }
+    .badge--website { background: #f3f4f6; color: #374151; }
+    .cell-muted { color: #9ca3af; }
+    .cell-bericht { font-size: 13px; color: #4b5563; max-width: 220px; }
     .empty { padding: 3rem; text-align: center; color: #9ca3af; font-size: 15px; }
     .refresh-btn {
       background: transparent;
@@ -160,7 +165,7 @@
     <div class="stats">
       <div class="stat-card">
         <div class="stat-card__value" id="stat-total">—</div>
-        <div class="stat-card__label">Totaal afspraken</div>
+        <div class="stat-card__label">Totaal inzendingen</div>
       </div>
       <div class="stat-card">
         <div class="stat-card__value" id="stat-today">—</div>
@@ -169,7 +174,7 @@
       <button class="refresh-btn" id="refresh-btn" style="align-self:center">↺ Vernieuwen</button>
     </div>
     <div class="afspraken-table-wrap">
-      <h2>Geplande gesprekken</h2>
+      <h2>Afspraken &amp; contact</h2>
       <div id="table-container">
         <div class="empty">Laden…</div>
       </div>
@@ -216,10 +221,31 @@
   refreshBtn.addEventListener("click", loadAfspraken);
 
   function dagNaam(dateStr) {
+    if (!dateStr) return "—";
     try {
       var d = new Date(dateStr);
       return d.toLocaleDateString("nl-BE", { weekday: "short", year: "numeric", month: "short", day: "numeric" });
     } catch (e) { return dateStr; }
+  }
+
+  function bronBadge(bron) {
+    var b = String(bron || "website").toLowerCase();
+    var cls = "badge";
+    if (b === "contact") cls += " badge--contact";
+    else if (b === "chatbot") cls += " badge--chatbot";
+    else cls += " badge--website";
+    var label = b === "contact" ? "Contact" : b === "chatbot" ? "Chatbot" : b;
+    return "<span class=\"" + cls + "\">" + escHtml(label) + "</span>";
+  }
+
+  function contactCell(a) {
+    if (a.email) {
+      return "<a href=\"mailto:" + escHtml(a.email) + "\" style=\"color:#2563eb\">" + escHtml(a.email) + "</a>";
+    }
+    if (a.telefoon) {
+      return "<a href=\"tel:" + escHtml(a.telefoon) + "\" style=\"color:#2563eb\">" + escHtml(a.telefoon) + "</a>";
+    }
+    return "<span class=\"cell-muted\">—</span>";
   }
 
   function loadAfspraken() {
@@ -230,23 +256,39 @@
         var list = (json && json.appointments) ? json.appointments : [];
         statTotal.textContent = list.length;
         var today = new Date().toISOString().slice(0, 10);
-        statToday.textContent = list.filter(function (a) { return a.datum === today; }).length;
+        statToday.textContent = list.filter(function (a) {
+          if (a.datum === today) return true;
+          var created = String(a.aangemaakt || a.created_at || "").slice(0, 10);
+          return created === today;
+        }).length;
         lastRefreshEl.textContent = "Bijgewerkt: " + new Date().toLocaleTimeString("nl-BE");
         if (!list.length) {
-          tableContainer.innerHTML = "<div class=\"empty\">Nog geen afspraken ingeboekt.</div>";
+          tableContainer.innerHTML = "<div class=\"empty\">Nog geen inzendingen.</div>";
           return;
         }
         var html = "<table><thead><tr>" +
-          "<th>Datum</th><th>Tijdstip</th><th>Naam</th>" +
-          "<th class=\"hide-mobile\">E-mail</th><th class=\"hide-mobile\">Onderwerp</th>" +
+          "<th>Datum</th><th>Tijd</th><th>Naam</th>" +
+          "<th class=\"hide-mobile\">Contact</th><th class=\"hide-mobile\">Onderwerp</th>" +
+          "<th>Bron</th>" +
           "</tr></thead><tbody>";
         list.forEach(function (a) {
+          var tijdHtml = a.tijdstip
+            ? "<span class=\"badge\">" + escHtml(a.tijdstip) + "</span>"
+            : "<span class=\"cell-muted\">—</span>";
+          var onderwerpHtml = escHtml(a.onderwerp || "—");
+          if (a.bericht) {
+            onderwerpHtml += "<div class=\"cell-bericht\">" + escHtml(a.bericht) + "</div>";
+          }
+          if (a.gemeente) {
+            onderwerpHtml += "<div class=\"cell-bericht\">Gemeente: " + escHtml(a.gemeente) + "</div>";
+          }
           html += "<tr>" +
             "<td>" + escHtml(dagNaam(a.datum)) + "</td>" +
-            "<td><span class=\"badge\">" + escHtml(a.tijdstip) + "</span></td>" +
+            "<td>" + tijdHtml + "</td>" +
             "<td>" + escHtml(a.naam) + "</td>" +
-            "<td class=\"hide-mobile\"><a href=\"mailto:" + escHtml(a.email) + "\" style=\"color:#2563eb\">" + escHtml(a.email) + "</a></td>" +
-            "<td class=\"hide-mobile\">" + escHtml(a.onderwerp || "—") + "</td>" +
+            "<td class=\"hide-mobile\">" + contactCell(a) + "</td>" +
+            "<td class=\"hide-mobile\">" + onderwerpHtml + "</td>" +
+            "<td>" + bronBadge(a.bron) + "</td>" +
             "</tr>";
         });
         html += "</tbody></table>";

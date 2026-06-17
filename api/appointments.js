@@ -1,3 +1,5 @@
+const { listAppointments } = require("./lib/appointments-store");
+
 const ADMIN_TOKEN = "Sophie2026!";
 
 module.exports = async function handler(req, res) {
@@ -11,7 +13,10 @@ module.exports = async function handler(req, res) {
     return res.status(401).json({ error: "Ongeautoriseerd." });
   }
 
-  const appointments = global.__sophieAppointments || [];
-  const sorted = [...appointments].sort((a, b) => a.datum.localeCompare(b.datum) || a.tijdstip.localeCompare(b.tijdstip));
-  return res.status(200).json({ appointments: sorted });
+  try {
+    const appointments = await listAppointments();
+    return res.status(200).json({ appointments });
+  } catch (err) {
+    return res.status(500).json({ error: err.message || "Laden mislukt." });
+  }
 };

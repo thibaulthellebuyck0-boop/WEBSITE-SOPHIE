@@ -1,19 +1,4 @@
 document.documentElement.classList.add("js");
-// #region agent log
-fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-  method: "POST",
-  headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-  body: JSON.stringify({
-    sessionId: "0c9bba",
-    runId: "pre-fix-2",
-    hypothesisId: "H6",
-    location: "main.js:top-level",
-    message: "Main script loaded",
-    data: { href: window.location.href, protocol: window.location.protocol },
-    timestamp: Date.now(),
-  }),
-}).catch(() => {});
-// #endregion
 
 /**
  * Basis-URL voor `/api/submissions` (leeg = zelfde origin).
@@ -241,8 +226,7 @@ async function submitToCms(form, payload) {
       return;
     }
 
-    header.classList.remove("nav--menu-animate");
-    header.classList.add("nav--menu-entering");
+    header.classList.add("nav--menu-animate", "nav--menu-entering");
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
         header.classList.add("nav--menu-animate");
@@ -250,6 +234,7 @@ async function submitToCms(form, payload) {
     });
     menuEnterTimer = window.setTimeout(() => {
       header.classList.remove("nav--menu-entering");
+      header.classList.add("nav--menu-animate");
     }, MENU_ENTER_MS);
   }
 
@@ -271,6 +256,7 @@ async function submitToCms(form, payload) {
     });
     subEnterTimer = window.setTimeout(() => {
       header.classList.remove("nav--sub-entering");
+      header.classList.add("nav--sub-animate");
     }, MENU_ENTER_MS);
   }
 
@@ -303,8 +289,15 @@ async function submitToCms(form, payload) {
     const on = Boolean(open);
 
     if (on) {
+      if (mobileMq.matches && header.classList.contains("nav--on-hero")) {
+        header.classList.remove("nav--on-hero");
+      }
       header.classList.add("nav--menu-open");
-      header.classList.remove("nav--menu-animate");
+      if (mobileMq.matches) {
+        header.classList.add("nav--menu-animate");
+      } else {
+        header.classList.remove("nav--menu-animate");
+      }
       toggle.setAttribute("aria-expanded", "true");
       toggle.setAttribute("aria-label", "Menu sluiten");
       document.body.classList.add("nav-menu-open");
@@ -362,11 +355,20 @@ async function submitToCms(form, payload) {
       if (window.matchMedia("(min-width: 768px)").matches) setOpen(false);
     }, 80);
   });
+
+  setOpen(false);
+  document.body.classList.remove("nav-menu-open", "ccw-chat-open");
+
+  window.addEventListener("pageshow", () => {
+    setOpen(false);
+    document.body.classList.remove("nav-menu-open", "ccw-chat-open");
+  });
 })();
 
 (function initNavScrollHide() {
   const nav = document.querySelector(".nav");
   if (!nav) return;
+  if (window.matchMedia("(max-width: 767px)").matches) return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   let lastY = window.scrollY;
@@ -406,6 +408,37 @@ async function submitToCms(form, payload) {
     },
     { passive: true }
   );
+})();
+
+(function initHomeHeroNav() {
+  const nav = document.querySelector(".nav");
+  const hero = document.querySelector(".home-hero-spotlight");
+  if (!nav || !hero) return;
+
+  if (!window.matchMedia("(min-width: 768px)").matches) {
+    if (nav.classList.contains("nav--on-hero")) nav.classList.remove("nav--on-hero");
+    return;
+  }
+
+  function update() {
+    if (nav.classList.contains("nav--menu-open")) {
+      if (nav.classList.contains("nav--on-hero")) nav.classList.remove("nav--on-hero");
+      return;
+    }
+    const heroBottom = hero.getBoundingClientRect().bottom;
+    const onHero = heroBottom > 72;
+    if (nav.classList.contains("nav--on-hero") !== onHero) {
+      nav.classList.toggle("nav--on-hero", onHero);
+    }
+  }
+
+  window.addEventListener("scroll", () => window.requestAnimationFrame(update), { passive: true });
+  window.addEventListener("resize", () => window.requestAnimationFrame(update), { passive: true });
+  new MutationObserver(() => update()).observe(nav, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  update();
 })();
 
 (function initNavMore() {
@@ -1219,44 +1252,12 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     if (MAPBOX_TOKEN) return MAPBOX_TOKEN;
     const fromWindow = String(window.MAPBOX_PUBLIC_TOKEN || "").trim();
     if (fromWindow) {
-      source = "window";
-      // #region agent log
-      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-        body: JSON.stringify({
-          sessionId: "0c9bba",
-          runId: "pre-fix-1",
-          hypothesisId: "H2",
-          location: "main.js:getMapboxToken:window",
-          message: "Contact token resolved",
-          data: { source, tokenLength: fromWindow.length },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
-      return fromWindow;
+      source = "window";      return fromWindow;
     }
     const metaEl = document.querySelector('meta[name="mapbox-public-token"]');
     const fromMeta = String(metaEl?.content || "").trim();
     if (fromMeta) {
-      source = "meta";
-      // #region agent log
-      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-        body: JSON.stringify({
-          sessionId: "0c9bba",
-          runId: "pre-fix-1",
-          hypothesisId: "H2",
-          location: "main.js:getMapboxToken:meta",
-          message: "Contact token resolved",
-          data: { source, tokenLength: fromMeta.length },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
-      return fromMeta;
+      source = "meta";      return fromMeta;
     }
     if (!mapboxTokenPromise) {
       mapboxTokenPromise = fetch("/api/mapbox-token", {
@@ -1267,23 +1268,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         .then((json) => String(json?.token || "").trim())
         .catch(() => "");
     }
-    const token = await mapboxTokenPromise;
-    // #region agent log
-    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-      body: JSON.stringify({
-        sessionId: "0c9bba",
-        runId: "pre-fix-1",
-        hypothesisId: "H2",
-        location: "main.js:getMapboxToken:api",
-        message: "Contact token resolved",
-        data: { source, tokenLength: token.length },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
-    return token;
+    const token = await mapboxTokenPromise;    return token;
   }
 
   async function geocodeMunicipality(name) {
@@ -1302,22 +1287,6 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
     if (!globeWrap || !globeMapEl || !globeLabel) return;
     globeLabel.innerHTML = `Gemeente: <strong>${escapeHtml(name)}</strong>`;
     globeWrap.hidden = false;
-    // #region agent log
-    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-      body: JSON.stringify({
-        sessionId: "0c9bba",
-        runId: "pre-fix-1",
-        hypothesisId: "H3",
-        location: "main.js:showGlobeForMunicipality:entry",
-        message: "Contact map flow entered",
-        data: { municipality: name, hadExistingMap: Boolean(globeMap) },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
-
     const dest = (await geocodeMunicipality(name)) || [4.4699, 50.5039];
 
     try {
@@ -1370,40 +1339,8 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
         essential: true,
       });
 
-      globeWrap.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
-      // #region agent log
-      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-        body: JSON.stringify({
-          sessionId: "0c9bba",
-          runId: "pre-fix-1",
-          hypothesisId: "H4",
-          location: "main.js:showGlobeForMunicipality:success",
-          message: "Contact map flyTo triggered",
-          data: { municipality: name, center: dest },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
-    } catch (e) {
-      globeWrap.hidden = true;
-      // #region agent log
-      fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-        body: JSON.stringify({
-          sessionId: "0c9bba",
-          runId: "pre-fix-1",
-          hypothesisId: "H3",
-          location: "main.js:showGlobeForMunicipality:catch",
-          message: "Contact map failed",
-          data: { municipality: name, error: e instanceof Error ? e.message : String(e) },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
-    }
+      globeWrap.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });    } catch (e) {
+      globeWrap.hidden = true;    }
   }
 
   function destroyGlobeMap() {
@@ -1846,23 +1783,7 @@ document.querySelector(".cta__form")?.addEventListener("submit", function (e) {
 
   async function submitLine() {
     const steps = getSteps();
-    const step = steps[stepIndex];
-    // #region agent log
-    fetch("http://127.0.0.1:7757/ingest/e9513643-9e35-4dc4-9e2a-5c5010cd6b10", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "0c9bba" },
-      body: JSON.stringify({
-        sessionId: "0c9bba",
-        runId: "pre-fix-1",
-        hypothesisId: "H1",
-        location: "main.js:submitLine:start",
-        message: "Contact step submission",
-        data: { stepKey: step?.key || null, role: data.role || null },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
-    if (step.key === "municipality") {
+    const step = steps[stepIndex];    if (step.key === "municipality") {
       await gemeentenPromise;
     }
     const value = getInputValue();
