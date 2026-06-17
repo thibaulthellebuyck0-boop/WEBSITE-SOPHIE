@@ -82,7 +82,9 @@ html {
 
   body.nav-menu-open {
     overflow: hidden;
-    touch-action: none;
+    position: fixed;
+    width: 100%;
+    /* top is set via JS to preserve scroll position on iOS Safari */
   }
 }
 
@@ -9480,7 +9482,9 @@ html.js .fixit-card--chat.reveal--visible .fixit-chat__bubble:nth-child(4) {
 
   body.nav-menu-open {
     overflow: hidden;
-    touch-action: none;
+    position: fixed;
+    width: 100%;
+    /* top is set via JS to preserve scroll position on iOS Safari */
   }
 
   img,

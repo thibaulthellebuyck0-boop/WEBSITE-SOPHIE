@@ -210,6 +210,7 @@ async function submitToCms(form, payload) {
   let menuEnterTimer = 0;
   let subEnterTimer = 0;
   const MENU_ENTER_MS = 750;
+  let scrollLockY = 0;
 
   function clearEnterTimers() {
     window.clearTimeout(menuEnterTimer);
@@ -292,6 +293,10 @@ async function submitToCms(form, payload) {
       if (mobileMq.matches && header.classList.contains("nav--on-hero")) {
         header.classList.remove("nav--on-hero");
       }
+      if (mobileMq.matches) {
+        scrollLockY = window.scrollY;
+        document.body.style.top = `-${scrollLockY}px`;
+      }
       header.classList.add("nav--menu-open");
       if (mobileMq.matches) {
         header.classList.add("nav--menu-animate");
@@ -315,6 +320,8 @@ async function submitToCms(form, payload) {
     toggle.setAttribute("aria-expanded", "false");
     toggle.setAttribute("aria-label", "Menu openen");
     document.body.classList.remove("nav-menu-open");
+    document.body.style.top = "";
+    if (mobileMq.matches) window.scrollTo(0, scrollLockY);
   }
 
   toggle.addEventListener("click", () => setOpen(!header.classList.contains("nav--menu-open")));
@@ -360,6 +367,7 @@ async function submitToCms(form, payload) {
   document.body.classList.remove("nav-menu-open", "ccw-chat-open");
 
   window.addEventListener("pageshow", () => {
+    document.body.style.top = "";
     setOpen(false);
     document.body.classList.remove("nav-menu-open", "ccw-chat-open");
   });
