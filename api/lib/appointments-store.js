@@ -1,15 +1,11 @@
-const KV_KEY = "sophie:appointments";
+const GITHUB_API = "https://api.github.com";
+const GITHUB_PATH = "appointments.json";
 
-function getRedis() {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return null;
-  try {
-    const { Redis } = require("@upstash/redis");
-    return new Redis({ url, token });
-  } catch {
-    return null;
-  }
+function getGithubConfig() {
+  const token = process.env.GITHUB_DATA_TOKEN;
+  const repo = process.env.GITHUB_DATA_REPO;
+  if (!token || !repo) return null;
+  return { token, repo };
 }
 
 function getMemoryStore() {
@@ -20,7 +16,7 @@ function getMemoryStore() {
 function normalizeRecord(input) {
   const now = new Date().toISOString();
   return {
-    id: input.id || `mem-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    id: input.id || `rec-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     naam: String(input.naam || "").trim(),
     email: input.email ? String(input.email).trim() : "",
     telefoon: input.telefoon ? String(input.telefoon).trim() : "",
@@ -45,15 +41,47 @@ function sortAppointments(list) {
   });
 }
 
+async function ghRead(config) {
+  const res = await fetch(
+    `${GITHUB_API}/repos/${config.repo}/contents/${GITHUB_PATH}`,
+    { headers: { Authorization: `token ${config.token}`, Accept: "application/vnd.github.v3+json" } }
+  );
+  if (res.status === 404) return { list: [], sha: null };
+  if (!res.ok) throw new Error(`GitHub read mislukt: ${res.status}`);
+  const json = await res.json();
+  const raw = Buffer.from(json.content.replace(/\n/g, ""), "base64").toString("utf8");
+  return { list: JSON.parse(raw) || [], sha: json.sha };
+}
+
+async function ghWrite(config, list, sha) {
+  const body = {
+    message: `afspraak ${new Date().toISOString().slice(0, 10)}`,
+    content: Buffer.from(JSON.stringify(list)).toString("base64"),
+  };
+  if (sha) body.sha = sha;
+  const res = await fetch(
+    `${GITHUB_API}/repos/${config.repo}/contents/${GITHUB_PATH}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `token ${config.token}`,
+        Accept: "application/vnd.github.v3+json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }
+  );
+  if (!res.ok) throw new Error(`GitHub write mislukt: ${res.status}`);
+}
+
 async function saveAppointment(input) {
   const record = normalizeRecord(input);
-  const redis = getRedis();
+  const config = getGithubConfig();
 
-  if (redis) {
-    const existing = await redis.get(KV_KEY);
-    const list = Array.isArray(existing) ? existing : [];
+  if (config) {
+    const { list, sha } = await ghRead(config);
     list.unshift(record);
-    await redis.set(KV_KEY, list);
+    await ghWrite(config, list, sha);
     return record;
   }
 
@@ -62,18 +90,14 @@ async function saveAppointment(input) {
 }
 
 async function listAppointments() {
-  const redis = getRedis();
+  const config = getGithubConfig();
 
-  if (redis) {
-    const list = await redis.get(KV_KEY);
-    return Array.isArray(list) ? sortAppointments(list) : [];
+  if (config) {
+    const { list } = await ghRead(config);
+    return sortAppointments(list);
   }
 
   return sortAppointments(getMemoryStore());
 }
 
-module.exports = {
-  saveAppointment,
-  listAppointments,
-  normalizeRecord,
-};
+module.exports = { saveAppointment, listAppointments, normalizeRecord };

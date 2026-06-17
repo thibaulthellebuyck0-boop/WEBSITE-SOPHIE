@@ -7,7 +7,6 @@
     "seo:build": "node scripts/generate-gemeenten.js && node scripts/sync-nav-visibility.js && node scripts/generate-sitemap.js"
   },
   "dependencies": {
-    "@upstash/redis": "^1.38.0",
     "nodemailer": "^9.0.0"
   }
 }
