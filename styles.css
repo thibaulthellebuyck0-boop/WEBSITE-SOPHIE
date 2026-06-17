@@ -3831,7 +3831,7 @@ html.js .sophie-xai-embed-card--ready .sophie-xai-embed-card__hint {
 }
 
 .sophie-xai-architecture {
-  background: var(--sophie-xai-soft);
+  background: #fff;
   padding: clamp(70px, 10vh, 110px) max(20px, calc((100% - var(--sophie-xai-page)) / 2 + 20px));
   border-top: 1px solid var(--sophie-xai-line);
 }
