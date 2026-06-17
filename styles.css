@@ -7354,7 +7354,7 @@ html.js .reveal.reveal--visible {
 .page--home .about-shell.home-shell {
   max-width: var(--page-copy-max);
   margin: 0 auto;
-  padding: 16px 22px;
+  padding: 19px 26px;
 }
 
 .page--home .home-shell .blog-article h2 {
@@ -7362,7 +7362,7 @@ html.js .reveal.reveal--visible {
   font-weight: var(--title-weight);
   letter-spacing: var(--title-tracking);
   line-height: 1.2;
-  margin: 28px 0 10px;
+  margin: 34px 0 12px;
   color: var(--text);
 }
 
@@ -7371,7 +7371,7 @@ html.js .reveal.reveal--visible {
 }
 
 .page--home .home-shell .blog-article p {
-  margin: 0 0 14px;
+  margin: 0 0 17px;
   font-size: 17px;
   font-weight: 400;
   line-height: 1.5;
