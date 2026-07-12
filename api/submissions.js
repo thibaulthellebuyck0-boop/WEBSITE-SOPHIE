@@ -1,4 +1,5 @@
 const { saveAppointment } = require("./lib/appointments-store");
+const { sendNotificationEmail, escapeHtml } = require("./lib/notify");
 
 /**
  * Vercel levert `req.body` soms als object, soms als string of Buffer.
@@ -98,6 +99,23 @@ module.exports = async function handler(req, res) {
       console.error("Appointment store (contact):", e);
       return res.status(500).json({ error: "Opslaan mislukt. Probeer later opnieuw." });
     }
+
+    const roleLabel = payload.role === "gemeente" ? "Gemeente" : "Ontwikkelaar";
+    await sendNotificationEmail({
+      subject: `📬 Nieuw contactformulier — ${roleLabel}`,
+      html: `
+        <h2 style="margin:0 0 16px">Nieuw bericht via sophietechnologies.be</h2>
+        <table style="border-collapse:collapse;width:100%;font-family:sans-serif;font-size:15px">
+          <tr><td style="padding:8px 12px;background:#f3f4f6;font-weight:600;width:140px">Naam</td><td style="padding:8px 12px">${escapeHtml(payload.firstName)} ${escapeHtml(payload.lastName)}</td></tr>
+          <tr><td style="padding:8px 12px;background:#f3f4f6;font-weight:600">E-mail</td><td style="padding:8px 12px">${escapeHtml(payload.email)}</td></tr>
+          <tr><td style="padding:8px 12px;background:#f3f4f6;font-weight:600">Rol</td><td style="padding:8px 12px">${escapeHtml(roleLabel)}</td></tr>
+          ${payload.role === "gemeente" ? `<tr><td style="padding:8px 12px;background:#f3f4f6;font-weight:600">Gemeente</td><td style="padding:8px 12px">${escapeHtml(payload.municipality || "")}</td></tr>` : ""}
+          ${payload.phone ? `<tr><td style="padding:8px 12px;background:#f3f4f6;font-weight:600">Telefoon</td><td style="padding:8px 12px">${escapeHtml(payload.phone)}</td></tr>` : ""}
+          <tr><td style="padding:8px 12px;background:#f3f4f6;font-weight:600;vertical-align:top">Bericht</td><td style="padding:8px 12px;white-space:pre-wrap">${escapeHtml(payload.message)}</td></tr>
+        </table>
+      `,
+      text: `Nieuw contactformulier\n\nNaam: ${payload.firstName} ${payload.lastName}\nE-mail: ${payload.email}\nRol: ${roleLabel}${payload.role === "gemeente" ? `\nGemeente: ${payload.municipality || ""}` : ""}\nBericht:\n${payload.message}`,
+    }).catch((e) => console.error("E-mail notificatie mislukt:", e));
   }
 
   return res.status(201).json({ ok: true });
